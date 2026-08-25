@@ -1,0 +1,707 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Heidelberg CRM – Ruhig geführt</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --berry: #a50050;
+      --berry-dark: #720038;
+      --berry-soft: #f8e8ef;
+      --neckar: #005c76;
+      --neckar-soft: #e8f3f5;
+      --stone: #75787b;
+      --stone-dark: #44484b;
+      --mist: #f3f5f4;
+      --line: #d9dddc;
+      --paper: #fff;
+      --ink: #202326;
+      --success: #05715a;
+      --success-soft: #e7f4ef;
+      --warning: #7a4d00;
+      --warning-soft: #fff3d4;
+      --danger: #920731;
+      --danger-soft: #f9e7ed;
+      --shadow: 0 18px 48px rgba(30, 38, 40, .08);
+      --max: 1440px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--mist);
+      font-family: "Noto Sans", Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    button, input, textarea, select { font: inherit; }
+    button, a, input, textarea, select { -webkit-tap-highlight-color: transparent; }
+    button { color: inherit; }
+    a { color: var(--neckar); }
+    :focus-visible {
+      outline: 3px solid #ffce44;
+      outline-offset: 3px;
+      box-shadow: 0 0 0 6px rgba(0, 92, 118, .18);
+    }
+    .skip-link {
+      position: fixed; top: 8px; left: 8px; z-index: 100;
+      padding: 10px 14px; background: var(--ink); color: white;
+      transform: translateY(-160%);
+    }
+    .skip-link:focus { transform: translateY(0); }
+    .app-header {
+      height: 78px; background: var(--paper); border-bottom: 1px solid var(--line);
+      display: flex; align-items: stretch; position: sticky; top: 0; z-index: 30;
+    }
+    .header-inner {
+      width: min(100%, var(--max)); margin: 0 auto; padding: 0 40px;
+      display: grid; grid-template-columns: 260px 1fr auto; align-items: center; gap: 32px;
+    }
+    .brand { display: flex; align-items: center; gap: 13px; padding: 0; border: 0; background: transparent; color: var(--ink); font-weight: 700; letter-spacing: -.02em; cursor: pointer; }
+    .brand-mark {
+      width: 34px; height: 43px; background: var(--berry); color: white;
+      display: grid; place-items: center; font-size: 20px; line-height: 1;
+      clip-path: polygon(0 0,100% 0,100% 76%,50% 100%,0 76%);
+    }
+    .brand small { display: block; color: var(--stone-dark); font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+    .global-nav { display: flex; height: 100%; align-items: stretch; gap: 4px; }
+    .nav-btn {
+      border: 0; border-bottom: 4px solid transparent; background: transparent;
+      padding: 2px 15px 0; cursor: pointer; font-weight: 600; color: #4f5558;
+    }
+    .nav-btn:hover { color: var(--berry-dark); background: #fbf7f9; }
+    .nav-btn[aria-current="page"] { color: var(--berry-dark); border-bottom-color: var(--berry); }
+    .user-menu {
+      display: flex; align-items: center; gap: 10px; border: 0; background: none; padding: 8px; cursor: pointer;
+    }
+    .avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--neckar); color: white; display: grid; place-items: center; font-weight: 700; }
+    .user-copy { text-align: left; font-size: 13px; line-height: 1.35; }
+    .user-copy strong { display: block; font-size: 14px; }
+
+    main { width: min(100%, var(--max)); margin: 0 auto; padding: 42px 40px 80px; }
+    .screen { display: none; animation: reveal .22s ease-out; }
+    .screen.active { display: block; }
+    @keyframes reveal { from { opacity: .4; transform: translateY(6px); } }
+    .sheet {
+      position: relative; background: var(--paper); min-height: calc(100vh - 200px);
+      box-shadow: var(--shadow); border: 1px solid #e3e6e5; padding: 58px 64px 72px 92px;
+    }
+    .thread {
+      position: absolute; left: 42px; top: 0; bottom: 0; width: 5px; background: var(--berry);
+    }
+    .thread::before { content: ""; position: absolute; top: 64px; left: -7px; width: 19px; height: 19px; background: white; border: 5px solid var(--berry); border-radius: 50%; }
+    .thread::after { content: ""; position: absolute; bottom: 0; left: 0; width: 5px; height: 88px; background: var(--berry-dark); }
+    .eyebrow { margin: 0 0 10px; color: var(--berry-dark); font-size: 13px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+    h1 { margin: 0; max-width: 850px; font-size: clamp(34px, 4vw, 54px); line-height: 1.12; letter-spacing: -.04em; font-weight: 600; }
+    h2 { margin: 0; font-size: 25px; line-height: 1.25; letter-spacing: -.025em; }
+    h3 { margin: 0; font-size: 18px; line-height: 1.35; }
+    p { margin-top: 0; }
+    .lead { max-width: 730px; margin: 18px 0 0; color: var(--stone-dark); font-size: 19px; }
+    .screen-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 32px; margin-bottom: 42px; }
+    .head-copy { min-width: 0; }
+    .head-copy h1 { font-size: 42px; }
+    .subhead { margin: 10px 0 0; color: var(--stone-dark); font-size: 17px; }
+    .primary-btn, .secondary-btn, .quiet-btn, .text-btn {
+      border: 0; cursor: pointer; min-height: 46px; font-weight: 700;
+    }
+    .primary-btn { padding: 12px 20px; background: var(--berry); color: white; }
+    .primary-btn:hover { background: var(--berry-dark); }
+    .secondary-btn { padding: 11px 18px; background: white; border: 2px solid var(--berry); color: var(--berry-dark); }
+    .secondary-btn:hover { background: var(--berry-soft); }
+    .quiet-btn { padding: 11px 17px; background: var(--mist); border: 1px solid var(--line); }
+    .quiet-btn:hover { border-color: var(--stone); background: white; }
+    .text-btn { padding: 8px 2px; background: transparent; color: var(--neckar); text-decoration: underline; text-underline-offset: 4px; }
+    .arrow { margin-left: 10px; }
+    .micro { font-size: 13px; color: var(--stone-dark); }
+    .muted { color: var(--stone-dark); }
+    .divider { height: 1px; background: var(--line); margin: 36px 0; }
+    .section-kicker { margin: 0 0 12px; color: var(--stone-dark); font-size: 13px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
+
+    /* Einstieg */
+    .start-sheet { padding-top: 70px; }
+    .start-sheet h1 { max-width: 760px; }
+    .search-stage { margin-top: 50px; max-width: 900px; }
+    .search-label { display: block; margin-bottom: 10px; font-size: 17px; font-weight: 700; }
+    .search-row { display: grid; grid-template-columns: 1fr auto; border-bottom: 3px solid var(--ink); }
+    .search-row:focus-within { border-color: var(--neckar); }
+    .search-row input { min-width: 0; padding: 16px 4px; border: 0; outline: 0; font-size: 24px; color: var(--ink); }
+    .search-row .primary-btn { min-width: 138px; margin-bottom: 6px; }
+    .search-help { margin-top: 10px; color: var(--stone-dark); font-size: 14px; }
+    .start-grid { display: grid; grid-template-columns: 1.35fr .8fr; gap: 70px; margin-top: 76px; }
+    .plain-list { list-style: none; padding: 0; margin: 18px 0 0; border-top: 1px solid var(--line); }
+    .plain-list li { border-bottom: 1px solid var(--line); }
+    .record-link { width: 100%; border: 0; background: transparent; text-align: left; padding: 18px 4px; cursor: pointer; display: grid; grid-template-columns: 1fr auto; gap: 20px; }
+    .record-link:hover strong { color: var(--berry-dark); }
+    .record-link strong, .record-link span { display: block; }
+    .record-link span { margin-top: 3px; color: var(--stone-dark); font-size: 14px; }
+    .record-link time { color: var(--stone-dark); font-size: 13px; white-space: nowrap; }
+    .today-list { margin: 20px 0 0; padding: 0; list-style: none; }
+    .today-list li { display: grid; grid-template-columns: 38px 1fr; gap: 14px; margin: 0 0 24px; }
+    .date-block { color: var(--berry-dark); font-weight: 700; font-size: 18px; line-height: 1.1; }
+    .date-block small { display: block; color: var(--stone-dark); font-size: 10px; text-transform: uppercase; }
+
+    /* Suche und Tabelle */
+    .search-panel { padding: 28px 30px; background: var(--neckar-soft); border-left: 5px solid var(--neckar); }
+    .search-panel .search-row { grid-template-columns: 1fr auto; border-color: var(--neckar); }
+    .search-panel input { background: transparent; font-size: 20px; }
+    .filter-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; align-items: center; }
+    .filter-label { margin-right: 6px; font-weight: 700; font-size: 14px; }
+    .filter-chip { border: 1px solid #9da6a7; background: white; padding: 8px 13px; cursor: pointer; font-size: 14px; }
+    .filter-chip[aria-pressed="true"] { background: var(--neckar); color: white; border-color: var(--neckar); }
+    .results-head { display: flex; align-items: end; justify-content: space-between; margin: 38px 0 14px; }
+    .results-head h2 { font-size: 21px; }
+    .table-wrap { overflow: auto; border-top: 2px solid var(--ink); max-height: 670px; }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th { position: sticky; top: 0; z-index: 2; background: white; padding: 13px 14px; color: var(--stone-dark); font-size: 12px; letter-spacing: .055em; text-transform: uppercase; border-bottom: 1px solid var(--line); }
+    td { padding: 15px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    tbody tr { cursor: pointer; }
+    tbody tr:hover { background: #faf6f8; }
+    tbody tr:focus { outline: 3px solid #ffce44; outline-offset: -3px; }
+    td strong { display: block; }
+    .relation, .td-sub { display: block; margin-top: 2px; font-size: 13px; color: var(--stone-dark); }
+    .channel-set { display: flex; gap: 4px; flex-wrap: wrap; }
+    .channel { min-width: 27px; height: 27px; padding: 0 6px; display: inline-grid; place-items: center; border: 1px solid var(--line); font-size: 11px; font-weight: 700; color: var(--stone-dark); }
+    .badge { display: inline-flex; align-items: center; gap: 7px; padding: 5px 9px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+    .badge::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+    .badge.good { background: var(--success-soft); color: #045a48; }
+    .badge.warn { background: var(--warning-soft); color: var(--warning); }
+    .badge.info { background: var(--neckar-soft); color: var(--neckar); }
+    .badge.danger { background: var(--danger-soft); color: var(--danger); }
+    .empty-state { display: none; text-align: center; padding: 70px 30px 90px; border-top: 2px solid var(--ink); }
+    .empty-state.visible { display: block; }
+    .empty-mark { width: 52px; height: 52px; margin: 0 auto 20px; border: 3px solid var(--neckar); border-radius: 50%; position: relative; }
+    .empty-mark::after { content: ""; position: absolute; width: 20px; height: 3px; background: var(--neckar); right: -14px; bottom: 1px; transform: rotate(45deg); }
+    .empty-state p { max-width: 520px; margin: 10px auto 24px; color: var(--stone-dark); }
+
+    /* Detail */
+    .contact-title { display: flex; align-items: center; gap: 18px; }
+    .contact-monogram { flex: 0 0 auto; width: 58px; height: 58px; background: var(--berry-soft); color: var(--berry-dark); display: grid; place-items: center; font-size: 20px; font-weight: 700; }
+    .contact-title h1 { font-size: 38px; }
+    .detail-meta { display: flex; flex-wrap: wrap; gap: 12px 28px; margin: 20px 0 0 76px; color: var(--stone-dark); }
+    .detail-meta strong { color: var(--ink); }
+    .notice { display: flex; align-items: flex-start; gap: 13px; padding: 15px 18px; margin: 28px 0; background: var(--success-soft); border-left: 4px solid var(--success); font-size: 14px; }
+    .notice-symbol { font-weight: 800; color: var(--success); }
+    .detail-grid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(280px, .72fr); gap: 64px; margin-top: 42px; }
+    .note-composer { padding: 26px; background: var(--berry-soft); border-left: 5px solid var(--berry); }
+    .note-composer label { display: block; font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+    .note-composer textarea { width: 100%; min-height: 116px; resize: vertical; padding: 15px; border: 1px solid #b9a6af; background: white; color: var(--ink); }
+    .composer-foot { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-top: 12px; }
+    .save-state { color: var(--stone-dark); font-size: 13px; }
+    .timeline { position: relative; margin: 36px 0 0; padding: 0 0 0 28px; list-style: none; }
+    .timeline::before { content: ""; position: absolute; top: 9px; bottom: 10px; left: 6px; width: 2px; background: var(--line); }
+    .timeline li { position: relative; padding: 0 0 32px; }
+    .timeline li::before { content: ""; position: absolute; left: -27px; top: 5px; width: 10px; height: 10px; background: white; border: 3px solid var(--berry); border-radius: 50%; }
+    .timeline time { color: var(--stone-dark); font-size: 13px; }
+    .timeline p { margin: 6px 0 0; }
+    .timeline .author { margin-top: 7px; font-size: 13px; color: var(--stone-dark); }
+    .fact-section { padding: 0 0 26px; margin: 0 0 26px; border-bottom: 1px solid var(--line); }
+    .fact-section h3 { margin-bottom: 14px; }
+    .fact-list { display: grid; grid-template-columns: 115px 1fr; gap: 10px 14px; margin: 0; font-size: 14px; }
+    .fact-list dt { color: var(--stone-dark); }
+    .fact-list dd { margin: 0; font-weight: 600; }
+    .channel-permission { display: flex; flex-wrap: wrap; gap: 7px; }
+    .permission { border: 1px solid var(--line); padding: 6px 8px; font-size: 12px; }
+    .permission.allowed::before { content: "✓ "; color: var(--success); font-weight: 800; }
+    .permission.denied::before { content: "– "; color: var(--danger); font-weight: 800; }
+    .restricted { max-width: 780px; margin: 76px auto; padding: 42px; border-left: 6px solid var(--berry-dark); background: var(--berry-soft); }
+    .restricted .lock { font-size: 34px; margin-bottom: 15px; }
+    .restricted-actions { display: flex; gap: 14px; margin-top: 26px; }
+
+    /* Veranstaltung */
+    .event-facts { display: flex; flex-wrap: wrap; gap: 16px 38px; margin-top: 20px; color: var(--stone-dark); }
+    .event-facts strong { color: var(--ink); }
+    .status-journey { display: grid; grid-template-columns: repeat(5, 1fr); margin: 48px 0 42px; border-top: 4px solid var(--line); }
+    .status-stop { position: relative; padding: 22px 16px 0 0; }
+    .status-stop::before { content: ""; position: absolute; width: 14px; height: 14px; top: -9px; left: 0; border-radius: 50%; background: white; border: 4px solid var(--stone); }
+    .status-stop.active::before { border-color: var(--berry); }
+    .status-stop strong { display: block; font-size: 25px; }
+    .status-stop span { color: var(--stone-dark); font-size: 14px; }
+    .next-step { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 30px; padding: 24px 28px; margin-bottom: 42px; background: var(--warning-soft); border-left: 5px solid #b57400; }
+    .next-step p { margin: 5px 0 0; }
+    .event-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin: 20px 0 12px; }
+    .segmented { display: flex; border: 1px solid var(--line); }
+    .segmented button { border: 0; border-right: 1px solid var(--line); padding: 9px 13px; background: white; cursor: pointer; }
+    .segmented button:last-child { border-right: 0; }
+    .segmented button[aria-pressed="true"] { background: var(--neckar); color: white; }
+
+    /* Mailing */
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); margin: 12px 0 48px; border-top: 3px solid var(--line); }
+    .step { position: relative; padding: 19px 16px 0 0; color: var(--stone-dark); }
+    .step::before { content: ""; position: absolute; top: -8px; left: 0; width: 13px; height: 13px; border-radius: 50%; background: white; border: 3px solid var(--stone); }
+    .step.current { color: var(--berry-dark); font-weight: 700; }
+    .step.current::before, .step.done::before { border-color: var(--berry); background: var(--berry); }
+    .step small { display: block; text-transform: uppercase; letter-spacing: .06em; }
+    .mail-step { display: none; }
+    .mail-step.active { display: block; }
+    .mail-layout { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 58px; }
+    .choice-list { margin-top: 24px; border-top: 2px solid var(--ink); }
+    .choice-row { display: grid; grid-template-columns: auto 1fr auto; gap: 15px; align-items: center; padding: 18px 8px; border-bottom: 1px solid var(--line); }
+    .choice-row input { width: 20px; height: 20px; accent-color: var(--berry); }
+    .choice-row label { cursor: pointer; }
+    .choice-row label strong, .choice-row label span { display: block; }
+    .choice-row label span { color: var(--stone-dark); font-size: 13px; }
+    .summary-panel { align-self: start; padding: 26px; background: var(--mist); border-top: 5px solid var(--neckar); }
+    .summary-number { margin: 14px 0 4px; font-size: 40px; line-height: 1; font-weight: 600; letter-spacing: -.04em; }
+    .dedupe { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 14px; }
+    .dedupe strong { color: var(--success); }
+    .step-actions { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-top: 42px; padding-top: 24px; border-top: 1px solid var(--line); }
+    .form-field { margin-bottom: 25px; }
+    .form-field label { display: block; margin-bottom: 7px; font-weight: 700; }
+    .form-field input, .form-field textarea, .form-field select { width: 100%; padding: 13px 14px; border: 1px solid #969c9d; color: var(--ink); background: white; }
+    .form-field textarea { min-height: 220px; resize: vertical; }
+    .preview-paper { border: 1px solid var(--line); box-shadow: 0 12px 34px rgba(30,38,40,.08); }
+    .preview-head { padding: 20px 26px; background: var(--berry); color: white; }
+    .preview-body { padding: 34px 38px 44px; }
+    .preview-meta { display: grid; grid-template-columns: 90px 1fr; gap: 8px 16px; margin-bottom: 30px; font-size: 14px; }
+    .preview-meta dt { color: var(--stone-dark); }
+    .preview-meta dd { margin: 0; }
+    .loading { display: none; min-height: 320px; place-items: center; text-align: center; border: 1px solid var(--line); }
+    .loading.visible { display: grid; }
+    .spinner { width: 44px; height: 44px; margin: 0 auto 18px; border: 4px solid var(--line); border-top-color: var(--berry); border-radius: 50%; animation: spin .8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Geführtes Anlegen */
+    dialog { width: min(720px, calc(100% - 40px)); max-height: calc(100vh - 50px); border: 0; padding: 0; box-shadow: 0 30px 90px rgba(20,24,26,.3); }
+    dialog::backdrop { background: rgba(23, 28, 30, .55); }
+    .dialog-inner { padding: 42px 48px 46px 58px; border-left: 7px solid var(--berry); }
+    .dialog-head { display: flex; justify-content: space-between; gap: 30px; }
+    .dialog-head h2 { font-size: 30px; }
+    .close-btn { width: 42px; height: 42px; border: 1px solid var(--line); background: white; cursor: pointer; font-size: 22px; }
+    .progress-copy { margin: 26px 0 10px; color: var(--berry-dark); font-size: 13px; font-weight: 700; }
+    .progress-track { height: 4px; background: var(--line); }
+    .progress-fill { height: 100%; width: 33%; background: var(--berry); transition: width .2s; }
+    .dialog-step { display: none; padding-top: 30px; }
+    .dialog-step.active { display: block; }
+    .dialog-step .lead { font-size: 16px; }
+    .match { margin-top: 22px; padding: 18px; background: var(--warning-soft); border-left: 4px solid #b57400; }
+
+    .toast { position: fixed; right: 26px; bottom: 26px; z-index: 80; max-width: 400px; padding: 16px 20px; background: var(--ink); color: white; box-shadow: var(--shadow); transform: translateY(140%); opacity: 0; transition: .22s; }
+    .toast.visible { transform: translateY(0); opacity: 1; }
+    .toast strong { display: block; }
+    .mobile-note { display: none; }
+
+    @media (max-width: 1120px) {
+      .header-inner { padding: 0 24px; grid-template-columns: 210px 1fr auto; gap: 14px; }
+      .nav-btn { padding-inline: 9px; font-size: 14px; }
+      .user-copy { display: none; }
+      main { padding-inline: 24px; }
+      .sheet { padding: 48px 42px 60px 72px; }
+      .thread { left: 31px; }
+      .detail-grid { gap: 34px; }
+      .mail-layout { gap: 34px; }
+    }
+    @media (max-width: 900px) {
+      .app-header { height: auto; position: static; }
+      .header-inner { grid-template-columns: 1fr auto; padding-top: 14px; }
+      .global-nav { grid-column: 1 / -1; overflow-x: auto; order: 3; }
+      .nav-btn { min-height: 48px; }
+      .start-grid, .detail-grid, .mail-layout { grid-template-columns: 1fr; }
+      .status-journey { grid-template-columns: repeat(3, 1fr); row-gap: 24px; }
+      .detail-meta { margin-left: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; animation-iteration-count: 1 !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+  <header class="app-header">
+    <div class="header-inner">
+      <button class="brand" type="button" data-go="home" aria-label="Zur Startseite">
+        <span class="brand-mark" aria-hidden="true">H</span>
+        <span>Heidelberg <small>Kontaktarbeit</small></span>
+      </button>
+      <nav class="global-nav" aria-label="Hauptnavigation">
+        <button class="nav-btn" type="button" data-go="contacts">Kontakte</button>
+        <button class="nav-btn" type="button" data-go="event">Veranstaltungen</button>
+        <button class="nav-btn" type="button" data-go="mailing">Mailing</button>
+        <button class="nav-btn" type="button" data-toast="Der Bereich Verteiler ist in dieser Variante nur über das Mailing eingebunden.">Verteiler</button>
+      </nav>
+      <button class="user-menu" type="button" data-toast="Angemeldet über das städtische Benutzerkonto.">
+        <span class="avatar" aria-hidden="true">AR</span>
+        <span class="user-copy"><strong>Anna Reuter</strong>Wirtschaftsförderung</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <section class="screen active" id="screen-home" aria-labelledby="home-title">
+      <article class="sheet start-sheet">
+        <span class="thread" aria-hidden="true"></span>
+        <p class="eyebrow">Montag, 24. August 2026</p>
+        <h1 id="home-title">Guten Morgen, Frau Reuter. Was möchten Sie jetzt erledigen?</h1>
+        <p class="lead">Beginnen Sie mit einer Person, einer Firma oder einer Aufgabe. Alles Weitere zeigt sich im passenden Zusammenhang.</p>
+
+        <form class="search-stage" id="home-search">
+          <label class="search-label" for="home-query">Kontakt oder Firma finden</label>
+          <div class="search-row">
+            <input id="home-query" name="q" type="search" placeholder="Name, Firma, Telefonnummer oder Straße" autocomplete="off">
+            <button class="primary-btn" type="submit">Suchen <span class="arrow" aria-hidden="true">→</span></button>
+          </div>
+          <p class="search-help">Sie können auch unvollständige Namen eingeben, zum Beispiel „Dem“ oder „Mühlstra“.</p>
+        </form>
+
+        <div class="start-grid">
+          <section aria-labelledby="recent-title">
+            <p class="section-kicker">Direkt weiterarbeiten</p>
+            <h2 id="recent-title">Zuletzt geöffnet</h2>
+            <ul class="plain-list">
+              <li><button class="record-link" type="button" data-contact="aylin"><span><strong>Dr. Aylin Demir</strong><span>Forschungsleiterin · BioLabs Heidelberg GmbH</span></span><time datetime="2026-08-24T09:12">heute, 09:12</time></button></li>
+              <li><button class="record-link" type="button" data-go="event"><span><strong>Heidelberger Branchendialog 2026</strong><span>Veranstaltung · 18. September</span></span><time datetime="2026-08-21T15:40">Freitag</time></button></li>
+              <li><button class="record-link" type="button" data-contact="elisa"><span><strong>Dr. Elisa Bernhardt</strong><span>Persönlicher Kontakt · OB-Referat</span></span><time datetime="2026-08-20T11:05">Donnerstag</time></button></li>
+            </ul>
+          </section>
+          <aside aria-labelledby="today-title">
+            <p class="section-kicker">Orientierung</p>
+            <h2 id="today-title">Heute wichtig</h2>
+            <ul class="today-list">
+              <li><span class="date-block">3<small>Tage</small></span><span><strong>Rückmeldeschluss Branchendialog</strong><br><span class="muted">12 Plätze sind noch offen.</span></span></li>
+              <li><span class="date-block">8<small>offen</small></span><span><strong>Daten prüfen</strong><br><span class="muted">Unternehmen ohne Aktualisierung seit 2024.</span></span></li>
+              <li><span class="date-block">1<small>Entwurf</small></span><span><strong>Mailing fortsetzen</strong><br><span class="muted">Einladung Kulturfrühstück.</span></span></li>
+            </ul>
+          </aside>
+        </div>
+      </article>
+    </section>
+
+    <section class="screen" id="screen-contacts" aria-labelledby="contacts-title">
+      <article class="sheet">
+        <span class="thread" aria-hidden="true"></span>
+        <header class="screen-head">
+          <div class="head-copy"><p class="eyebrow">Kontakte</p><h1 id="contacts-title">Wen möchten Sie finden?</h1><p class="subhead">Suchen Sie ämterübergreifend nach Personen und Firmen.</p></div>
+          <button class="secondary-btn" type="button" id="open-create">+ Kontakt anlegen</button>
+        </header>
+        <form class="search-panel" id="contact-search">
+          <label class="search-label" for="contact-query">Name, Firma, Telefonnummer oder Straße</label>
+          <div class="search-row">
+            <input id="contact-query" type="search" autocomplete="off" value="" placeholder="Zum Beispiel Aylin Demir oder 06221 58">
+            <button class="primary-btn" type="submit">Treffer zeigen <span class="arrow" aria-hidden="true">→</span></button>
+          </div>
+          <div class="filter-row" aria-label="Kontaktliste filtern">
+            <span class="filter-label">Anzeigen:</span>
+            <button class="filter-chip" type="button" data-filter="all" aria-pressed="true">Alle</button>
+            <button class="filter-chip" type="button" data-filter="person" aria-pressed="false">Personen</button>
+            <button class="filter-chip" type="button" data-filter="company" aria-pressed="false">Firmen</button>
+            <button class="filter-chip" type="button" data-filter="mine" aria-pressed="false">Meine Zuständigkeit</button>
+          </div>
+        </form>
+        <div id="contact-results" aria-live="polite">
+          <div class="results-head"><h2><span id="result-count">28</span> Treffer</h2><span class="micro">Sortiert nach letzter Bearbeitung</span></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th scope="col">Kontakt</th><th scope="col">Zuständigkeit</th><th scope="col">Letzter Kontakt</th><th scope="col">Erlaubte Kanäle</th><th scope="col">Datenstand</th></tr></thead>
+              <tbody id="contact-body"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="empty-state" id="contact-empty" role="status">
+          <div class="empty-mark" aria-hidden="true"></div>
+          <h2>Kein passender Kontakt gefunden</h2>
+          <p>Prüfen Sie die Schreibweise oder suchen Sie nur nach einem Teil des Namens. Wenn die Person noch nicht erfasst ist, können Sie sie geführt anlegen.</p>
+          <button class="primary-btn" type="button" id="empty-create">Kontakt anlegen <span class="arrow" aria-hidden="true">→</span></button>
+          <br><button class="text-btn" type="button" id="reset-search">Alle Kontakte anzeigen</button>
+        </div>
+      </article>
+    </section>
+
+    <section class="screen" id="screen-detail" aria-labelledby="detail-title">
+      <article class="sheet">
+        <span class="thread" aria-hidden="true"></span>
+        <div id="detail-allowed">
+          <header class="screen-head">
+            <div class="head-copy">
+              <p class="eyebrow">Person an einer Firma</p>
+              <div class="contact-title"><span class="contact-monogram" aria-hidden="true">AD</span><h1 id="detail-title">Dr. Aylin Demir</h1></div>
+              <div class="detail-meta"><span><strong>Forschungsleiterin</strong> · BioLabs Heidelberg GmbH</span><span>69120 Heidelberg</span></div>
+            </div>
+            <button class="primary-btn" type="button" id="focus-note">Notiz festhalten</button>
+          </header>
+          <div class="notice"><span class="notice-symbol" aria-hidden="true">✓</span><span><strong>Kontakt ist vollständig.</strong> Datenschutz-Hinweis erfolgte am 12. März 2025. E-Mail und Telefon sind erlaubt.</span></div>
+          <div class="detail-grid">
+            <section aria-labelledby="notes-title">
+              <p class="section-kicker">Gemeinsames Gedächtnis</p>
+              <h2 id="notes-title">Was wurde besprochen?</h2>
+              <div class="note-composer">
+                <label for="note-text">Neue Gesprächsnotiz</label>
+                <textarea id="note-text" placeholder="Ergebnis, Vereinbarung oder hilfreichen persönlichen Kontext notieren …"></textarea>
+                <div class="composer-foot"><span class="save-state" id="save-state" aria-live="polite">Noch nichts eingegeben</span><button class="primary-btn" type="button" id="save-note">Notiz speichern</button></div>
+              </div>
+              <ol class="timeline" id="note-timeline">
+                <li><time datetime="2026-08-21T14:35">21. August 2026, 14:35 Uhr</time><p>Telefonat zur Erweiterungsfläche im Heidelberg Innovation Park. Frau Dr. Demir sendet die aktualisierte Bedarfsplanung bis Ende August. Rückruf für den 2. September vereinbart.</p><p class="author">Anna Reuter · Wirtschaftsförderung</p></li>
+                <li><time datetime="2026-06-08T10:10">8. Juni 2026, 10:10 Uhr</time><p>Einladung zum Branchendialog persönlich bestätigt. Sie kommt gemeinsam mit Herrn Navarro; vegetarisches Catering vermerkt.</p><p class="author">Thomas Klee · Wirtschaftsförderung</p></li>
+                <li><time datetime="2026-03-17T16:02">17. März 2026, 16:02 Uhr</time><p>Förderberatung „Innovationsgutschein BW“ abgeschlossen. Unterlagen an Frau Dr. Demir geschickt.</p><p class="author">Anna Reuter · Wirtschaftsförderung</p></li>
+              </ol>
+            </section>
+            <aside aria-labelledby="overview-title">
+              <p class="section-kicker">360°-Sicht</p><h2 id="overview-title">Auf einen Blick</h2>
+              <div class="fact-section"><h3>Kontakt und Zuständigkeit</h3><dl class="fact-list"><dt>Telefon</dt><dd><a href="tel:+4962215862140">06221 58-62140</a></dd><dt>E-Mail</dt><dd><a href="mailto:demir@biolabs-hd.de">demir@biolabs-hd.de</a></dd><dt>Amt</dt><dd>Wirtschaftsförderung</dd><dt>Zuständig</dt><dd>Anna Reuter</dd></dl></div>
+              <div class="fact-section"><h3>Erlaubte Kanäle</h3><div class="channel-permission"><span class="permission allowed">E-Mail</span><span class="permission allowed">Telefon</span><span class="permission allowed">Post</span><span class="permission denied">SMS nicht erlaubt</span></div></div>
+              <div class="fact-section"><h3>Beziehungen</h3><p><strong>BioLabs Heidelberg GmbH</strong><br><span class="muted">Teil der BioLabs Europe SE</span></p><p><a href="#">2 weitere Ansprechpersonen ansehen</a></p></div>
+              <div class="fact-section"><h3>Verteiler und Teilnahmen</h3><dl class="fact-list"><dt>Verteiler</dt><dd>Life Science Heidelberg<br>HIP Nachbarschaft</dd><dt>Nächster Termin</dt><dd>Branchendialog, 18.09.</dd><dt>Status</dt><dd><span class="badge good">Bestätigt</span></dd></dl></div>
+              <div class="fact-section"><h3>Zuschüsse</h3><dl class="fact-list"><dt>2026</dt><dd>12.500 € · Innovationsfonds</dd><dt>2025</dt><dd>8.000 € · Transformationsfonds</dd></dl></div>
+              <p class="micro">Erstellt am 14.02.2023 von T. Klee<br>Geändert am 21.08.2026 von A. Reuter</p>
+            </aside>
+          </div>
+        </div>
+        <div id="detail-restricted" hidden>
+          <p class="eyebrow">Persönlicher Kontakt · OB-Referat</p>
+          <h1>Dr. Elisa Bernhardt</h1>
+          <div class="restricted" role="status">
+            <div class="lock" aria-hidden="true">▣</div>
+            <h2>Für diese Kontaktdetails haben Sie keinen Zugriff</h2>
+            <p>Der Kontakt wird vom OB-Referat vertraulich geführt. Sie sehen deshalb weder persönliche Kontaktdaten noch Gesprächsnotizen.</p>
+            <p><strong>Sichtbar für Sie:</strong> Name, betreuendes Amt und dienstliche Zuständigkeit.</p>
+            <dl class="fact-list"><dt>Amt</dt><dd>OB-Referat</dd><dt>Zuständig</dt><dd>Dr. Felix König</dd></dl>
+            <div class="restricted-actions"><button class="secondary-btn" type="button" data-toast="Ihre Anfrage wurde an Dr. Felix König gesendet.">Zugriff anfragen</button><button class="quiet-btn" type="button" data-go="contacts">Zur Kontaktliste</button></div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="screen" id="screen-event" aria-labelledby="event-title">
+      <article class="sheet">
+        <span class="thread" aria-hidden="true"></span>
+        <header class="screen-head">
+          <div class="head-copy"><p class="eyebrow">Veranstaltung · Anmeldung läuft</p><h1 id="event-title">Heidelberger Branchendialog 2026</h1><div class="event-facts"><span><strong>Freitag, 18. September</strong> · 14:00–18:30 Uhr</span><span>Heidelberg Congress Center, Czernyring 20</span></div></div>
+          <button class="primary-btn" type="button" data-go="mailing">Teilnehmende anschreiben</button>
+        </header>
+        <div class="status-journey" aria-label="Verteilung der Anmeldestatus">
+          <div class="status-stop active"><strong>42</strong><span>bestätigt</span></div><div class="status-stop"><strong>12</strong><span>offen</span></div><div class="status-stop active"><strong>6</strong><span>Warteliste</span></div><div class="status-stop"><strong>3</strong><span>storniert</span></div><div class="status-stop"><strong>1</strong><span>abgelehnt</span></div>
+        </div>
+        <aside class="next-step"><div><p class="section-kicker">Nächster organisatorischer Schritt</p><h3>Ein Platz ist frei geworden</h3><p>Jasmin Roth steht seit dem 19. August an erster Stelle der Warteliste.</p></div><button class="secondary-btn" type="button" id="promote">Jasmin Roth nachrücken lassen</button></aside>
+        <section aria-labelledby="participants-title">
+          <div class="event-toolbar"><div><p class="section-kicker">64 Anmeldungen</p><h2 id="participants-title">Teilnehmende</h2></div><div class="segmented" aria-label="Teilnehmende filtern"><button type="button" aria-pressed="true" data-event-filter="all">Alle</button><button type="button" aria-pressed="false" data-event-filter="waiting">Warteliste</button><button type="button" aria-pressed="false" data-event-filter="open">Offen</button></div></div>
+          <div class="table-wrap" style="max-height:520px"><table><thead><tr><th scope="col">Person</th><th scope="col">Organisation</th><th scope="col">Angemeldet am</th><th scope="col">Status</th><th scope="col">Hinweis</th></tr></thead><tbody id="participant-body"></tbody></table></div>
+        </section>
+      </article>
+    </section>
+
+    <section class="screen" id="screen-mailing" aria-labelledby="mailing-title">
+      <article class="sheet">
+        <span class="thread" aria-hidden="true"></span>
+        <header class="screen-head"><div class="head-copy"><p class="eyebrow">Neues Mailing</p><h1 id="mailing-title">Einladung versenden</h1><p class="subhead">Sie treffen drei überschaubare Entscheidungen. Vor dem Versand sehen Sie das genaue Ergebnis.</p></div><span class="badge info">Entwurf gespeichert</span></header>
+        <div class="steps" aria-label="Fortschritt"><div class="step current" data-step-label="1"><small>Schritt 1</small>Empfänger festlegen</div><div class="step" data-step-label="2"><small>Schritt 2</small>Inhalt schreiben</div><div class="step" data-step-label="3"><small>Schritt 3</small>Prüfen und versenden</div></div>
+        <section class="mail-step active" data-mail-step="1" aria-labelledby="recipient-title">
+          <div class="mail-layout"><div><p class="section-kicker">Jetzt erforderlich</p><h2 id="recipient-title">Wer soll diese Einladung erhalten?</h2><p class="lead">Wählen Sie Verteiler oder die bestätigten Teilnehmenden einer Veranstaltung. Doppelte E-Mail-Adressen entfernt das System automatisch.</p><div class="choice-list">
+            <div class="choice-row"><input type="checkbox" id="list-1" checked data-recipient-count="46"><label for="list-1"><strong>Life Science Heidelberg</strong><span>Verteiler · aktiv · Wirtschaftsförderung</span></label><span>46 Personen</span></div>
+            <div class="choice-row"><input type="checkbox" id="list-2" checked data-recipient-count="42"><label for="list-2"><strong>Branchendialog 2026 – bestätigt</strong><span>Veranstaltung · Anmeldestatus bestätigt</span></label><span>42 Personen</span></div>
+            <div class="choice-row"><input type="checkbox" id="list-3" data-recipient-count="31"><label for="list-3"><strong>HIP Nachbarschaft</strong><span>Verteiler · aktiv · 3 Zugriffsberechtigte</span></label><span>31 Personen</span></div>
+            <div class="choice-row"><input type="checkbox" id="list-4" data-recipient-count="27"><label for="list-4"><strong>Unternehmen Neuenheimer Feld</strong><span>Verteiler · in Vorbereitung</span></label><span>27 Personen</span></div>
+          </div></div><aside class="summary-panel"><p class="section-kicker">Ihre Auswahl</p><h3>Erreichbare Empfänger</h3><div class="summary-number" id="recipient-total">79</div><p>eindeutige E-Mail-Adressen</p><div class="dedupe"><strong>✓ 9 Dubletten entfernt</strong><br>3 Kontakte erhalten keine E-Mail, weil der Kanal nicht erlaubt ist.</div></aside></div>
+          <div class="step-actions"><span class="save-state">Auswahl ist gespeichert</span><button class="primary-btn" type="button" data-next-mail="2">Weiter zum Inhalt <span class="arrow" aria-hidden="true">→</span></button></div>
+        </section>
+        <section class="mail-step" data-mail-step="2" aria-labelledby="content-title">
+          <div class="mail-layout"><div><p class="section-kicker">Jetzt erforderlich</p><h2 id="content-title">Was möchten Sie mitteilen?</h2><p class="lead">Anrede und Absender werden für jeden Kontakt passend eingesetzt.</p><div style="margin-top:32px"><div class="form-field"><label for="mail-subject">Betreff</label><input id="mail-subject" value="Einladung zum Heidelberger Branchendialog 2026"></div><div class="form-field"><label for="mail-body">Nachricht</label><textarea id="mail-body">Guten Tag {{Anrede}} {{Nachname}},
+
+wir laden Sie herzlich zum Heidelberger Branchendialog am 18. September 2026 im Heidelberg Congress Center ein.
+
+Freuen Sie sich auf einen kompakten Austausch zu Fachkräftesicherung und nachhaltigem Wachstum.
+
+Mit freundlichen Grüßen
+Ihre Wirtschaftsförderung Heidelberg</textarea></div></div></div><aside class="summary-panel"><p class="section-kicker">Personalisierung</p><h3>So wird die Nachricht ergänzt</h3><p><strong>{{Anrede}} {{Nachname}}</strong><br><span class="muted">zum Beispiel „Frau Dr. Demir“</span></p><div class="dedupe"><strong>✓ Alle 79 Empfänger können persönlich angesprochen werden.</strong></div><p class="micro" style="margin-top:18px">Absender: wirtschaftsfoerderung@heidelberg.de<br>Antworten gehen an Anna Reuter.</p></aside></div>
+          <div class="step-actions"><button class="quiet-btn" type="button" data-next-mail="1">Zurück</button><button class="primary-btn" type="button" id="build-preview">Vorschau erstellen <span class="arrow" aria-hidden="true">→</span></button></div>
+        </section>
+        <section class="mail-step" data-mail-step="3" aria-labelledby="preview-title">
+          <div class="loading" id="preview-loading" role="status" aria-live="polite"><div><div class="spinner" aria-hidden="true"></div><h2>Vorschau wird erstellt</h2><p>Personalisierung und erlaubte Kontaktkanäle werden geprüft.</p></div></div>
+          <div id="preview-content" hidden><div class="mail-layout"><div><p class="section-kicker">Letzte Prüfung</p><h2 id="preview-title">Ist alles bereit für den Versand?</h2><p class="lead">Dies ist die Ansicht für Dr. Aylin Demir. Sie können weitere Empfänger stichprobenartig prüfen.</p><div class="preview-paper" style="margin-top:30px"><div class="preview-head"><strong>Stadt Heidelberg · Wirtschaftsförderung</strong></div><div class="preview-body"><dl class="preview-meta"><dt>An</dt><dd>Dr. Aylin Demir &lt;demir@biolabs-hd.de&gt;</dd><dt>Betreff</dt><dd id="preview-subject">Einladung zum Heidelberger Branchendialog 2026</dd></dl><p>Guten Tag Frau Dr. Demir,</p><p>wir laden Sie herzlich zum Heidelberger Branchendialog am 18. September 2026 im Heidelberg Congress Center ein.</p><p>Freuen Sie sich auf einen kompakten Austausch zu Fachkräftesicherung und nachhaltigem Wachstum.</p><p>Mit freundlichen Grüßen<br>Ihre Wirtschaftsförderung Heidelberg</p></div></div></div><aside class="summary-panel"><p class="section-kicker">Versandübersicht</p><h3>Bereit zum Senden</h3><div class="summary-number">79</div><p>personalisierte Nachrichten</p><div class="dedupe"><strong>✓ Keine offenen Fehler</strong><br>9 Dubletten entfernt<br>3 nicht erlaubte Kanäle ausgeschlossen</div><p class="micro" style="margin-top:20px">Versand sofort<br>Absender: Wirtschaftsförderung</p></aside></div><div class="step-actions"><button class="quiet-btn" type="button" data-next-mail="2">Inhalt ändern</button><button class="primary-btn" type="button" id="send-mail">79 Einladungen versenden</button></div></div>
+        </section>
+      </article>
+    </section>
+  </main>
+
+  <dialog id="create-dialog" aria-labelledby="create-title">
+    <div class="dialog-inner">
+      <div class="dialog-head"><div><p class="eyebrow">Kontakt anlegen</p><h2 id="create-title">Wen möchten Sie aufnehmen?</h2></div><button class="close-btn" type="button" id="close-create" aria-label="Dialog schließen">×</button></div>
+      <p class="progress-copy" id="progress-copy">Schritt 1 von 3 · Zuerst suchen</p><div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+      <section class="dialog-step active" data-create-step="1"><p class="lead">Geben Sie ein, was Sie bereits wissen. Wir prüfen zuerst, ob die Person oder Firma schon vorhanden ist.</p><div class="form-field" style="margin-top:25px"><label for="new-name">Name oder Firma</label><input id="new-name" value="Miriam Keller" autocomplete="off"></div><div class="step-actions"><span></span><button class="primary-btn" type="button" data-create-next="2">Bestand prüfen <span class="arrow" aria-hidden="true">→</span></button></div></section>
+      <section class="dialog-step" data-create-step="2"><h3>Ein ähnlicher Kontakt wurde gefunden</h3><div class="match"><strong>Miriam Keller</strong><br><span>Projektleitung · Kulturfenster Heidelberg e. V.<br>Untere Straße 12, 69117 Heidelberg</span></div><p style="margin-top:20px">Ist das die Person, die Sie aufnehmen möchten?</p><div class="step-actions"><button class="quiet-btn" type="button" data-create-next="1">Zurück</button><button class="primary-btn" type="button" data-create-next="3">Nein, neuen Kontakt anlegen</button></div></section>
+      <section class="dialog-step" data-create-step="3"><h3>Nur noch die sichere Zuordnung</h3><p class="lead">Sie können fehlende Angaben später ergänzen. Zuständigkeit und ein erreichbarer Kanal sind jetzt erforderlich.</p><div class="form-field"><label for="new-office">Verantwortliches Amt</label><select id="new-office"><option>Kulturamt</option><option>Wirtschaftsförderung</option><option>OB-Referat</option></select></div><div class="form-field"><label for="new-email">E-Mail oder Telefonnummer</label><input id="new-email" value="m.keller@kulturfenster-hd.de"></div><div class="step-actions"><button class="quiet-btn" type="button" data-create-next="2">Zurück</button><button class="primary-btn" type="button" id="finish-create">Kontakt vollständig anlegen</button></div></section>
+    </div>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const contacts = [
+      ["Dr. Aylin Demir","BioLabs Heidelberg GmbH · Forschungsleiterin","Wirtschaftsförderung","Anna Reuter","21.08.2026","ETP","Aktuell","person","aylin"],
+      ["Heidelberg Materials AG","Berliner Straße 6 · 69120 Heidelberg","Wirtschaftsförderung","Thomas Klee","21.08.2026","ETP","Aktuell","company",""],
+      ["Kulturfenster Heidelberg e. V.","Kirchstraße 16 · 69115 Heidelberg","Kulturamt","Jana Vogel","20.08.2026","EP","Prüfen","company",""],
+      ["Dr. Elisa Bernhardt","Persönlicher Kontakt · OB-Referat","OB-Referat","Dr. Felix König","20.08.2026","T","Geschützt","person","elisa"],
+      ["Sina Aydin","UnterwegsTheater Heidelberg · Intendanz","Kulturamt","Jana Vogel","19.08.2026","ETP","Aktuell","person",""],
+      ["Alejandro Navarro","BioLabs Heidelberg GmbH · Finanzen","Wirtschaftsförderung","Anna Reuter","19.08.2026","EP","Aktuell","person",""],
+      ["Heidelberger Dienste gGmbH","Hospitalstraße 5 · 69115 Heidelberg","Wirtschaftsförderung","Thomas Klee","18.08.2026","ETP","Aktuell","company",""],
+      ["Prof. Dr. Leyla Özkan","Universität Heidelberg · Transferagentur","Wirtschaftsförderung","Anna Reuter","18.08.2026","ET","Aktuell","person",""],
+      ["Karlstorbahnhof e. V.","Marlene-Dietrich-Platz 3 · 69126 Heidelberg","Kulturamt","Miriam Seidel","17.08.2026","ETP","Aktuell","company",""],
+      ["Johanna Velten","Theater und Orchester Heidelberg · Dramaturgie","Kulturamt","Jana Vogel","16.08.2026","EP","Prüfen","person",""],
+      ["cyber-Wear Heidelberg GmbH","Elsa-Brändström-Straße 4 · 68229 Mannheim","Wirtschaftsförderung","Anna Reuter","14.08.2026","ETP","Aktuell","company",""],
+      ["Mei Lin Berger","Deutsch-Amerikanisches Institut · Programm","Kulturamt","Miriam Seidel","13.08.2026","ET","Aktuell","person",""],
+      ["Lamy GmbH","Grenzhöfer Weg 32 · 69123 Heidelberg","Wirtschaftsförderung","Thomas Klee","12.08.2026","ETP","Aktuell","company",""],
+      ["Noah Steinbach","halle02 · Veranstaltungsleitung","Kulturamt","Jana Vogel","11.08.2026","ETP","Prüfen","person",""],
+      ["Heidelberg iT Management GmbH","Kurpfalzring 110 · 69123 Heidelberg","Wirtschaftsförderung","Anna Reuter","10.08.2026","ETP","Aktuell","company",""],
+      ["Dr. Samira Yilmaz","DKFZ · Technologietransfer","Wirtschaftsförderung","Anna Reuter","07.08.2026","ET","Aktuell","person",""],
+      ["Kurpfälzisches Museum Heidelberg","Hauptstraße 97 · 69117 Heidelberg","Kulturamt","Miriam Seidel","06.08.2026","ETP","Aktuell","company",""],
+      ["Mateo Ruiz","Metropolink Festival · Projektleitung","Kulturamt","Jana Vogel","05.08.2026","EP","Prüfen","person",""],
+      ["ProMinent GmbH","Im Schuhmachergewann 5–11 · 69123 Heidelberg","Wirtschaftsförderung","Thomas Klee","04.08.2026","ETP","Aktuell","company",""],
+      ["Eva-Maria Konrad","Kulturhaus Karlstorbahnhof · Presse","Kulturamt","Miriam Seidel","03.08.2026","ETP","Aktuell","person",""],
+      ["Rockwell Collins Deutschland GmbH","Grenzhöfer Weg 36 · 69123 Heidelberg","Wirtschaftsförderung","Anna Reuter","31.07.2026","ET","Prüfen","company",""],
+      ["Dr. Moritz Hahn","Heidelberg Pharma AG · Entwicklung","Wirtschaftsförderung","Thomas Klee","30.07.2026","ETP","Aktuell","person",""],
+      ["Stadtjugendring Heidelberg e. V.","Harbigweg 5 · 69124 Heidelberg","Kulturamt","Jana Vogel","29.07.2026","EP","Aktuell","company",""],
+      ["Nadia Gharbi","Interkulturelles Zentrum · Koordination","Kulturamt","Miriam Seidel","28.07.2026","ETP","Aktuell","person",""],
+      ["ABB Stotz-Kontakt GmbH","Eppelheimer Straße 82 · 69123 Heidelberg","Wirtschaftsförderung","Anna Reuter","24.07.2026","ETP","Prüfen","company",""],
+      ["Felix Baumann","Musik- und Singschule Heidelberg · Leitung","Kulturamt","Jana Vogel","22.07.2026","ETP","Aktuell","person",""],
+      ["FALK GmbH & Co KG","Im Breitspiel 21 · 69126 Heidelberg","Wirtschaftsförderung","Thomas Klee","17.07.2026","ETP","Prüfen","company",""],
+      ["Dr. Farah Osman","Universitätsklinikum Heidelberg · Innovation","Wirtschaftsförderung","Anna Reuter","14.07.2026","ET","Aktuell","person",""]
+    ];
+    const participants = [
+      ["Dr. Aylin Demir","BioLabs Heidelberg GmbH","12.06.2026","Bestätigt","Vegetarisch","confirmed"],
+      ["Alejandro Navarro","BioLabs Heidelberg GmbH","12.06.2026","Bestätigt","Vegetarisch","confirmed"],
+      ["Prof. Dr. Leyla Özkan","Universität Heidelberg","18.06.2026","Bestätigt","—","confirmed"],
+      ["Jonas Ritter","Heidelberg Materials AG","20.06.2026","Bestätigt","—","confirmed"],
+      ["Dr. Samira Yilmaz","DKFZ","24.06.2026","Bestätigt","Barrierefreier Platz","confirmed"],
+      ["Maren Kühn","Heidelberg iT Management GmbH","28.06.2026","Bestätigt","Vegan","confirmed"],
+      ["Dr. Moritz Hahn","Heidelberg Pharma AG","02.07.2026","Bestätigt","—","confirmed"],
+      ["Jasmin Roth","Roth Nachhaltigkeitsberatung","19.08.2026","Warteliste","Position 1","waiting"],
+      ["Cem Karaca","Tink Tank Heidelberg","19.08.2026","Warteliste","Position 2","waiting"],
+      ["Miriam Keller","Kulturfenster Heidelberg e. V.","20.08.2026","Warteliste","Position 3","waiting"],
+      ["Tobias Gehring","Lamy GmbH","20.08.2026","Warteliste","Position 4","waiting"],
+      ["Clara Vogt","ProMinent GmbH","21.08.2026","Offen","Rückfrage gesendet","open"],
+      ["Mehmet Aslan","ABB Stotz-Kontakt GmbH","21.08.2026","Offen","—","open"],
+      ["Sarah Winter","FALK GmbH & Co KG","22.08.2026","Offen","—","open"]
+    ];
+
+    const screens = [...document.querySelectorAll('.screen')];
+    const navButtons = [...document.querySelectorAll('.nav-btn[data-go]')];
+    function showScreen(name, options = {}) {
+      const target = document.getElementById('screen-' + name);
+      if (!target) return;
+      screens.forEach(s => s.classList.toggle('active', s === target));
+      navButtons.forEach(b => b.setAttribute('aria-current', b.dataset.go === name || (name === 'detail' && b.dataset.go === 'contacts') ? 'page' : 'false'));
+      if (name === 'detail') {
+        const restricted = options.contact === 'elisa';
+        document.getElementById('detail-allowed').hidden = restricted;
+        document.getElementById('detail-restricted').hidden = !restricted;
+      }
+      history.replaceState(null, '', '#' + name);
+      window.scrollTo(0, 0);
+      target.querySelector('h1')?.focus?.({preventScroll:true});
+    }
+    document.querySelectorAll('[data-go]').forEach(button => button.addEventListener('click', () => showScreen(button.dataset.go)));
+    document.querySelectorAll('[data-contact]').forEach(button => button.addEventListener('click', () => showScreen('detail', {contact: button.dataset.contact})));
+
+    function renderContacts(list = contacts) {
+      const body = document.getElementById('contact-body');
+      body.innerHTML = list.map((c) => {
+        const channels = [...c[5]].map(k => `<span class="channel" title="${k === 'E' ? 'E-Mail' : k === 'T' ? 'Telefon' : 'Post'}">${k}</span>`).join('');
+        const statusClass = c[6] === 'Aktuell' ? 'good' : c[6] === 'Geschützt' ? 'danger' : 'warn';
+        return `<tr tabindex="0" data-row-contact="${c[8] || 'aylin'}" data-type="${c[7]}" data-owner="${c[3]}"><td><strong>${c[0]}</strong><span class="relation">${c[1]}</span></td><td>${c[2]}<span class="td-sub">${c[3]}</span></td><td>${c[4]}</td><td><span class="channel-set" aria-label="Erlaubt: ${c[5]}">${channels}</span></td><td><span class="badge ${statusClass}">${c[6]}</span></td></tr>`;
+      }).join('');
+      body.querySelectorAll('tr').forEach(row => {
+        const open = () => showScreen('detail', {contact: row.dataset.rowContact});
+        row.addEventListener('click', open);
+        row.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+      });
+      document.getElementById('result-count').textContent = list.length;
+      document.getElementById('contact-results').hidden = list.length === 0;
+      document.getElementById('contact-empty').classList.toggle('visible', list.length === 0);
+    }
+    renderContacts();
+
+    let currentFilter = 'all';
+    function filterContacts() {
+      const q = document.getElementById('contact-query').value.toLowerCase().trim();
+      const list = contacts.filter(c => {
+        const queryMatch = !q || c.slice(0, 5).join(' ').toLowerCase().includes(q);
+        const typeMatch = currentFilter === 'all' || c[7] === currentFilter || (currentFilter === 'mine' && c[3] === 'Anna Reuter');
+        return queryMatch && typeMatch;
+      });
+      renderContacts(list);
+    }
+    document.getElementById('contact-search').addEventListener('submit', e => { e.preventDefault(); filterContacts(); });
+    document.querySelectorAll('[data-filter]').forEach(button => button.addEventListener('click', () => {
+      currentFilter = button.dataset.filter;
+      document.querySelectorAll('[data-filter]').forEach(b => b.setAttribute('aria-pressed', b === button ? 'true' : 'false'));
+      filterContacts();
+    }));
+    document.getElementById('reset-search').addEventListener('click', () => { document.getElementById('contact-query').value = ''; currentFilter = 'all'; document.querySelectorAll('[data-filter]').forEach(b => b.setAttribute('aria-pressed', b.dataset.filter === 'all' ? 'true' : 'false')); filterContacts(); });
+    document.getElementById('home-search').addEventListener('submit', e => { e.preventDefault(); document.getElementById('contact-query').value = document.getElementById('home-query').value; showScreen('contacts'); filterContacts(); });
+
+    const toast = document.getElementById('toast'); let toastTimer;
+    function showToast(title, text = '') { clearTimeout(toastTimer); toast.innerHTML = `<strong>${title}</strong>${text}`; toast.classList.add('visible'); toastTimer = setTimeout(() => toast.classList.remove('visible'), 3400); }
+    document.querySelectorAll('[data-toast]').forEach(b => b.addEventListener('click', () => showToast(b.dataset.toast)));
+
+    const noteText = document.getElementById('note-text');
+    noteText.addEventListener('input', () => document.getElementById('save-state').textContent = noteText.value.trim() ? 'Bereit zum Speichern' : 'Noch nichts eingegeben');
+    document.getElementById('focus-note').addEventListener('click', () => { noteText.focus(); noteText.scrollIntoView({behavior:'smooth', block:'center'}); });
+    document.getElementById('save-note').addEventListener('click', () => {
+      if (!noteText.value.trim()) { showToast('Bitte ergänzen Sie eine Notiz.', ' Halten Sie kurz Ergebnis oder nächsten Schritt fest.'); noteText.focus(); return; }
+      const li = document.createElement('li'); li.innerHTML = `<time datetime="2026-08-24T10:18">Gerade eben</time><p>${noteText.value.replace(/</g,'&lt;')}</p><p class="author">Anna Reuter · Wirtschaftsförderung</p>`;
+      document.getElementById('note-timeline').prepend(li); noteText.value = ''; document.getElementById('save-state').textContent = 'Gespeichert um 10:18 Uhr'; showToast('Notiz ist gespeichert.', ' Kolleginnen und Kollegen sehen sie sofort im Verlauf.');
+    });
+
+    function renderParticipants(filter = 'all') {
+      const list = participants.filter(p => filter === 'all' || p[5] === filter);
+      document.getElementById('participant-body').innerHTML = list.map(p => `<tr tabindex="0"><td><strong>${p[0]}</strong></td><td>${p[1]}</td><td>${p[2]}</td><td><span class="badge ${p[5] === 'confirmed' ? 'good' : p[5] === 'waiting' ? 'warn' : 'info'}">${p[3]}</span></td><td>${p[4]}</td></tr>`).join('');
+    }
+    renderParticipants();
+    document.querySelectorAll('[data-event-filter]').forEach(button => button.addEventListener('click', () => { document.querySelectorAll('[data-event-filter]').forEach(b => b.setAttribute('aria-pressed', b === button ? 'true' : 'false')); renderParticipants(button.dataset.eventFilter); }));
+    document.getElementById('promote').addEventListener('click', e => { e.currentTarget.disabled = true; e.currentTarget.textContent = 'Jasmin Roth ist nachgerückt'; participants[7][3] = 'Bestätigt'; participants[7][5] = 'confirmed'; renderParticipants(); showToast('Jasmin Roth ist nachgerückt.', ' Die Bestätigung wurde vorbereitet.'); });
+
+    function goMailStep(step) {
+      document.querySelectorAll('.mail-step').forEach(s => s.classList.toggle('active', s.dataset.mailStep === String(step)));
+      document.querySelectorAll('.step').forEach((s, i) => { s.classList.toggle('current', i + 1 === step); s.classList.toggle('done', i + 1 < step); });
+    }
+    document.querySelectorAll('[data-next-mail]').forEach(b => b.addEventListener('click', () => goMailStep(Number(b.dataset.nextMail))));
+    document.querySelectorAll('[data-recipient-count]').forEach(c => c.addEventListener('change', () => {
+      const checked = [...document.querySelectorAll('[data-recipient-count]:checked')].reduce((sum, i) => sum + Number(i.dataset.recipientCount), 0);
+      const overlap = document.getElementById('list-1').checked && document.getElementById('list-2').checked ? 9 : 0;
+      document.getElementById('recipient-total').textContent = Math.max(0, checked - overlap - (checked ? 0 : 0));
+    }));
+    document.getElementById('build-preview').addEventListener('click', () => {
+      goMailStep(3); const loading = document.getElementById('preview-loading'); const content = document.getElementById('preview-content'); content.hidden = true; loading.classList.add('visible');
+      const delay = matchMedia('(prefers-reduced-motion: reduce)').matches ? 80 : 900;
+      setTimeout(() => { loading.classList.remove('visible'); content.hidden = false; document.getElementById('preview-subject').textContent = document.getElementById('mail-subject').value; }, delay);
+    });
+    document.getElementById('send-mail').addEventListener('click', e => { e.currentTarget.disabled = true; e.currentTarget.textContent = 'Versand eingeplant'; showToast('79 Einladungen sind für den Versand eingeplant.', ' Eine Versandübersicht wird im Arbeitsbereich abgelegt.'); });
+
+    const dialog = document.getElementById('create-dialog');
+    function openCreate() { dialog.showModal(); setCreateStep(1); }
+    document.getElementById('open-create').addEventListener('click', openCreate); document.getElementById('empty-create').addEventListener('click', openCreate); document.getElementById('close-create').addEventListener('click', () => dialog.close());
+    function setCreateStep(step) { document.querySelectorAll('.dialog-step').forEach(s => s.classList.toggle('active', s.dataset.createStep === String(step))); document.getElementById('progress-copy').textContent = `Schritt ${step} von 3 · ${step === 1 ? 'Zuerst suchen' : step === 2 ? 'Mögliche Dublette klären' : 'Zuständigkeit sichern'}`; document.getElementById('progress-fill').style.width = `${step * 33.333}%`; }
+    document.querySelectorAll('[data-create-next]').forEach(b => b.addEventListener('click', () => setCreateStep(Number(b.dataset.createNext))));
+    document.getElementById('finish-create').addEventListener('click', () => { dialog.close(); showToast('Miriam Keller ist angelegt.', ' Zuständigkeit: Kulturamt. Der Datensatz ist vollständig.'); });
+    dialog.addEventListener('click', e => { if (e.target === dialog) dialog.close(); });
+
+    const initial = location.hash.replace('#',''); if (['home','contacts','detail','event','mailing'].includes(initial)) showScreen(initial, {contact:'aylin'});
+  </script>
+
+  <!--
+  DESIGN-RATIONALE – Variante 02 „Ruhig / geführt"
+
+  Palette: Heidelbeer #A50050 (Marke und Primärhandlung), Tiefes Heidelbeer #720038
+  (kontraststarker Textakzent), Neckar #005C76 (Information und Fokus), Steingrau
+  #75787B (sekundäre Information), Morgennebel #F3F5F4 (abgeleitete Arbeitsfläche),
+  Papier #FFFFFF (Inhaltsfläche).
+
+  Layoutkonzept: Ein zusammenhängendes weißes Arbeitsblatt liegt auf ruhigem Grau.
+  Große satzförmige Überschriften benennen die gegenwärtige Aufgabe; lange Listen
+  wechseln bewusst in einen engeren, stabilen Tabellenrhythmus. Pro Ansicht bleibt
+  genau eine Folgehandlung visuell dominant, während Details im Kontext erscheinen.
+
+  Signature-Element: Der durchgehende Heidelbeer-„Arbeitsfaden“ am linken Blattrand
+  verbindet Aufgabe, Zustand und Fortgang. Seine Abschnittspunkte erinnern abstrakt
+  an Aktenreiter, ohne eine traditionelle Registeroberfläche nachzubauen.
+
+  Bewusst riskant: Die sehr großen Handlungsüberschriften verbrauchen auf einem
+  Verwaltungsdesktop ungewöhnlich viel Höhe. Dieser Raum ist absichtlich nicht mit
+  Kennzahlen gefüllt: Er senkt die Entscheidungslast, markiert den primären Weg und
+  wird in den eigentlichen Arbeitslisten durch höhere Dichte ausgeglichen.
+  -->
+</body>
+</html>

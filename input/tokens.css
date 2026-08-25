@@ -1,0 +1,62 @@
+/* ============================================================
+   CD-Farben Stadt Heidelberg – EINZIGER Anker der Exploration
+   ------------------------------------------------------------
+   TODO Benjamin: Werte aus dem bestehenden Designsystem eintragen.
+   Bewusst NUR Farben – kein Spacing, keine Typo, keine Komponenten.
+   ============================================================ */
+
+:root {
+  ### Primärfarbe — Heidelbeer
+
+   | Rolle | Pantone | CMYK | RGB | Hex |
+   |---|---|---|---|---|
+   | „Heidelbeer" | 220 C | 5/100/25/24 | 165/0/80 | `#a50050` |
+
+  /* Sekundär-/Akzentfarben (optional, falls im CD vorhanden) */
+   | Rolle | Pantone | CMYK | RGB | Hex | Token |
+   |---|---|---|---|---|---|
+   | Steingrau | Cool Gray 9 C | 30/22/17/57 | 117/120/123 | `#75787b` | `--steingrau` |
+   | Mittelgrau | Cool Gray 6 C | 16/11/11/27 | 167/168/170 | `#a7a8aa` | `--mittelgrau` |
+   | Hellgrau | Cool Gray 3 C | 8/5/7/16 | 200/201/199 | `#c8c9c7` | `--hellgrau` |
+   | Himmelblau | 7458 C | 53/3/8/9 | 113/178/201 | `#71b2c9` |
+   | Kornblumenblau | 647 C | 96/54/5/27 | 35/97/146 | `#236192` |
+   | Sonnengelb | 1225 C | 0/20/80/0 | 255/206/68 | `#ffce44` |
+   | Orange | 158 C | 0/62/95/0 | 232/119/34 | `#e87722` |
+   | Apfelgrün | 583 C | 26/1/100/10 | 183/191/16 | `#b7bf10` |
+
+  /* Schmuckfarben (falls das CD welche vorgibt, sonst Zeilen löschen) */
+   | Rolle | CMYK | RGB | Hex |
+   |---|---|---|---|
+   | Erdbeere | 0/100/65/0 | 229/0/64 | `#e50040` |
+   | Bordeaux | 0/100/50/47 | 146/7/49 | `#920731` |
+   | Zuckerwatte | nicht erhoben (nur Print) | 249/210/229 | `#f9d2e5` |
+   | Kaugummi | 0/50/0/0 | 242/159/197 | `#f29fc5` |
+   | Aprikose | 0/30/25/0 | 249/197/184 | `#f9c5b8` |
+   | Käsekuchen | 0/10/35/0 | 255/232/182 | `#ffe8b6` |
+   | Sand | 5/10/20/10 | 226/214/196 | `#e2d6c4` |
+   | Erde | 45/45/50/30 | 125/110/100 | `#7d6e64` |
+   | Neckarblau | 95/45/35/25 | 0/92/118 | `#005c76` |
+   | Graublau | 30/0/10/15 | 170/202/208 | `#aacad0` |
+   | Flieder | 50/40/0/0 | 143/150/203 | `#8f96cb` |
+   | Lavendel | 25/20/0/0 | 200/201/231 | `#c8c9e7` |
+   | Tannengrün | 80/10/60/40 | 5/113/90 | `#05715a` |
+   | Mint | 35/0/25/0 | 179/219/205 | `#b3dbcd` |
+   | Lindgrün | 15/4/52/0 | 229/226/149 | `#e5e295` |
+}
+
+/* ------------------------------------------------------------
+   REGELN FÜR DIE ABLEITUNG (an Codex)
+
+   1. Die Primärfarbe muss als Markenträger klar erkennbar bleiben.
+   2. Eigene Tints/Shades aus den CD-Farben abzuleiten ist erlaubt und
+      erwünscht – insbesondere um Kontrastanforderungen zu erfüllen.
+      Erwartet wird eine Rampe (z. B. 50/100/200/.../900) je Kernfarbe.
+   3. Reicht eine CD-Farbe als Textfarbe auf Weiß nicht für 4.5:1,
+      dann NICHT die Anforderung senken, sondern eine dunklere Stufe
+      derselben Farbe verwenden. Die Originalfarbe bleibt für Flächen,
+      Rahmen und großflächige Akzente reserviert.
+   4. Semantische Farben (Erfolg / Warnung / Fehler / Info) frei wählbar,
+      aber harmonisch zum CD und untereinander konsistent.
+   5. Statusinformation nie allein über Farbe – immer zusätzlich
+      Icon, Text oder Form.
+   ------------------------------------------------------------ */
