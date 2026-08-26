@@ -1,0 +1,229 @@
+/*
+ * Heidelberg CRM – Design tokens
+ * Quelle der Farbanker: ../input/tokens.css
+ * Benennung nach Einsatzrolle. Ableitungen nennen ihren CD-Ursprung im Kommentar.
+ */
+
+:root {
+  /* Marke und Oberflächen */
+  --color-brand: #a50050; /* CD Heidelbeer */
+  --color-brand-strong: #6f0036; /* dunkle Ableitung aus Heidelbeer für AA-Text */
+  --color-brand-soft: #fff4f8; /* sehr helle Ableitung aus Heidelbeer */
+  --color-brand-muted: #f9d2e5; /* CD Zuckerwatte, Heidelbeer-Familie */
+  --color-accent: #005c76; /* CD Neckarblau */
+  --color-accent-strong: #004255; /* dunkle Ableitung aus Neckarblau für AA-Text */
+  --color-accent-soft: #eef7f8; /* helle Ableitung aus Neckarblau */
+  --color-accent-graphic: #71b2c9; /* CD Himmelblau, nur Grafik/große Fläche */
+
+  --color-text: #202326; /* Ableitung aus CD Steingrau */
+  --color-text-subtle: #424649; /* dunkle Ableitung aus CD Steingrau */
+  --color-text-muted: #5e6265; /* dunkle Ableitung aus CD Steingrau, AA auf Weiß */
+  --color-text-disabled: #75787b; /* CD Steingrau */
+  --color-text-on-strong: #ffffff;
+  --color-link: var(--color-brand-strong);
+
+  --color-surface-page: #f4f5f4; /* helle Ableitung aus CD Hellgrau */
+  --color-surface-card: #ffffff;
+  --color-surface-raised: #ffffff;
+  --color-surface-subtle: #fafbfa; /* helle Ableitung aus CD Hellgrau */
+  --color-surface-topbar: rgba(244, 245, 244, 0.96); /* transluzente Seitenfläche */
+  --color-surface-letter-shell: #e7e9e7; /* Ableitung aus CD Hellgrau */
+  --color-border: #dfe1df; /* Ableitung aus CD Hellgrau */
+  --color-border-control: #b9bdba; /* dunkle Ableitung aus CD Hellgrau */
+  --color-border-filter: #c6cac7; /* Ableitung aus CD Hellgrau */
+  --color-border-field: #b6bbb7; /* dunkle Ableitung aus CD Hellgrau */
+  --color-border-row: #eceeec; /* helle Ableitung aus CD Hellgrau */
+  --color-border-topbar: rgba(200, 201, 199, 0.8); /* CD Hellgrau, transluzent */
+
+  /* Semantik: Textstufen sind jeweils für AA auf ihrer weichen Fläche gewählt. */
+  --color-success: #05715a; /* CD Tannengrün */
+  --color-success-strong: #045843; /* dunkle Ableitung aus Tannengrün */
+  --color-success-soft: #eaf6f1; /* helle Ableitung aus Tannengrün */
+  --color-success-border: #9bc6b8; /* Ableitung aus CD Mint/Tannengrün */
+  --color-warning: #ffce44; /* CD Sonnengelb, Fläche/Fokus */
+  --color-warning-strong: #6c4d00; /* dunkle Ableitung aus Sonnengelb für AA-Text */
+  --color-warning-soft: #fff4cc; /* helle Ableitung aus Sonnengelb */
+  --color-warning-border: #ead28a; /* dunkle Ableitung aus Sonnengelb */
+  --color-attention: #a84500; /* dunkle Ableitung aus CD Orange für AA-Text */
+  --color-attention-soft: #fff0e5; /* helle Ableitung aus CD Orange */
+  --color-danger: #920731; /* CD Bordeaux */
+  --color-danger-soft: #fff0f4; /* helle Ableitung aus Bordeaux */
+  --color-danger-border: #e7b9c9; /* Ableitung aus CD Bordeaux/Zuckerwatte */
+  --color-info: var(--color-accent-strong);
+  --color-info-soft: var(--color-accent-soft);
+  --color-info-border: #bad7df; /* Ableitung aus CD Himmelblau */
+
+  /* Typografie */
+  --font-family-ui: "Noto Sans", Arial, sans-serif;
+  --font-size-page-title: clamp(1.75rem, 2.3vw, 2.45rem);
+  --font-size-title-identity: 1.65rem;
+  --font-size-title-section: 1.18rem;
+  --font-size-title-card: 0.98rem;
+  --font-size-body: 0.9375rem;
+  --font-size-body-compact: 0.90rem;
+  --font-size-label: 0.78rem;
+  --font-size-meta: 0.72rem;
+  --font-size-meta-small: 0.68rem;
+  --font-size-step-meta: 0.66rem;
+  --font-size-number: 1.9rem;
+  --font-size-number-small: 1.35rem;
+  --line-height-page-title: 1.15;
+  --line-height-heading: 1.3;
+  --line-height-body: 1.5;
+  --line-height-comfortable: 1.65;
+  --line-height-compact: 1.35;
+  --line-height-tight: 1.2;
+  --letter-spacing-title: -0.035em;
+  --letter-spacing-label: 0.06em;
+  --letter-spacing-eyebrow: 0.1em;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-action: 650;
+  --font-weight-bold: 700;
+  --font-weight-heavy: 800;
+
+  /* Räume – Rollen statt numerischer Skala */
+  --space-hairline: 2px;
+  --space-status-gap: 5px;
+  --space-control-gap: 7px;
+  --space-cluster-tight: 8px;
+  --space-row-tight: 9px;
+  --space-control-block: 10px;
+  --space-control-inline: 11px;
+  --space-cluster: 12px;
+  --space-row: 13px;
+  --space-stack-small: 14px;
+  --space-form-grid: 15px;
+  --space-card-compact: 16px;
+  --space-layout-compact: 17px;
+  --space-card-asymmetric: 18px;
+  --space-event-head: 19px;
+  --space-card-section: 20px;
+  --space-status-track: 21px;
+  --space-card-inner: 22px;
+  --space-card-head-inline: 23px;
+  --space-layout-wide: 24px;
+  --space-page-head: 26px;
+  --space-letter-inline: 28px;
+  --space-letter-block: 30px;
+  --space-topbar-inline: 32px;
+  --space-page-block-start: 36px;
+  --space-empty: 38px;
+  --space-page-inline-max: 56px;
+  --space-page-block-end: 62px;
+
+  /* Größen und Layout */
+  --size-control: 40px;
+  --size-control-compact: 34px;
+  --size-filter-control: 36px;
+  --size-search-control: 42px;
+  --size-process-step: 58px;
+  --size-process-index: 25px;
+  --size-avatar: 36px;
+  --size-brand-mark-height: 44px;
+  --size-avatar-identity: 56px;
+  --size-avatar-identity-compact: 48px;
+  --size-icon-tile: 42px;
+  --size-icon-section: 34px;
+  --size-icon-empty: 58px;
+  --size-nav-wide: 224px;
+  --size-nav-compact: 202px;
+  --size-topbar: 70px;
+  --size-global-search-max: 690px;
+  --size-table-scroll: 650px;
+  --size-letter-min: 440px;
+  --size-loading-min: 480px;
+  --size-empty-min: 430px;
+  --size-task-min: 184px;
+  --size-relation-min: 410px;
+  --size-editor-min: 230px;
+  --size-sticky-air: 18px;
+  --size-selection-column: 44px;
+  --size-page-copy-max: 680px;
+  --size-search-suggestion-min: 360px;
+  --size-search-preview-min: 260px;
+  --size-menu-popover: 260px;
+  --size-filter-popover: 250px;
+  --size-event-type-max: 260px;
+  --size-toast-max: 390px;
+
+  /* Raster */
+  --grid-work-main-min: 560px;
+  --grid-work-side-min: 290px;
+  --grid-contact-main-min: 560px;
+  --grid-contact-side-min: 300px;
+  --grid-detail-left-min: 245px;
+  --grid-detail-center-min: 420px;
+  --grid-detail-right-min: 240px;
+  --grid-event-main-min: 620px;
+  --grid-event-side: 330px;
+  --grid-form-main-min: 600px;
+  --grid-form-side: 300px;
+  --grid-mail-main-min: 540px;
+  --grid-mail-side-min: 330px;
+  --grid-local-search-min: 280px;
+  --grid-identity-main-min: 280px;
+  --grid-identity-facts-min: 480px;
+  --grid-identity-reachability-min: 250px;
+  --grid-identity-channels-min: 210px;
+  --grid-detail-center-compact-min: 390px;
+
+  /* Einmalige, aber benannte Geometrie der abgenommenen Kompositionen */
+  --space-page-head-inline-gap: 25px;
+  --space-task-header: 25px;
+  --space-timeline-offset: 25px;
+  --size-relation-connector: 210px;
+
+  /* Linien, Rundungen, Schatten */
+  --border-width-default: 1px;
+  --border-width-emphasis: 2px;
+  --border-width-focus: 3px;
+  --border-width-accent: 4px;
+  --border-width-preview: 6px;
+  --radius-inline-token: 4px;
+  --radius-shortcut: 5px;
+  --radius-token: 6px;
+  --radius-small: 7px;
+  --radius-notice: 8px;
+  --radius-control: 9px;
+  --radius-popover: 10px;
+  --radius-signature: 11px;
+  --radius-card: 14px;
+  --radius-avatar-identity: 17px;
+  --radius-avatar-mark: 18px;
+  --radius-round: 50%;
+  --radius-pill: 999px;
+  --shadow-card: 0 1px 1px rgba(32, 35, 38, 0.02);
+  --shadow-raised: 0 12px 32px rgba(32, 35, 38, 0.10);
+  --shadow-interactive: 0 8px 22px rgba(32, 35, 38, 0.10);
+  --shadow-letter: 0 8px 20px rgba(32, 35, 38, 0.09);
+  --focus-ring: 0 0 0 4px var(--color-brand-muted);
+
+  /* Bewegung */
+  --duration-instant: 0.01ms;
+  --duration-interaction: 160ms;
+  --duration-spinner: 750ms;
+  --easing-standard: ease;
+  --easing-linear: linear;
+
+  /* Klebepunkte und Ebenen */
+  --sticky-topbar: 0px;
+  --sticky-content: var(--size-topbar);
+  --sticky-preview: calc(var(--size-topbar) + var(--size-sticky-air));
+  --layer-table-head: 2;
+  --layer-inline-popover: 10;
+  --layer-topbar: 35;
+  --layer-navigation: 40;
+  --layer-search: 80;
+  --layer-toast: 120;
+  --layer-skip-link: 200;
+
+  /* Umbruchpunkte. CSS Custom Properties sind in @media nicht einsetzbar;
+     die Werte werden dort deshalb einmalig als Literale gespiegelt. */
+  --breakpoint-nav-compact: 1240px;
+  --breakpoint-identity-stack: 1179px;
+  --breakpoint-contact-preview-inline: 1129px;
+  --breakpoint-layout-stack: 1099px;
+  --breakpoint-form-compact: 900px;
+}

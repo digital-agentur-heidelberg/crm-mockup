@@ -1,0 +1,155 @@
+/* Heidelberg CRM – Grundlagen. Keine komponentenspezifischen Ausnahmen. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--color-surface-page);
+  color: var(--color-text);
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  color: inherit;
+}
+
+a {
+  color: var(--color-link);
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  font-size: var(--font-size-page-title);
+  line-height: var(--line-height-page-title);
+  letter-spacing: var(--letter-spacing-title);
+}
+
+h2 {
+  font-size: var(--font-size-title-section);
+  line-height: var(--line-height-heading);
+}
+
+h3 {
+  font-size: var(--font-size-title-card);
+}
+
+small,
+.u-muted {
+  color: var(--color-text-muted);
+}
+
+[hidden] {
+  display: none !important;
+}
+
+:focus-visible {
+  outline: var(--border-width-focus) solid var(--color-warning);
+  outline-offset: var(--border-width-focus);
+}
+
+::selection {
+  background: var(--color-brand-muted);
+  color: var(--color-text);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  padding: var(--space-control-block) var(--space-cluster);
+  border-bottom: var(--border-width-default) solid var(--color-border);
+  background: var(--color-surface-card);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-meta);
+  letter-spacing: 0.045em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+td {
+  padding: var(--space-control-inline);
+  border-bottom: var(--border-width-default) solid var(--color-border-row);
+  vertical-align: middle;
+}
+
+summary {
+  cursor: pointer;
+}
+
+/* Sichtbar erst bei Tastaturfokus. */
+.skip-link {
+  position: fixed;
+  z-index: var(--layer-skip-link);
+  top: var(--space-cluster-tight);
+  left: var(--space-cluster-tight);
+  transform: translateY(-150%);
+  padding: var(--space-control-block) var(--space-stack-small);
+  border-radius: var(--radius-notice);
+  background: var(--color-text);
+  color: var(--color-text-on-strong);
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+.u-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.u-cluster {
+  display: flex;
+  align-items: center;
+  gap: var(--space-row-tight);
+  flex-wrap: wrap;
+}
+
+.u-stack {
+  display: grid;
+  gap: var(--space-layout-compact);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: var(--duration-instant) !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: var(--duration-instant) !important;
+  }
+}
