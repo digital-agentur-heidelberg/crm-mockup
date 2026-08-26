@@ -24,7 +24,8 @@
         { icon: "phone", text: "06221 873144" },
         { icon: "map-pin", text: "Eppelheimer Straße 82" }
       ],
-      keywords: "umwelttechnik standorterweiterung mobilitaetskonzept"
+      keywords: "umwelttechnik standorterweiterung mobilitaetskonzept",
+      available: true
     },
     {
       group: "Kontakte",
@@ -72,7 +73,8 @@
         { icon: "landmark", text: "Wirtschaftsförderung" },
         { icon: "users", text: "38 von 40 Plätzen belegt" }
       ],
-      keywords: "anmeldungen teilnehmende warteliste kreativwirtschaft"
+      keywords: "anmeldungen teilnehmende warteliste kreativwirtschaft",
+      available: true
     },
     {
       group: "Veranstaltungen",
@@ -159,6 +161,7 @@
   var toastVariants = {
     success: { icon: "circle-check", role: "status", live: "polite" },
     info: { icon: "info", role: "status", live: "polite" },
+    prototype: { icon: "circle-dashed", role: "status", live: "polite" },
     error: { icon: "circle-x", role: "alert", live: "assertive" }
   };
   var toast;
@@ -220,10 +223,32 @@
     }, 2800);
   }
 
+  function showPrototypeNotice(type, subject, name) {
+    var message;
+    if (type === "record") {
+      message = subject + " „" + name + "“ ist im Entwurf nicht hinterlegt.";
+    } else {
+      message = subject + " – im Entwurf nicht ausgeführt.";
+    }
+    showToast(message, "prototype");
+  }
+
   document.addEventListener("crm:rendered", function (event) {
     renderIcons(event.target);
   });
   document.addEventListener("click", function (event) {
+    var recordTrigger = event.target.closest("[data-prototype-record]");
+    if (recordTrigger) {
+      event.preventDefault();
+      showPrototypeNotice("record", recordTrigger.getAttribute("data-prototype-record"), recordTrigger.getAttribute("data-prototype-name"));
+      return;
+    }
+    var actionTrigger = event.target.closest("[data-prototype-action]");
+    if (actionTrigger) {
+      event.preventDefault();
+      showPrototypeNotice("action", actionTrigger.getAttribute("data-prototype-action"));
+      return;
+    }
     var trigger = event.target.closest("[data-toast]");
     if (trigger) {
       showToast(trigger.getAttribute("data-toast"), trigger.getAttribute("data-toast-variant"));
@@ -234,7 +259,8 @@
     openSearch: openSearch,
     renderIcons: renderIcons,
     rendered: rendered,
-    showToast: showToast
+    showToast: showToast,
+    showPrototypeNotice: showPrototypeNotice
   };
 
   var main = document.querySelector("main.screen");
@@ -406,6 +432,12 @@
       option.addEventListener("focus", function () {
         setActive(index, true);
       });
+      option.addEventListener("click", function (event) {
+        if (!record.available) {
+          event.preventDefault();
+          showPrototypeNotice("record", record.kind, record.title);
+        }
+      });
       suggestions.appendChild(option);
     });
     setActive(0, false);
@@ -464,7 +496,11 @@
       }
     } else if (event.key === "Enter" && !popover.hidden && activeIndex >= 0) {
       event.preventDefault();
-      window.location.href = matches[activeIndex].href;
+      if (matches[activeIndex].available) {
+        window.location.href = matches[activeIndex].href;
+      } else {
+        showPrototypeNotice("record", matches[activeIndex].kind, matches[activeIndex].title);
+      }
     } else if (event.key === "Escape") {
       event.preventDefault();
       closeSearch();

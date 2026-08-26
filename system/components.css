@@ -1635,6 +1635,8 @@
   width: 100%;
   height: var(--space-row-tight);
   display: block;
+  appearance: none;
+  -webkit-appearance: none;
   border: 0;
   border-radius: var(--radius-pill);
   background: var(--color-surface-page);
@@ -1652,16 +1654,26 @@
   background: var(--color-accent);
 }
 
+.occupancy meter::-webkit-meter-suboptimum-value,
+.occupancy meter::-webkit-meter-even-less-good-value {
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+}
+
 .occupancy meter::-moz-meter-bar {
   border-radius: var(--radius-pill);
   background: var(--color-accent);
 }
 
 .occupancy--tight .occupancy-summary strong { color: var(--color-warning-strong); }
-.occupancy--tight meter::-webkit-meter-optimum-value { background: var(--color-warning-strong); }
+.occupancy--tight meter::-webkit-meter-optimum-value,
+.occupancy--tight meter::-webkit-meter-suboptimum-value,
+.occupancy--tight meter::-webkit-meter-even-less-good-value { background: var(--color-warning-strong); }
 .occupancy--tight meter::-moz-meter-bar { background: var(--color-warning-strong); }
 .occupancy--full .occupancy-summary strong { color: var(--color-danger); }
-.occupancy--full meter::-webkit-meter-optimum-value { background: var(--color-danger); }
+.occupancy--full meter::-webkit-meter-optimum-value,
+.occupancy--full meter::-webkit-meter-suboptimum-value,
+.occupancy--full meter::-webkit-meter-even-less-good-value { background: var(--color-danger); }
 .occupancy--full meter::-moz-meter-bar { background: var(--color-danger); }
 .event-orientation {
   display: grid;
@@ -2090,8 +2102,9 @@
 /*
  * TOAST (.toast)
  * Zweck: flüchtige, nicht blockierende Rückmeldung nach einer Aktion.
- * Varianten: .toast--success, .toast--info, .toast--error; Bedeutung wird
- * durch Icon und Live-Region vermittelt, die neutrale Fläche bleibt gleich.
+ * Varianten: .toast--success, .toast--info, .toast--prototype, .toast--error;
+ * Bedeutung wird durch Icon und Live-Region vermittelt, die neutrale Fläche
+ * bleibt gleich. prototype kennzeichnet ausschließlich Grenzen des Entwurfs.
  * Nicht verwenden: für Fehler, die eine dauerhafte Korrekturhilfe verlangen.
  */
 .toast {

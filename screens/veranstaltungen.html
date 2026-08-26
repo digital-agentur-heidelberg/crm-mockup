@@ -64,6 +64,7 @@
     const panels={overview:document.getElementById('overview-state'),loading:document.getElementById('loading-state'),empty:document.getElementById('empty-state'),error:document.getElementById('error-state')};
     let period='upcoming';
     let viewState='overview';
+    function prepareOccupancy(){rows.forEach(row=>{const occupancy=row.querySelector('.occupancy'),meter=occupancy.querySelector('meter'),value=Number(meter.value),max=Number(meter.max),ratio=value/max;occupancy.classList.toggle('occupancy--full',value>=max);occupancy.classList.toggle('occupancy--tight',value<max&&ratio>=0.8);meter.low=0.8*max;meter.high=max;meter.optimum=0;const meaning=value>=max?'ausgebucht':ratio>=0.8?'Belegung knapp':'Plätze verfügbar';meter.setAttribute('aria-label',meter.textContent.trim()+', '+meaning)})}
     function selectedOffices(){return [...document.querySelectorAll('input[name="office"]:checked')].map(input=>input.value)}
     function setView(next){viewState=next;Object.entries(panels).forEach(([name,panel])=>panel.hidden=name!==next);document.querySelectorAll('[data-view-state]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.viewState===next)))}
     function render(){const offices=selectedOffices();let visible=0;rows.forEach(row=>{row.hidden=!(row.dataset.window.split(' ').includes(period)&&offices.includes(row.dataset.office));if(!row.hidden)visible++});const label=period==='past'?'vergangene':'anstehende',summary=document.querySelector('#office-menu summary');document.getElementById('event-count').textContent=visible+' '+label+(visible===1?' Veranstaltung':' Veranstaltungen');summary.innerHTML='<i data-lucide="landmark" aria-hidden="true"></i>Ämter · '+offices.length+' gewählt';window.CrmShell.rendered(summary);if(viewState==='overview'&&visible===0)setView('empty')}
@@ -72,7 +73,8 @@
     document.getElementById('apply-offices').addEventListener('click',()=>{document.getElementById('office-menu').open=false;setView('overview');render()});
     document.getElementById('reset-filters').addEventListener('click',()=>{document.querySelectorAll('input[name="office"]').forEach(input=>input.checked=true);document.querySelector('[data-period="upcoming"]').click()});
     document.getElementById('retry-events').addEventListener('click',()=>{setView('loading');setTimeout(()=>{setView('overview');render()},650)});
-    window.addEventListener('load',render);
+    document.querySelectorAll('#event-rows a').forEach(link=>link.addEventListener('click',event=>{if(link.textContent.trim()!=='Branchendialog Kreativwirtschaft'){event.preventDefault();window.CrmShell.showPrototypeNotice('record','Veranstaltung',link.textContent.trim())}}));
+    window.addEventListener('load',()=>{prepareOccupancy();render()});
   </script>
 </body>
 </html>

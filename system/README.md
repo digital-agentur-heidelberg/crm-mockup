@@ -53,9 +53,18 @@ Erzeugt ein Screen nachträglich Markup mit `data-lucide`, meldet er den
 betroffenen Container nach dem Rendern mit `CrmShell.rendered(container)`. Die
 Hülle reagiert auf das Ereignis `crm:rendered` und zieht nur in diesem Bereich
 die Icons nach. Flüchtige Rückmeldungen laufen über
-`CrmShell.showToast(text, variante)` mit `success`, `info` oder `error`;
-Schaltflächen mit `data-toast` und optional `data-toast-variant` werden direkt
-von der Hülle bedient.
+`CrmShell.showToast(text, variante)` mit `success`, `info`, `prototype` oder
+`error`; Schaltflächen mit `data-toast` und optional `data-toast-variant` werden
+direkt von der Hülle bedient.
+
+Kein Bedienelement bleibt ohne Reaktion. Was der Entwurf nicht leistet, sagt
+er über `CrmShell.showPrototypeNotice(type, subject, name)`: `action` benennt
+eine nicht ausgeführte Handlung konkret, `record` einen nicht hinterlegten
+Datensatz mit Art und Name. Statische Auslöser können stattdessen
+`data-prototype-action` beziehungsweise `data-prototype-record` zusammen mit
+`data-prototype-name` tragen. Nicht hinterlegte Datensätze werden niemals
+ersatzweise auf eine Übersicht oder eine fremde Detailseite geführt; Auswahl
+und Bildschirm bleiben stehen.
 
 Lucide liegt als UMD-Bibliothek in `vendor/lucide.js`; abgelegt ist Version
 1.34.0. Die Screens und die Vorlage laden nur diesen relativen Pfad und benötigen
@@ -80,6 +89,33 @@ Niemals lokal überschrieben werden Farben, Typografie, Fokus, Abstände,
 Rundungen, Schatten, Linien, Bewegungsdauern, Sticky-Offsets, Ebenen oder
 Umbruchpunkte. Ein lokaler Sonderfall ist ein fehlender Systembaustein, keine
 Erlaubnis für Screen-CSS.
+
+## Gemeinsame Interaktionsverträge
+
+Wiederkehrende Interaktionsmuster werden nicht je Screen neu verdrahtet.
+Wer ein solches Muster in einem neuen Screen braucht, verwendet den
+vorhandenen Vertrag; wer feststellt, dass es noch keinen gibt, legt ihn
+an und dokumentiert ihn hier.
+
+Vorhanden:
+- **Suche** – `CrmShell.openSearch(text)`, Auslöser über
+   `data-open-search` und `data-search-query`
+- **Toast** – `CrmShell.showToast(text, variante)`, Auslöser über
+   `data-toast` und `data-toast-variant`
+ - **Nicht hinterlegt** – `CrmShell.showPrototypeNotice(type, subject,
+    name)`, Auslöser über `data-prototype-action` beziehungsweise
+    `data-prototype-record` mit `data-prototype-name`
+ - **Icons nachziehen** – `CrmShell.rendered(container)`, Ereignis
+   `crm:rendered`
+
+ Noch nicht extrahiert, weil bislang nur zwei Beispiele vorliegen. Beim
+ dritten Vorkommen zu extrahieren und hier zu dokumentieren:
+ - **Mehrfachauswahl in Listen** – sichtbare Zeilen auswählen, alle
+   sichtbaren auswählen, Zeilenzustand setzen, Zähler führen,
+   Aktionsknöpfe aktivieren
+ - **Filter** – `aria-pressed` setzen, Zeilen ein- und ausblenden,
+   Ergebniszahl aktualisieren
+ - **Zustandsumschaltung** – lädt, leer, Fehler, gefüllt
 
 ## Entscheidungen bei uneinheitlichen Mustern
 
@@ -142,9 +178,12 @@ werden.
   Person freizugeben.
 - Veranstaltungsart, Wartelistenregeln, Zuschussjahre, Suchindizierung und die
   genaue Berechtigungsvorschau bleiben die offenen Fachfragen aus Hybrid v3.
-- CD Steingrau `#75787B` erreicht auf Weiß 4,44:1. Es bleibt ausschließlich für
-  deaktivierte Inhalte und nichttextliche Symbole reserviert; informativer Text
-  verwendet die dunklere Rolle `--color-text-muted`.
+- CD Steingrau #75787B erreicht auf Weiß 4,44:1 und liegt damit knapp unter 
+  der Anforderung. Es ist derzeit deaktivierten Inhalten und nichttextlichen 
+  Symbolen vorbehalten; informativer Text verwendet die dunklere Rolle --color-text-muted.
+  Ob deaktivierter Text damit ausreichend ist, wird unterschiedlich beurteilt.
+  Die Klärung ist bewusst zurückgestellt und als eigener Eintrag in BEFUNDE-offen.md vermerkt; 
+  die Änderung ist ein Tokenwert und bleibt unabhängig von der Zahl der Screens billig.
 
 ## Visuelle Migrationsprüfung
 
