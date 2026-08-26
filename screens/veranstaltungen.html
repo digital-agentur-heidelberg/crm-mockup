@@ -5,7 +5,7 @@
   <title>Veranstaltungen – Heidelberg CRM</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../system/tokens.css"><link rel="stylesheet" href="../system/base.css"><link rel="stylesheet" href="../system/components.css">
-  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
+  <script src="https://unpkg.com/lucide@1.34.0/dist/umd/lucide.min.js" defer></script>
   <script src="../system/shell.js" defer></script>
 </head>
 <body data-screen="veranstaltungen">
@@ -66,13 +66,13 @@
     let viewState='overview';
     function selectedOffices(){return [...document.querySelectorAll('input[name="office"]:checked')].map(input=>input.value)}
     function setView(next){viewState=next;Object.entries(panels).forEach(([name,panel])=>panel.hidden=name!==next);document.querySelectorAll('[data-view-state]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.viewState===next)))}
-    function render(){const offices=selectedOffices();let visible=0;rows.forEach(row=>{row.hidden=!(row.dataset.window.split(' ').includes(period)&&offices.includes(row.dataset.office));if(!row.hidden)visible++});const label=period==='past'?'vergangene':'anstehende';document.getElementById('event-count').textContent=visible+' '+label+(visible===1?' Veranstaltung':' Veranstaltungen');document.querySelector('#office-menu summary').innerHTML='<i data-lucide="landmark" aria-hidden="true"></i>Ämter · '+offices.length+' gewählt';lucide.createIcons();if(viewState==='overview'&&visible===0)setView('empty')}
+    function render(){const offices=selectedOffices();let visible=0;rows.forEach(row=>{row.hidden=!(row.dataset.window.split(' ').includes(period)&&offices.includes(row.dataset.office));if(!row.hidden)visible++});const label=period==='past'?'vergangene':'anstehende',summary=document.querySelector('#office-menu summary');document.getElementById('event-count').textContent=visible+' '+label+(visible===1?' Veranstaltung':' Veranstaltungen');summary.innerHTML='<i data-lucide="landmark" aria-hidden="true"></i>Ämter · '+offices.length+' gewählt';window.CrmShell.rendered(summary);if(viewState==='overview'&&visible===0)setView('empty')}
     document.querySelectorAll('[data-period]').forEach(button=>button.addEventListener('click',()=>{period=button.dataset.period;document.querySelectorAll('[data-period]').forEach(item=>item.setAttribute('aria-pressed',String(item===button)));setView('overview');render()}));
     document.querySelectorAll('[data-view-state]').forEach(button=>button.addEventListener('click',()=>setView(button.dataset.viewState)));
     document.getElementById('apply-offices').addEventListener('click',()=>{document.getElementById('office-menu').open=false;setView('overview');render()});
     document.getElementById('reset-filters').addEventListener('click',()=>{document.querySelectorAll('input[name="office"]').forEach(input=>input.checked=true);document.querySelector('[data-period="upcoming"]').click()});
     document.getElementById('retry-events').addEventListener('click',()=>{setView('loading');setTimeout(()=>{setView('overview');render()},650)});
-    window.addEventListener('load',()=>{render();lucide.createIcons()});
+    window.addEventListener('load',render);
   </script>
 </body>
 </html>

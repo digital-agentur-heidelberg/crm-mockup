@@ -112,7 +112,7 @@
       title: "Verteiler Umweltwirtschaft",
       meta: "54 aktive Kontakte · E-Mail erlaubt",
       href: "mailing.html",
-      icon: "list-mail",
+      icon: "mails",
       status: "Verteiler aktiv",
       statusClass: "status--info",
       description: "Unternehmen und Netzwerke der Heidelberger Umweltwirtschaft",
@@ -128,7 +128,7 @@
       title: "Kreativwirtschaft Heidelberg",
       meta: "68 aktive Mitglieder",
       href: "mailing.html",
-      icon: "list-mail",
+      icon: "mails",
       status: "Im Mailing gewählt",
       statusClass: "status--success",
       description: "Empfängerkreis für den Branchendialog Kreativwirtschaft",
@@ -144,7 +144,7 @@
       title: "Branchentreffen Kultur",
       meta: "41 aktive Mitglieder",
       href: "mailing.html",
-      icon: "list-mail",
+      icon: "mails",
       status: "Im Mailing gewählt",
       statusClass: "status--success",
       description: "Kulturinstitutionen und freie Kulturschaffende in Heidelberg",
@@ -156,8 +156,89 @@
     }
   ];
 
+  var toastVariants = {
+    success: { icon: "circle-check", role: "status", live: "polite" },
+    info: { icon: "info", role: "status", live: "polite" },
+    error: { icon: "circle-x", role: "alert", live: "assertive" }
+  };
+  var toast;
+  var toastText;
+  var toastLive;
+  var toastTimer;
+  var toastAnnouncementTimer;
+
+  function renderIcons(root) {
+    if (window.lucide) {
+      window.lucide.createIcons({ root: root || document });
+    }
+  }
+
+  function rendered(root) {
+    (root || document).dispatchEvent(new CustomEvent("crm:rendered", { bubbles: true }));
+  }
+
+  function ensureToast() {
+    if (toast) {
+      return;
+    }
+    toast = document.createElement("div");
+    toast.className = "toast toast--success";
+    toast.hidden = true;
+    toast.setAttribute("aria-hidden", "true");
+    toast.innerHTML = '<i data-toast-icon data-lucide="circle-check" aria-hidden="true"></i><span data-toast-text></span>';
+    toastText = toast.querySelector("[data-toast-text]");
+
+    toastLive = document.createElement("div");
+    toastLive.className = "u-sr-only";
+    toastLive.setAttribute("role", "status");
+    toastLive.setAttribute("aria-live", "polite");
+    toastLive.setAttribute("aria-atomic", "true");
+    document.body.appendChild(toast);
+    document.body.appendChild(toastLive);
+  }
+
+  function showToast(message, variant) {
+    var selected = toastVariants[variant] ? variant : "success";
+    var settings = toastVariants[selected];
+    ensureToast();
+    window.clearTimeout(toastTimer);
+    window.clearTimeout(toastAnnouncementTimer);
+    toast.className = "toast toast--" + selected;
+    toast.querySelector("[data-toast-icon]").setAttribute("data-lucide", settings.icon);
+    toastText.textContent = message;
+    toast.hidden = false;
+    renderIcons(toast);
+
+    toastLive.setAttribute("role", settings.role);
+    toastLive.setAttribute("aria-live", settings.live);
+    toastLive.textContent = "";
+    toastAnnouncementTimer = window.setTimeout(function () {
+      toastLive.textContent = message;
+    }, 20);
+    toastTimer = window.setTimeout(function () {
+      toast.hidden = true;
+    }, 2800);
+  }
+
+  document.addEventListener("crm:rendered", function (event) {
+    renderIcons(event.target);
+  });
+  document.addEventListener("click", function (event) {
+    var trigger = event.target.closest("[data-toast]");
+    if (trigger) {
+      showToast(trigger.getAttribute("data-toast"), trigger.getAttribute("data-toast-variant"));
+    }
+  });
+
+  window.CrmShell = {
+    renderIcons: renderIcons,
+    rendered: rendered,
+    showToast: showToast
+  };
+
   var main = document.querySelector("main.screen");
   if (!main || document.querySelector(".app-main")) {
+    renderIcons(document);
     return;
   }
 
@@ -208,19 +289,11 @@
       '<div class="u-sr-only" id="search-live" role="status" aria-live="polite" aria-atomic="true"></div>' +
     '</div>';
 
-  var shellToast = document.createElement("div");
-  shellToast.className = "toast";
-  shellToast.setAttribute("role", "status");
-  shellToast.setAttribute("aria-live", "polite");
-  shellToast.hidden = true;
-  shellToast.innerHTML = '<i data-lucide="circle-help" aria-hidden="true"></i><span>Die Hilfe öffnet sich passend zu Ihrem aktuellen Bereich.</span>';
-
   document.body.insertBefore(skipLink, document.body.firstChild);
   document.body.insertBefore(sideNav, main);
   document.body.insertBefore(appMain, main);
   appMain.appendChild(topbar);
   appMain.appendChild(main);
-  document.body.appendChild(shellToast);
 
   var search = document.getElementById("global-search");
   var popover = document.getElementById("search-popover");
@@ -229,16 +302,9 @@
   var live = document.getElementById("search-live");
   var matches = [];
   var activeIndex = -1;
-  var helpTimer;
 
   function normalize(value) {
     return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase("de");
-  }
-
-  function renderIcons() {
-    if (window.lucide) {
-      window.lucide.createIcons();
-    }
   }
 
   function announce(message) {
@@ -290,7 +356,7 @@
     });
     search.setAttribute("aria-activedescendant", options[activeIndex].id);
     renderPreview(matches[activeIndex]);
-    renderIcons();
+    renderIcons(preview);
     if (speak) {
       announce(matches[activeIndex].title + ", " + matches[activeIndex].kind + ", " + (activeIndex + 1) + " von " + matches.length + ".");
     }
@@ -311,7 +377,7 @@
       suggestions.appendChild(empty);
       setActive(-1, false);
       announce("Keine Treffer für " + (query.trim() || "diese Suche") + ".");
-      renderIcons();
+      renderIcons(suggestions);
       return;
     }
 
@@ -343,7 +409,7 @@
     });
     setActive(0, false);
     announce(matches.length + (matches.length === 1 ? " Vorschlag verfügbar." : " Vorschläge verfügbar.") + " Mit den Pfeiltasten auswählen, mit Enter öffnen.");
-    renderIcons();
+    renderIcons(popover);
   }
 
   function openSearch() {
@@ -409,14 +475,9 @@
     }
   });
   sideNav.querySelector("[data-shell-help]").addEventListener("click", function () {
-    window.clearTimeout(helpTimer);
-    shellToast.hidden = false;
-    announce("Die Hilfe öffnet sich passend zu Ihrem aktuellen Bereich.");
-    helpTimer = window.setTimeout(function () {
-      shellToast.hidden = true;
-    }, 2800);
+    showToast("Die Hilfe öffnet sich passend zu Ihrem aktuellen Bereich.", "info");
   });
 
-  window.CrmShell = { focusSearch: focusSearch };
-  renderIcons();
+  window.CrmShell.focusSearch = focusSearch;
+  renderIcons(document);
 }());

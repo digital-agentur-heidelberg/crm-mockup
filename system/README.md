@@ -8,15 +8,15 @@ Die verbindliche visuelle Referenz ist [styleguide.html](styleguide.html).
 
 ## Einen neuen Screen bauen
 
-1. Eine bestehende Datei aus `../screens/` als strukturellen Ausgangspunkt
-   kopieren.
+1. Ausschließlich `../screens/_vorlage.html` kopieren und umbenennen. Neue
+   Screens entstehen nicht durch Kopieren eines bestehenden Fachscreens.
 2. Im `<head>` immer in dieser Reihenfolge laden:
 
    ```html
    <link rel="stylesheet" href="../system/tokens.css">
    <link rel="stylesheet" href="../system/base.css">
    <link rel="stylesheet" href="../system/components.css">
-   <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
+   <script src="https://unpkg.com/lucide@1.34.0/dist/umd/lucide.min.js" defer></script>
    <script src="../system/shell.js" defer></script>
    ```
 
@@ -40,6 +40,14 @@ werden nur in `shell.js` gepflegt.
 Screens enthalten weder `<style>`-Blöcke noch `style`-Attribute. Kleine,
 screenbezogene Interaktionen dürfen als Vanilla-JavaScript im Dokument stehen;
 fachliche Daten bleiben fest verdrahtet.
+
+Erzeugt ein Screen nachträglich Markup mit `data-lucide`, meldet er den
+betroffenen Container nach dem Rendern mit `CrmShell.rendered(container)`. Die
+Hülle reagiert auf das Ereignis `crm:rendered` und zieht nur in diesem Bereich
+die Icons nach. Flüchtige Rückmeldungen laufen über
+`CrmShell.showToast(text, variante)` mit `success`, `info` oder `error`;
+Schaltflächen mit `data-toast` und optional `data-toast-variant` werden direkt
+von der Hülle bedient.
 
 ## Eine fehlende Komponente ergänzen
 

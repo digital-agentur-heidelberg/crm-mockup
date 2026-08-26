@@ -2089,8 +2089,10 @@
 
 /*
  * TOAST (.toast)
- * Zweck: flüchtige, nicht blockierende Bestätigung nach einer Aktion.
- * Nicht verwenden: für Fehler, die Korrektur verlangen.
+ * Zweck: flüchtige, nicht blockierende Rückmeldung nach einer Aktion.
+ * Varianten: .toast--success, .toast--info, .toast--error; Bedeutung wird
+ * durch Icon und Live-Region vermittelt, die neutrale Fläche bleibt gleich.
+ * Nicht verwenden: für Fehler, die eine dauerhafte Korrekturhilfe verlangen.
  */
 .toast {
   position: fixed;

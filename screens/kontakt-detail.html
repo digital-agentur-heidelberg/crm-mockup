@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Sabine Keller – Heidelberg CRM</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../system/tokens.css"><link rel="stylesheet" href="../system/base.css"><link rel="stylesheet" href="../system/components.css"><script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script><script src="../system/shell.js" defer></script>
+  <link rel="stylesheet" href="../system/tokens.css"><link rel="stylesheet" href="../system/base.css"><link rel="stylesheet" href="../system/components.css"><script src="https://unpkg.com/lucide@1.34.0/dist/umd/lucide.min.js" defer></script><script src="../system/shell.js" defer></script>
 </head>
 <body data-screen="kontakte">
     <main class="screen" id="main">
@@ -26,9 +26,8 @@
         </aside>
       </div>
     </main>
-  <div class="toast" id="toast" role="status" aria-live="polite" hidden><i data-lucide="circle-check" aria-hidden="true"></i><span>Notiz wurde gespeichert.</span></div>
   <script>
-    const note=document.getElementById('quick-note');document.getElementById('focus-note').addEventListener('click',()=>note.focus());document.getElementById('note-form').addEventListener('submit',event=>{event.preventDefault();if(!note.value.trim())return;const item=document.createElement('li');item.innerHTML='<div class="timeline-meta"><span>Gerade eben · JK</span><span>Gesprächsnotiz</span></div><p></p><small>Wirtschaftsförderung</small>';item.querySelector('p').textContent=note.value;document.getElementById('timeline').prepend(item);note.value='';const toast=document.getElementById('toast');toast.hidden=false;setTimeout(()=>toast.hidden=true,2500)});window.addEventListener('load',()=>lucide.createIcons());
+    const note=document.getElementById('quick-note');document.getElementById('focus-note').addEventListener('click',()=>note.focus());document.getElementById('note-form').addEventListener('submit',event=>{event.preventDefault();if(!note.value.trim())return;const item=document.createElement('li');item.innerHTML='<div class="timeline-meta"><span>Gerade eben · JK</span><span>Gesprächsnotiz</span></div><p></p><small>Wirtschaftsförderung</small>';item.querySelector('p').textContent=note.value;document.getElementById('timeline').prepend(item);note.value='';window.CrmShell.showToast('Notiz wurde gespeichert.','success')});
   </script>
   <!-- Design-Rationale: Höchste Informationsdichte bestimmt die kanonischen Kartenabstände. Signature-Element ist die Gesprächsspur; riskant bleibt der teilweise sichtbare, inhaltlich geschützte Beziehungsknoten. -->
 </body>

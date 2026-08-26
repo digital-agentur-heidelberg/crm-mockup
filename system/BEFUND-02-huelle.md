@@ -75,3 +75,31 @@ Diese Kandidaten sollten erst dann extrahiert werden, wenn ein weiterer Screen
 den gleichen Interaktionsvertrag tatsächlich benötigt. Die Hülle war dagegen
 bereits auf allen sieben Screens vorhanden und deshalb unmittelbar zentral zu
 halten.
+
+## Vorgezogene Aufräumrunde
+
+Die Icon-Initialisierung liegt nun in `shell.js`. `CrmShell.renderIcons(root)`
+arbeitet mit dem Bereichsparameter von Lucide 1.34.0; Screens lösen nach
+dynamischem Icon-Markup über `CrmShell.rendered(root)` das gemeinsame Ereignis
+`crm:rendered` aus. Geprüft wurden alle sieben lokalen Skripte. Betroffen waren
+die Ämter-Zusammenfassung in `veranstaltungen.html` und der nach dem Testversand
+ersetzte Nachweis in `mailing.html`; beide funktionierten zuvor nur wegen eines
+zusätzlichen direkten `lucide.createIcons()`-Aufrufs. Die dynamischen
+Suchvorschläge samt Vorschau und Leerzustand werden von der Hülle selbst
+bereichsweise nachgezogen. Gesprächsnotiz, Mailing-Personalisierung, Filter,
+Auswahl und Zustandswechsel erzeugen derzeit kein neues Icon-Markup. Damit gab
+es im geprüften Ausgangsstand keine weitere unversorgte Stelle; ohne die beiden
+lokalen Sonderaufrufe wären genau Ämter-Zusammenfassung und Testnachweis ohne
+Symbol geblieben.
+
+Beim Versionswechsel von Lucide 0.468.0 auf die fest gepinnte 1.34.0 blieben
+47 der 48 zuvor verwendeten Symbolnamen verfügbar. Das entfallene `list-mail`
+wurde in Suche und Styleguide durch `mails` ersetzt; es beschreibt den
+Verteiler als Gruppe von Sendungen zugleich eindeutiger.
+
+Toast-Markup, Lebenszyklus und Screenreader-Ansage werden ebenfalls einmalig in
+`shell.js` erzeugt. Erfolg und Hinweis werden höflich über `role="status"`,
+Fehler unmittelbar über `role="alert"` angesagt. Treffen mehrere Meldungen
+schnell aufeinander, ersetzt die neueste Meldung die sichtbare und die noch
+ausstehende Ansage; ihr 2,8-Sekunden-Zeitfenster beginnt neu. Toasts werden also
+nicht gestapelt und eine ältere Meldung schließt keine neuere vorzeitig.

@@ -5,7 +5,7 @@
   <title>Kontakte – Heidelberg CRM</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../system/tokens.css"><link rel="stylesheet" href="../system/base.css"><link rel="stylesheet" href="../system/components.css">
-  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
+  <script src="https://unpkg.com/lucide@1.34.0/dist/umd/lucide.min.js" defer></script>
   <script src="../system/shell.js" defer></script>
 </head>
 <body data-screen="kontakte">
@@ -56,7 +56,7 @@
     function render(){const q=search.value.trim().toLocaleLowerCase('de');let visible=0;rows.forEach(row=>{const matchText=row.dataset.name.toLocaleLowerCase('de').includes(q),matchFilter=filter==='all'||row.dataset.kind.split(' ').includes(filter);row.hidden=!(matchText&&matchFilter);if(!row.hidden)visible++});document.getElementById('first-inline-detail').hidden=rows[0].hidden;document.getElementById('contact-count').textContent=visible+' Treffer';document.getElementById('export-all-count').textContent=visible;empty.hidden=visible!==0;wrap.hidden=visible===0}
     function selection(){const checked=rows.flatMap(row=>[...row.querySelectorAll('.row-check')]).filter(box=>box.checked);rows.forEach(row=>row.classList.toggle('is-checked',row.querySelector('.row-check').checked));document.getElementById('contact-selected-count').textContent=checked.length+' ausgewählt';document.getElementById('export-selected-count').textContent=checked.length;document.getElementById('export-selected').disabled=checked.length===0}
     search.addEventListener('input',render);document.querySelectorAll('[data-filter]').forEach(button=>button.addEventListener('click',()=>{filter=button.dataset.filter;document.querySelectorAll('[data-filter]').forEach(item=>item.setAttribute('aria-pressed',String(item.dataset.filter===filter)));render()}));document.querySelectorAll('.row-check').forEach(box=>box.addEventListener('change',selection));document.getElementById('select-visible').addEventListener('change',event=>{rows.filter(row=>!row.hidden).forEach(row=>row.querySelector('.row-check').checked=event.target.checked);selection()});document.getElementById('reset-contacts').addEventListener('click',()=>{search.value='';filter='all';document.querySelector('[data-filter="all"]').click()});
-    rows.forEach(row=>row.addEventListener('keydown',event=>{if((event.key==='Enter'||event.key===' ')&&!event.target.matches('input,button,a')){event.preventDefault();rows.forEach(item=>item.classList.remove('is-selected'));row.classList.add('is-selected')}}));window.addEventListener('load',()=>lucide.createIcons());
+    rows.forEach(row=>row.addEventListener('keydown',event=>{if((event.key==='Enter'||event.key===' ')&&!event.target.matches('input,button,a')){event.preventDefault();rows.forEach(item=>item.classList.remove('is-selected'));row.classList.add('is-selected')}}));
   </script>
   <!-- Design-Rationale: Palette Heidelbeer/Neckar/Papier bleibt unverändert. Layout ist die abgenommene 65/35-Master-Detail-Ansicht; riskant bleibt die responsive Detailzeile unter 1130 px. -->
 </body>
