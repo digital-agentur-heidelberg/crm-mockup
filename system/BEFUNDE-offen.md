@@ -42,6 +42,10 @@ Punkte sind fachlich oder screenspezifisch und wurden bewusst nicht erfunden.
 13. **Globale Suche / Trefferziele — falsches Ziel:** Mehrere konkrete Treffer, darunter
     „Dr. Aylin Yılmaz“ und einzelne Veranstaltungen, führen nur zur jeweiligen
     Übersicht statt zum gewählten Datensatz.
+14. **Mailing / Leere Bausteine prüfen — wiederholter Klick ohne Wirkung:**
+    „4 Empfänger mit leeren Bausteinen prüfen“ führt beim ersten Klick zum
+    ersten betroffenen Empfänger. Weitere Klicks springen nicht zum jeweils
+    nächsten Empfänger mit leerem Baustein, sondern bleiben beim ersten Fund.
 
 ## Design
 
