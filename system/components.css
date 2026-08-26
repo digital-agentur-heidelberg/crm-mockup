@@ -526,8 +526,8 @@
  * TABELLE (.data-table, .table-wrap)
  * Zweck: dichte, vergleichbare Datensätze.
  * Nicht verwenden: für zwei bis drei reine Schlüssel/Wert-Paare.
- * Varianten: page-sticky, container-sticky, static/mini; Zeilen hover,
- * selected, checked und selected+checked.
+ * Varianten: page-sticky, container-sticky, static/mini; primäre Zelle mit
+ * Haupt-/Nebentext; Zeilen hover, selected, checked und selected+checked.
  */
 .table-wrap {
   max-height: var(--size-table-scroll);
@@ -564,9 +564,13 @@
 }
 
 .name-cell strong,
-.name-cell small { display: block; }
-.name-cell strong { font-size: 1rem; }
-.name-cell small {
+.name-cell small,
+.primary-cell strong,
+.primary-cell small { display: block; }
+.name-cell strong,
+.primary-cell strong { font-size: 1rem; }
+.name-cell small,
+.primary-cell small {
   margin-top: var(--space-hairline);
   font-size: 0.84rem;
   line-height: 1.45;
@@ -588,11 +592,13 @@
 }
 
 /*
- * RÜCKMELDEZUSTÄNDE (.empty-state, .loading-state, .no-access)
- * Zweck: leer, lädt, kein Zugriff jeweils mit Text statt Farbe allein.
+ * RÜCKMELDEZUSTÄNDE (.empty-state, .loading-state, .error-state, .no-access)
+ * Zweck: leer, lädt, fehlgeschlagen und kein Zugriff jeweils mit Text statt
+ * Farbe allein. Ein behebbarer Fehler bietet eine Wiederholen-Aktion an.
  * Nicht verwenden: für Inline-Validierungsfehler.
  */
-.empty-state {
+.empty-state,
+.error-state {
   min-height: var(--size-empty-min);
   display: grid;
   place-items: center;
@@ -600,7 +606,8 @@
   text-align: center;
 }
 
-.empty-state-icon {
+.empty-state-icon,
+.error-state-icon {
   width: var(--size-icon-empty);
   height: var(--size-icon-empty);
   display: grid;
@@ -609,6 +616,11 @@
   border-radius: var(--radius-round);
   background: var(--color-surface-page);
   color: var(--color-text-disabled);
+}
+
+.error-state-icon {
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
 }
 
 .loading-state {
@@ -1543,6 +1555,69 @@
   background: var(--color-surface-page);
 }
 .capacity-bar span { display: block; width: 95%; height: 100%; background: var(--color-success); }
+
+/*
+ * BELEGUNGSANZEIGE (.occupancy)
+ * Zweck: Kapazität in wiederholten Listenzeilen ohne Lesen vergleichbar machen.
+ * Nicht verwenden: für die ausführliche Kapazitätsübersicht einer Detailseite.
+ * Varianten: verfügbar, knapp, ausgebucht; Zahl und Text tragen die Bedeutung.
+ */
+.occupancy {
+  min-width: 148px;
+  display: grid;
+  gap: var(--space-status-gap);
+}
+
+.occupancy-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-cluster-tight);
+}
+
+.occupancy-summary strong {
+  color: var(--color-brand-strong);
+  font-size: 1rem;
+}
+
+.occupancy-summary span {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-meta);
+  white-space: nowrap;
+}
+
+.occupancy meter {
+  width: 100%;
+  height: var(--space-row-tight);
+  display: block;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-page);
+}
+
+.occupancy meter::-webkit-meter-bar {
+  height: var(--space-row-tight);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-page);
+}
+
+.occupancy meter::-webkit-meter-optimum-value {
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+}
+
+.occupancy meter::-moz-meter-bar {
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+}
+
+.occupancy--tight .occupancy-summary strong { color: var(--color-warning-strong); }
+.occupancy--tight meter::-webkit-meter-optimum-value { background: var(--color-warning-strong); }
+.occupancy--tight meter::-moz-meter-bar { background: var(--color-warning-strong); }
+.occupancy--full .occupancy-summary strong { color: var(--color-danger); }
+.occupancy--full meter::-webkit-meter-optimum-value { background: var(--color-danger); }
+.occupancy--full meter::-moz-meter-bar { background: var(--color-danger); }
 .event-orientation {
   display: grid;
   grid-template-columns: 1fr 1fr;
