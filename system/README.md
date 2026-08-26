@@ -16,15 +16,26 @@ Die verbindliche visuelle Referenz ist [styleguide.html](styleguide.html).
    <link rel="stylesheet" href="../system/tokens.css">
    <link rel="stylesheet" href="../system/base.css">
    <link rel="stylesheet" href="../system/components.css">
+   <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
+   <script src="../system/shell.js" defer></script>
    ```
 
-3. Den App-Rahmen aus Seitennavigation, Topbar und `.screen` übernehmen.
-4. Inhalte ausschließlich aus den in `components.css` dokumentierten Klassen
+3. Am `<body>` mit `data-screen` genau einen Navigationsbereich angeben:
+   `arbeitsbereich`, `kontakte`, `veranstaltungen` oder `mailings`.
+4. Ausschließlich den Screeninhalt als `<main class="screen" id="main">`
+   liefern. `shell.js` erzeugt Skip-Link, Seitennavigation, Kopfleiste und den
+   umgebenden App-Rahmen.
+5. Inhalte ausschließlich aus den in `components.css` dokumentierten Klassen
    zusammensetzen. Native Elemente und ARIA-Zustände bleiben erhalten.
-5. Bei Listen mindestens 25 plausible Datensätze einsetzen, damit Dichte,
+6. Bei Listen mindestens 25 plausible Datensätze einsetzen, damit Dichte,
    Stickiness und Scrollverhalten sichtbar werden.
-6. Bei 1024, 1280 und 1920 Pixel Breite prüfen; Fokusreihenfolge und
+7. Bei 1024, 1280 und 1920 Pixel Breite prüfen; Fokusreihenfolge und
    `prefers-reduced-motion` ebenfalls prüfen.
+
+Die Hülle wird nie pro Screen nachgebaut oder teilweise überschrieben. Ein
+neuer Screen bindet `shell.js` ein, setzt `data-screen` und enthält ausschließlich
+seinen Inhalt. Navigationseinträge, aktiver Zustand, Suchdaten und Suchverhalten
+werden nur in `shell.js` gepflegt.
 
 Screens enthalten weder `<style>`-Blöcke noch `style`-Attribute. Kleine,
 screenbezogene Interaktionen dürfen als Vanilla-JavaScript im Dokument stehen;
@@ -131,7 +142,6 @@ Dokument in `../screens/`, bei 1024 × 720, 1280 × 720 und 1920 × 720 Pixeln.
 - **Mailing:** Prozessleiste, Kartenstapelung bei 1099 px, Vorschau-Stickiness
   und Briefgeometrie stimmen.
 
-Die getrennten Dateien markieren ihren Bereich semantisch mit
-`aria-current="true"`. Nur der Arbeitsbereich verwendet wie die Referenz den
-sichtbaren Zustand `aria-current="page"`; damit wurde keine neue sichtbare
-Navigationseinfärbung eingeführt.
+Die gemeinsame Hülle markiert den über `data-screen` benannten Bereich
+semantisch und sichtbar mit `aria-current="page"`. Kein Screen setzt diesen
+Zustand selbst.

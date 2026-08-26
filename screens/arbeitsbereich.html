@@ -11,30 +11,9 @@
   <link rel="stylesheet" href="../system/base.css">
   <link rel="stylesheet" href="../system/components.css">
   <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
+  <script src="../system/shell.js" defer></script>
 </head>
-<body>
-  <a class="skip-link" href="#main">Zum Inhalt springen</a>
-  <aside class="side-nav" aria-label="Hauptnavigation">
-    <a class="brand" href="arbeitsbereich.html"><span class="brand-mark" aria-hidden="true"></span><span><strong>Heidelberg CRM</strong><small>Gemeinsam im Bild</small></span></a>
-    <nav><ul class="nav-list">
-      <li><a class="nav-link" href="arbeitsbereich.html" aria-current="page"><i data-lucide="waypoints" aria-hidden="true"></i>Arbeitsbereich</a></li>
-      <li><a class="nav-link" href="kontakte.html"><i data-lucide="contact-round" aria-hidden="true"></i>Kontakte</a></li>
-      <li><a class="nav-link" href="veranstaltung.html"><i data-lucide="calendar-days" aria-hidden="true"></i>Veranstaltungen</a></li>
-      <li><a class="nav-link" href="mailing.html"><i data-lucide="send" aria-hidden="true"></i>Mailings</a></li>
-    </ul></nav>
-    <div class="nav-spacer"></div>
-    <button class="nav-link" type="button" data-toast="Die Hilfe öffnet sich passend zum Arbeitsbereich."><i data-lucide="circle-help" aria-hidden="true"></i>Hilfe</button>
-    <div class="profile"><span class="avatar" aria-hidden="true">JK</span><span><strong>Julia König</strong><small>Wirtschaftsförderung</small></span></div>
-  </aside>
-
-  <div class="app-main">
-    <header class="topbar">
-      <div class="smart-search">
-        <div class="search-row"><i data-lucide="search" aria-hidden="true"></i><label class="u-sr-only" for="global-search">Kontakte, Aufgaben oder Veranstaltungen suchen</label><input class="search-input" id="global-search" type="search" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-expanded="false" aria-controls="search-popover" autocomplete="off" placeholder="Name, Firma, Telefonnummer oder Aufgabe"><span class="shortcut" aria-hidden="true">Strg K</span></div>
-        <div class="search-popover" id="search-popover" hidden><div class="suggestions" role="listbox" aria-label="Suchvorschläge"><div class="suggestion-group">Kontakte</div><a class="suggestion" href="kontakt-detail.html" role="option" aria-selected="true"><span class="suggestion-icon"><i data-lucide="user-round" aria-hidden="true"></i></span><span><strong>Sabine Keller</strong><small>GreenTech Solutions GmbH · 06221 873144</small></span></a><a class="suggestion" href="kontakte.html" role="option"><span class="suggestion-icon"><i data-lucide="building-2" aria-hidden="true"></i></span><span><strong>Heidelberger Dienste gGmbH</strong><small>Organisation · Weststadt</small></span></a><div class="suggestion-group">Direkte Aufgabe</div><a class="suggestion" href="veranstaltung.html" role="option"><span class="suggestion-icon"><i data-lucide="users" aria-hidden="true"></i></span><span><strong>Anmeldungen prüfen</strong><small>Branchendialog Kreativwirtschaft</small></span></a></div><aside class="search-preview" aria-label="Vorschau"><span class="status status--success">Kontakt aktiv</span><h3>Sabine Keller</h3><p>Geschäftsführerin · GreenTech Solutions GmbH</p><div class="preview-facts"><span><i data-lucide="landmark" aria-hidden="true"></i>Wirtschaftsförderung · Julia König</span><span><i data-lucide="phone" aria-hidden="true"></i>06221 873144</span><span><i data-lucide="clock-3" aria-hidden="true"></i>Letzter Kontakt heute, 08:48 Uhr</span></div></aside></div>
-      </div>
-    </header>
-
+<body data-screen="arbeitsbereich">
     <main class="screen" id="main">
       <div class="page-head"><div><p class="eyebrow">Dienstag, 25. August 2026</p><h1>Guten Morgen, Frau König.</h1><p>Termine, Rückmeldungen und Änderungen – nach dem geordnet, was Ihre Aufmerksamkeit braucht.</p></div><button class="btn btn--primary" type="button" id="focus-search"><i data-lucide="phone-incoming" aria-hidden="true"></i>Kontakt im Gespräch finden</button></div>
       <div class="work-grid">
@@ -53,13 +32,11 @@
         </aside>
       </div>
     </main>
-  </div>
-  <div class="u-sr-only" id="live" role="status" aria-live="polite"></div><div class="toast" id="toast" role="status" aria-live="polite" hidden><i data-lucide="circle-check" aria-hidden="true"></i><span id="toast-text"></span></div>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden><i data-lucide="circle-check" aria-hidden="true"></i><span id="toast-text"></span></div>
   <script>
-    const search=document.getElementById('global-search'),popover=document.getElementById('search-popover'),toast=document.getElementById('toast');
-    function openSearch(){search.setAttribute('aria-expanded','true');popover.hidden=false} function closeSearch(){search.setAttribute('aria-expanded','false');popover.hidden=true}
-    search.addEventListener('focus',openSearch);search.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSearch();search.focus()}});document.getElementById('focus-search').addEventListener('click',()=>{openSearch();search.focus()});document.getElementById('task-find-contact').addEventListener('click',()=>{openSearch();search.focus()});
-    document.addEventListener('click',e=>{const button=e.target.closest('[data-toast]');if(button){document.getElementById('toast-text').textContent=button.dataset.toast;toast.hidden=false;setTimeout(()=>toast.hidden=true,2800)}if(!e.target.closest('.smart-search'))closeSearch()});
+    const toast=document.getElementById('toast');
+    document.getElementById('focus-search').addEventListener('click',()=>window.CrmShell.focusSearch());document.getElementById('task-find-contact').addEventListener('click',()=>window.CrmShell.focusSearch());
+    document.addEventListener('click',e=>{const button=e.target.closest('[data-toast]');if(button){document.getElementById('toast-text').textContent=button.dataset.toast;toast.hidden=false;setTimeout(()=>toast.hidden=true,2800)}});
     window.addEventListener('load',()=>lucide.createIcons());
   </script>
   <!-- Design-Rationale: Palette und Layout entsprechen unverändert 99-hybrid_v3. Signature-Element ist das Aufgabenraster; bewusst riskant bleibt die globale Suche mit direkten Aufgaben. -->

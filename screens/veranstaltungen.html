@@ -6,12 +6,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../system/tokens.css"><link rel="stylesheet" href="../system/base.css"><link rel="stylesheet" href="../system/components.css">
   <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
+  <script src="../system/shell.js" defer></script>
 </head>
-<body>
-  <a class="skip-link" href="#main">Zum Inhalt springen</a>
-  <aside class="side-nav" aria-label="Hauptnavigation"><a class="brand" href="arbeitsbereich.html"><span class="brand-mark" aria-hidden="true"></span><span><strong>Heidelberg CRM</strong><small>Gemeinsam im Bild</small></span></a><nav><ul class="nav-list"><li><a class="nav-link" href="arbeitsbereich.html"><i data-lucide="waypoints" aria-hidden="true"></i>Arbeitsbereich</a></li><li><a class="nav-link" href="kontakte.html"><i data-lucide="contact-round" aria-hidden="true"></i>Kontakte</a></li><li><a class="nav-link" href="veranstaltungen.html" aria-current="true"><i data-lucide="calendar-days" aria-hidden="true"></i>Veranstaltungen</a></li><li><a class="nav-link" href="mailing.html"><i data-lucide="send" aria-hidden="true"></i>Mailings</a></li></ul></nav><div class="nav-spacer"></div><button class="nav-link" type="button"><i data-lucide="circle-help" aria-hidden="true"></i>Hilfe</button><div class="profile"><span class="avatar" aria-hidden="true">JK</span><span><strong>Julia König</strong><small>Wirtschaftsförderung</small></span></div></aside>
-  <div class="app-main">
-    <header class="topbar"><div class="smart-search"><div class="search-row"><i data-lucide="search" aria-hidden="true"></i><label class="u-sr-only" for="global-search">Überall suchen</label><input class="search-input" id="global-search" type="search" placeholder="Name, Firma, Telefonnummer oder Aufgabe"><span class="shortcut" aria-hidden="true">Strg K</span></div></div></header>
+<body data-screen="veranstaltungen">
     <main class="screen" id="main">
       <div class="page-head"><div><p class="eyebrow">Veranstaltungen · gemeinsame Übersicht</p><h1>Veranstaltungen</h1><p>Behalten Sie Termine, Zuständigkeiten und die aktuelle Belegung im Blick. Anstehende Veranstaltungen stehen zuerst; abgeschlossene Termine bleiben über den Zeitraum erreichbar.</p></div><div class="head-actions"><a class="btn btn--primary" href="veranstaltung-anlegen.html"><i data-lucide="calendar-plus" aria-hidden="true"></i>Veranstaltung anlegen</a></div></div>
 
@@ -62,7 +59,6 @@
         </section>
       </div>
     </main>
-  </div>
   <script>
     const rows=[...document.querySelectorAll('#event-rows tr')];
     const panels={overview:document.getElementById('overview-state'),loading:document.getElementById('loading-state'),empty:document.getElementById('empty-state'),error:document.getElementById('error-state')};

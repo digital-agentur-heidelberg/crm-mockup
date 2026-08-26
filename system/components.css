@@ -70,6 +70,12 @@
   list-style: none;
 }
 
+/*
+ * NAVIGATIONSEINTRAG (.nav-link)
+ * Zweck: Wechsel zwischen den vier dauerhaften Arbeitsbereichen.
+ * Nicht verwenden: für lokale Filter, Prozessschritte oder Inhaltsaktionen.
+ * Zustände: Ruhe, hover, focus, aktiv und aktiv mit focus.
+ */
 .nav-link {
   width: 100%;
   display: flex;
@@ -86,8 +92,14 @@
   cursor: pointer;
 }
 
-.nav-link:hover {
+.nav-link:hover,
+.nav-link[data-demo-state="hover"] {
   background: var(--color-surface-page);
+}
+
+.nav-link[data-demo-state="focus"] {
+  outline: var(--border-width-focus) solid var(--color-warning);
+  outline-offset: var(--border-width-focus);
 }
 
 .nav-link:active {
@@ -656,7 +668,8 @@
  * INTELLIGENTE SUCHE (.smart-search)
  * Zweck: globale Suche mit gruppierten Vorschlägen und Kontextvorschau.
  * Nicht verwenden: als lokaler Tabellenfilter.
- * Zustände: geschlossen, offen, Vorschlag hover/selected, leer.
+ * Zustände: geschlossen, fokussiert, offen mit Vorschlägen, aktiver Vorschlag,
+ * keine Treffer und lädt.
  */
 .smart-search {
   position: relative;
@@ -686,6 +699,12 @@
 }
 
 .search-input[aria-expanded="true"] {
+  border-color: var(--color-brand);
+  box-shadow: var(--focus-ring);
+}
+
+.search-input:focus,
+.search-input[data-demo-state="focus"] {
   border-color: var(--color-brand);
   box-shadow: var(--focus-ring);
 }
@@ -740,7 +759,9 @@
   border: 0;
   border-radius: var(--radius-popover);
   background: none;
+  color: var(--color-text);
   text-align: left;
+  text-decoration: none;
   cursor: pointer;
 }
 
@@ -791,6 +812,30 @@
 .preview-facts svg {
   width: var(--space-form-grid);
   color: var(--color-accent-strong);
+}
+
+.search-popover--message {
+  grid-template-columns: 1fr;
+}
+
+.search-popover--message .suggestions {
+  border-right: 0;
+}
+
+.search-feedback {
+  min-height: var(--size-loading-min);
+  display: grid;
+  place-items: center;
+  align-content: center;
+  padding: var(--space-layout-wide);
+  text-align: center;
+}
+
+.search-feedback strong { font-size: var(--font-size-title-card); }
+.search-feedback p {
+  max-width: var(--size-page-copy-max);
+  margin: var(--space-status-gap) 0 0;
+  color: var(--color-text-muted);
 }
 
 /*
@@ -2086,6 +2131,12 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(var(--grid-local-search-min), 1fr));
   gap: var(--space-layout-compact);
+}
+.search-state-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--size-page-copy-max)), 1fr));
+  gap: var(--space-layout-compact);
+  align-items: start;
 }
 .component-demo { padding: var(--space-card-inner); }
 .component-demo > h3 { margin-bottom: var(--space-status-gap); }
