@@ -8,9 +8,21 @@ Die verbindliche visuelle Referenz ist [styleguide.html](styleguide.html).
 
 ## Einen neuen Screen bauen
 
-1. Ausschließlich `../screens/_vorlage.html` kopieren und umbenennen. Neue
+1. **Rollenprüfung vor dem Bauen:** Bevor der Screen komponiert wird, alle
+   voraussichtlich wiederverwendeten Klassen darauf prüfen, ob ihr Name eine
+   Darstellungsrolle oder nur den Inhalt ihres Ursprungsscreens beschreibt.
+   Kandidaten vor der Verwendung umbenennen und den bisherigen Namen als Alias
+   erhalten, nicht erst nach dem Markup.
+2. **Zustands- und Rechtematrix vor dem Markup:** Vorab für den Screen festlegen:
+   Inhalt vorhanden, lädt, fachlich leer, technisch fehlgeschlagen, teilweise
+   geschützt, vollständig geschützt und deaktiviert. Für jeden geschützten Teil
+   zusätzlich sichtbar, lesbar, bearbeitbar, Begründung und zuständige Stelle
+   festhalten. `.no-access` nur auf tatsächlich nicht lesbare Information
+   anwenden; weiterhin lesbare Information nicht als deaktiviertes Scheinfeld
+   ausgeben.
+3. Ausschließlich `../screens/_vorlage.html` kopieren und umbenennen. Neue
    Screens entstehen nicht durch Kopieren eines bestehenden Fachscreens.
-2. Im `<head>` immer in dieser Reihenfolge laden:
+4. Im `<head>` immer in dieser Reihenfolge laden:
 
    ```html
    <link rel="stylesheet" href="../system/tokens.css">
@@ -20,17 +32,23 @@ Die verbindliche visuelle Referenz ist [styleguide.html](styleguide.html).
    <script src="../system/shell.js" defer></script>
    ```
 
-3. Am `<body>` mit `data-screen` genau einen Navigationsbereich angeben:
+5. Am `<body>` mit `data-screen` genau einen Navigationsbereich angeben:
    `arbeitsbereich`, `kontakte`, `veranstaltungen`, `verteiler` oder `mailings`.
-4. Ausschließlich den Screeninhalt als `<main class="screen" id="main">`
+   Listenübersichten ergänzen `data-prototype-states="filled loading empty
+   error"`. `shell.js` setzt daraus vor dem Seitenkopf die gemeinsame,
+   ausdrücklich als Prototypsteuerung bezeichnete Zustandsleiste ein.
+6. Ausschließlich den Screeninhalt als `<main class="screen" id="main">`
    liefern. `shell.js` erzeugt Skip-Link, Seitennavigation, Kopfleiste und den
    umgebenden App-Rahmen.
-5. Inhalte ausschließlich aus den in `components.css` dokumentierten Klassen
+7. Inhalte ausschließlich aus den in `components.css` dokumentierten Klassen
    zusammensetzen. Native Elemente und ARIA-Zustände bleiben erhalten.
-6. Bei Listen mindestens 25 plausible Datensätze einsetzen, damit Dichte,
+8. Bei Listen mindestens 25 plausible Datensätze einsetzen, damit Dichte,
    Stickiness und Scrollverhalten sichtbar werden.
-7. Bei 1024, 1280 und 1920 Pixel Breite prüfen; Fokusreihenfolge und
-   `prefers-reduced-motion` ebenfalls prüfen.
+9. Bei 1024, 1280 und 1920 Pixel Breite prüfen; Fokusreihenfolge und
+   `prefers-reduced-motion` ebenfalls prüfen. Jeden Screen, den Styleguide und
+   eine frische Vorlagenkopie ohne Netz öffnen. Dabei nicht nur die Symbole,
+   sondern auch prüfen, dass Noto Sans lokal geladen wird und der Darstellung
+   mit Netz entspricht.
 
 Die Hülle wird nie pro Screen nachgebaut oder teilweise überschrieben. Ein
 neuer Screen bindet `shell.js` ein, setzt `data-screen` und enthält ausschließlich
@@ -72,6 +90,16 @@ für Symbole kein Netz. Für einen Versionswechsel die neue UMD-Datei unter
 demselben Namen ersetzen, die Versionsangabe hier aktualisieren und anschließend
 alle verwendeten `data-lucide`-Namen sowie dynamisch nachgezogene Icons prüfen.
 An den Screen-Köpfen ist beim Versionswechsel nichts zu ändern.
+
+Noto Sans liegt in den fünf tatsächlich verwendeten normalen Schnitten 400,
+500, 600, 700 und 800 als WOFF2 unter `vendor/`; abgelegt ist Fontsource
+`@fontsource/noto-sans` 5.3.0. `base.css` bindet die Dateien zentral mit
+`font-display: swap` ein. Für einen Schriftwechsel genau diese fünf Dateien
+unter den bestehenden Namen ersetzen, Familie beziehungsweise Versionsangabe
+hier aktualisieren und anschließend alle fünf Schnitte, Umlaute, ß sowie lange
+deutsche Verwaltungsangaben offline prüfen. Die Schriftliste im Token bleibt
+mit Arial und `sans-serif` als Ausweichschriften erhalten. An den Screen-Köpfen
+ist beim Schriftwechsel nichts zu ändern.
 
 ## Eine fehlende Komponente ergänzen
 
@@ -115,19 +143,37 @@ Vorhanden:
    aktiviert abhängige Aktionen. Filter rufen danach `refresh()` auf;
    dynamisch ergänzte Zeilen werden mit `refreshRows()` neu gebunden. Eine
    einzelne Vorschauwahl wie `.is-selected` gehört ausdrücklich nicht zu
-   diesem Vertrag.
+   diesem Vertrag. In einer paginierten Liste bedeutet sichtbar ausschließlich
+   die aktuelle Seite; die Auswahl anderer Seiten bleibt trotzdem erhalten.
  - **Filter** – `CrmShell.createListFilter(options)` verwaltet benannte,
    exklusive Kontrollgruppen, synchronisiert deren `aria-pressed`, blendet
    Zeilen über die vom Screen gelieferte Funktion `matches(row, state)` ein
    oder aus und übergibt sichtbare Zeilen an `onChange`. Textsuche und
    mehrwertige Checkboxfilter bleiben screenbezogen und stoßen nach ihrer
    Änderung `refresh()` an; der Vertrag schreibt keine bestimmte sichtbare
-   Filterkomponente vor.
+   Filterkomponente vor. Dieser kleine Vertrag bleibt für Detailtabellen ohne
+   Pagination erhalten.
+ - **Listenansicht und Pagination** – `CrmShell.createListView(options)` hält
+   Treffermenge und aktuelle Seite getrennt. Der Vertrag verbindet lokale
+   Textsuche mit exklusiven, umschaltbaren und mehrwertigen Filtergruppen,
+   setzt bei einer Einschränkung auf Seite eins zurück, rendert höchstens 25
+   Treffer pro Seite und liefert `matchedRows` sowie `pageRows` getrennt an
+   `onChange`. `reset()` setzt Suche und Filter zurück, `setPage()` wechselt
+   programmatisch und `setBusy()` sperrt angegebene Listenaktionen sowie die
+   Pagination während des Ladens. Die Seitennavigation setzt nach einer
+   Bedienhandlung den Fokus auf den Ergebnisanfang. Der Auswahlcontroller
+   bleibt ein eigener Vertrag und wird nach jeder Listenänderung mit
+   `refresh()` abgeglichen.
  - **Zustandsumschaltung** – `CrmShell.createStateSwitch(options)` zeigt aus
    benannten Panels genau eines, synchronisiert optionale Auslöser über deren
    Attribut und stellt `set(name)` bereit. Zustandsnamen, zeitliche Übergänge,
    Fokusführung und fachliche Folgen bleiben beim Screen. Prozessschritte sind
    kein Anwendungsfall dieses Vertrags.
+ - **Prototyp-Zustände** – `data-prototype-states` am `<body>` veranlasst die
+   Hülle, `.prototype-bar` mit Schaltflächen über `data-prototype-state`
+   einzusetzen. Ein Screen bindet diese Schaltflächen mit
+   `createStateSwitch`; die Leiste ist kein fachlicher Filter und wird nie in
+   Ergebnismetadaten oder Tabellenköpfe gesetzt.
 
 ## Entscheidungen bei uneinheitlichen Mustern
 
@@ -142,6 +188,13 @@ Vorhanden:
   dokumentierte Signature-Varianten.
 - **Knöpfe:** 40 px regulär und 34 px kompakt. Filter-Chips und Prozessschritte
   sind eigene Komponenten, keine Knopf-Sonderfälle.
+- **Listenübersichten:** Seitenkopf, Prototyp-Leiste, Listensteuerung,
+  Ergebnisbereich und Pagination bleiben getrennte Rollen. Die lokale Suche
+  steht links in `.list-controls-main`; primäre und sekundäre Listenaktionen
+  stehen rechts daneben. Fachlich verschiedene Filtergruppen stehen in
+  `.list-filter-groups` als responsive Spalten nebeneinander und teilen nur
+  die Darstellung und den Zustandsvertrag, nicht ihre Werte. Unter 900 Pixeln
+  werden die Spalten zu einer Folge. Die Seitengröße ist im Entwurf fest 25.
 - **Tabellen:** Eine gemeinsame Zell- und Auswahlstruktur; Stickiness wird als
   Seitenscroll, Containerscroll oder statisch gewählt. Kontakt- und
   Teilnehmendentabelle behalten ihre abgenommene Zeilendichte.

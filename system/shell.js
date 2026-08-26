@@ -248,6 +248,10 @@
     return Array.prototype.slice.call(value);
   }
 
+  function normalizeText(value) {
+    return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase("de");
+  }
+
   function createListSelection(options) {
     var settings = options || {};
     var root = settings.root || document;
@@ -399,6 +403,328 @@
     };
   }
 
+  function createListView(options) {
+    var settings = options || {};
+    var root = settings.root || document;
+    var rows = elements(settings.rows, root);
+    var query = elements(settings.query, root)[0] || null;
+    var pagination = elements(settings.pagination, root)[0] || null;
+    var resultFocus = elements(settings.resultFocus, root)[0] || null;
+    var resetControls = elements(settings.resetControls, root);
+    var busyControls = elements(settings.busyControls, root)
+      .concat(elements(".list-actions .btn, .list-actions .menu-choice", root))
+      .filter(function (control, index, all) { return all.indexOf(control) === index; });
+    var groups = settings.groups || [];
+    var pageSize = settings.pageSize || 25;
+    var currentPage = settings.initialPage || 1;
+    var values = {};
+    var initialValues = {};
+    var matchedRows = [];
+    var pageRows = [];
+    var isBusy = false;
+    var savedBusyStates = [];
+
+    function copy(value) {
+      return Array.isArray(value) ? value.slice() : value;
+    }
+
+    function stateCopy() {
+      var state = {};
+      Object.keys(values).forEach(function (name) {
+        state[name] = copy(values[name]);
+      });
+      return state;
+    }
+
+    function groupControls(group) {
+      return elements(group.controls, root);
+    }
+
+    function valueFor(group, control) {
+      return group.attribute ? control.getAttribute(group.attribute) : control.value;
+    }
+
+    function reflect(group) {
+      var type = group.type || "exclusive";
+      groupControls(group).forEach(function (control) {
+        var value = valueFor(group, control);
+        if (type === "checkbox") {
+          control.checked = values[group.name].indexOf(value) !== -1;
+        } else if (type === "toggle") {
+          control.setAttribute("aria-pressed", String(values[group.name].indexOf(value) !== -1));
+        } else {
+          control.setAttribute("aria-pressed", String(values[group.name] === value));
+        }
+      });
+    }
+
+    function sameValue(left, right) {
+      if (!Array.isArray(left) || !Array.isArray(right)) {
+        return left === right;
+      }
+      return left.slice().sort().join("\u0000") === right.slice().sort().join("\u0000");
+    }
+
+    function isFiltered() {
+      if (query && query.value.trim()) {
+        return true;
+      }
+      return groups.some(function (group) {
+        return !sameValue(values[group.name], initialValues[group.name]);
+      });
+    }
+
+    function pageNumbers(pageCount) {
+      var pages = [];
+      var candidates;
+      if (pageCount <= 7) {
+        for (var page = 1; page <= pageCount; page += 1) {
+          pages.push(page);
+        }
+        return pages;
+      }
+      candidates = [1, currentPage - 1, currentPage, currentPage + 1, pageCount]
+        .filter(function (page) { return page >= 1 && page <= pageCount; })
+        .filter(function (page, index, all) { return all.indexOf(page) === index; })
+        .sort(function (left, right) { return left - right; });
+      candidates.forEach(function (page, index) {
+        if (index && page - candidates[index - 1] > 1) {
+          pages.push("ellipsis-" + index);
+        }
+        pages.push(page);
+      });
+      return pages;
+    }
+
+    function setPage(nextPage, shouldFocus) {
+      var pageCount = Math.max(1, Math.ceil(matchedRows.length / pageSize));
+      currentPage = Math.min(Math.max(1, nextPage), pageCount);
+      refresh("page");
+      if (shouldFocus && resultFocus) {
+        var focusTarget = resultFocus.classList.contains("u-sr-only") && resultFocus.closest(".list-card") ? resultFocus.closest(".list-card") : resultFocus;
+        focusTarget.setAttribute("tabindex", "-1");
+        focusTarget.focus();
+      }
+    }
+
+    function renderPagination(total, pageCount) {
+      if (!pagination) {
+        return;
+      }
+      var range = pagination.querySelector("[data-list-range]");
+      var nav = pagination.querySelector("[data-pagination-nav]");
+      var previous = pagination.querySelector("[data-page-previous]");
+      var next = pagination.querySelector("[data-page-next]");
+      var pages = pagination.querySelector("[data-page-list]");
+      var start = total ? ((currentPage - 1) * pageSize) + 1 : 0;
+      var end = total ? Math.min(currentPage * pageSize, total) : 0;
+      var itemName = typeof settings.itemName === "function" ? settings.itemName(total) : (settings.itemName || (total === 1 ? "Treffer" : "Treffern"));
+      if (range) {
+        range.textContent = total ? start + "–" + end + " von " + total + " " + itemName : "0 " + itemName;
+      }
+      if (nav) {
+        nav.hidden = pageCount <= 1;
+      }
+      if (previous) {
+        previous.disabled = isBusy || currentPage === 1;
+      }
+      if (next) {
+        next.disabled = isBusy || currentPage === pageCount;
+      }
+      if (!pages) {
+        return;
+      }
+      pages.innerHTML = "";
+      pageNumbers(pageCount).forEach(function (page) {
+        if (typeof page === "string") {
+          var ellipsis = document.createElement("span");
+          ellipsis.className = "pagination-ellipsis";
+          ellipsis.setAttribute("aria-hidden", "true");
+          ellipsis.textContent = "…";
+          pages.appendChild(ellipsis);
+          return;
+        }
+        var button = document.createElement("button");
+        button.className = "pagination-button";
+        button.type = "button";
+        button.textContent = page;
+        button.setAttribute("aria-label", "Seite " + page + " zeigen");
+        if (page === currentPage) {
+          button.setAttribute("aria-current", "page");
+        }
+        button.disabled = isBusy;
+        button.addEventListener("click", function () {
+          setPage(page, true);
+        });
+        pages.appendChild(button);
+      });
+    }
+
+    function refresh(reason) {
+      var state = stateCopy();
+      var normalizedQuery = normalizeText(query ? query.value.trim() : "");
+      matchedRows = rows.filter(function (row) {
+        var text = settings.searchText ? settings.searchText(row) : row.textContent;
+        var queryMatches = !normalizedQuery || normalizeText(text).indexOf(normalizedQuery) !== -1;
+        return queryMatches && (!settings.matches || settings.matches(row, state));
+      });
+      var pageCount = Math.max(1, Math.ceil(matchedRows.length / pageSize));
+      currentPage = Math.min(currentPage, pageCount);
+      var start = (currentPage - 1) * pageSize;
+      pageRows = matchedRows.slice(start, start + pageSize);
+      rows.forEach(function (row) {
+        row.hidden = pageRows.indexOf(row) === -1;
+      });
+      resetControls.forEach(function (control) {
+        control.hidden = !isFiltered();
+      });
+      renderPagination(matchedRows.length, pageCount);
+      var view = {
+        matchedRows: matchedRows.slice(),
+        pageRows: pageRows.slice(),
+        total: matchedRows.length,
+        page: currentPage,
+        pageCount: pageCount,
+        query: query ? query.value.trim() : "",
+        state: stateCopy(),
+        reason: reason || "refresh"
+      };
+      if (settings.onChange) {
+        settings.onChange(view);
+      }
+      return view;
+    }
+
+    function reset() {
+      if (query) {
+        query.value = "";
+      }
+      groups.forEach(function (group) {
+        values[group.name] = copy(initialValues[group.name]);
+        reflect(group);
+      });
+      currentPage = 1;
+      return refresh("reset");
+    }
+
+    function setBusy(busy) {
+      var nextBusy = Boolean(busy);
+      if (nextBusy === isBusy) {
+        return;
+      }
+      isBusy = nextBusy;
+      if (isBusy) {
+        savedBusyStates = busyControls.map(function (control) {
+          return {
+            control: control,
+            disabled: Boolean(control.disabled),
+            ariaDisabled: control.getAttribute("aria-disabled")
+          };
+        });
+        busyControls.forEach(function (control) {
+          if ("disabled" in control) {
+            control.disabled = true;
+          }
+          control.setAttribute("aria-disabled", "true");
+        });
+      } else {
+        savedBusyStates.forEach(function (entry) {
+          if ("disabled" in entry.control) {
+            entry.control.disabled = entry.disabled;
+          }
+          if (entry.ariaDisabled === null) {
+            entry.control.removeAttribute("aria-disabled");
+          } else {
+            entry.control.setAttribute("aria-disabled", entry.ariaDisabled);
+          }
+        });
+        savedBusyStates = [];
+      }
+      if (pagination) {
+        pagination.setAttribute("aria-busy", String(isBusy));
+      }
+      renderPagination(matchedRows.length, Math.max(1, Math.ceil(matchedRows.length / pageSize)));
+    }
+
+    busyControls.forEach(function (control) {
+      control.addEventListener("click", function (event) {
+        if (!isBusy) {
+          return;
+        }
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      });
+    });
+
+    groups.forEach(function (group) {
+      var type = group.type || "exclusive";
+      var controls = groupControls(group);
+      if (type === "checkbox") {
+        values[group.name] = group.initial ? group.initial.slice() : controls.filter(function (control) { return control.checked; }).map(function (control) { return valueFor(group, control); });
+      } else if (type === "toggle") {
+        values[group.name] = group.initial ? group.initial.slice() : [];
+      } else {
+        values[group.name] = group.initial;
+      }
+      initialValues[group.name] = copy(values[group.name]);
+      reflect(group);
+      controls.forEach(function (control) {
+        control.addEventListener(type === "checkbox" ? "change" : "click", function () {
+          var value = valueFor(group, control);
+          if (type === "checkbox") {
+            values[group.name] = controls.filter(function (item) { return item.checked; }).map(function (item) { return valueFor(group, item); });
+          } else if (type === "toggle") {
+            var active = values[group.name].slice();
+            var index = active.indexOf(value);
+            if (index === -1) {
+              active.push(value);
+            } else {
+              active.splice(index, 1);
+            }
+            values[group.name] = active;
+          } else {
+            values[group.name] = value;
+          }
+          reflect(group);
+          currentPage = 1;
+          refresh("filter");
+        });
+      });
+    });
+
+    if (query) {
+      query.addEventListener("input", function () {
+        currentPage = 1;
+        refresh("query");
+      });
+    }
+    resetControls.forEach(function (control) {
+      control.addEventListener("click", reset);
+    });
+    if (pagination) {
+      var previous = pagination.querySelector("[data-page-previous]");
+      var next = pagination.querySelector("[data-page-next]");
+      if (previous) {
+        previous.addEventListener("click", function () { setPage(currentPage - 1, true); });
+      }
+      if (next) {
+        next.addEventListener("click", function () { setPage(currentPage + 1, true); });
+      }
+    }
+    refresh("initial");
+
+    return {
+      getState: stateCopy,
+      getMatchedRows: function () { return matchedRows.slice(); },
+      getPageRows: function () { return pageRows.slice(); },
+      getPage: function () { return currentPage; },
+      refresh: refresh,
+      reset: reset,
+      setBusy: setBusy,
+      setPage: function (page) { setPage(page, false); }
+    };
+  }
+
   function createStateSwitch(options) {
     var settings = options || {};
     var root = settings.root || document;
@@ -466,6 +792,7 @@
     showPrototypeNotice: showPrototypeNotice,
     createListSelection: createListSelection,
     createListFilter: createListFilter,
+    createListView: createListView,
     createStateSwitch: createStateSwitch
   };
 
@@ -527,6 +854,34 @@
   document.body.insertBefore(appMain, main);
   appMain.appendChild(topbar);
   appMain.appendChild(main);
+
+  var prototypeStateNames = (document.body.getAttribute("data-prototype-states") || "").trim().split(/\s+/).filter(Boolean);
+  if (prototypeStateNames.length) {
+    var prototypeLabels = {
+      filled: "Gefüllt",
+      overview: "Übersicht",
+      loading: "Lädt",
+      empty: "Leer",
+      error: "Fehler",
+      protected: "Kein Zugriff"
+    };
+    var prototypeInitial = document.body.getAttribute("data-prototype-initial") || prototypeStateNames[0];
+    var prototypeBar = document.createElement("section");
+    prototypeBar.className = "prototype-bar";
+    prototypeBar.setAttribute("aria-label", "Ansichtszustand im Prototyp wechseln");
+    prototypeBar.innerHTML = '<span class="prototype-label"><i data-lucide="circle-dashed" aria-hidden="true"></i>Prototyp-Zustand</span><div class="prototype-controls"></div>';
+    var prototypeControls = prototypeBar.querySelector(".prototype-controls");
+    prototypeStateNames.forEach(function (state) {
+      var button = document.createElement("button");
+      button.className = "prototype-state";
+      button.type = "button";
+      button.setAttribute("data-prototype-state", state);
+      button.setAttribute("aria-pressed", String(state === prototypeInitial));
+      button.textContent = prototypeLabels[state] || state;
+      prototypeControls.appendChild(button);
+    });
+    main.insertBefore(prototypeBar, main.firstChild);
+  }
 
   var search = document.getElementById("global-search");
   var popover = document.getElementById("search-popover");

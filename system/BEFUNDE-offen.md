@@ -3,8 +3,8 @@
 Geprüft wurden die bisherigen Fachscreens, die drei Verteiler-Screens und eine
 frische Kopie von `screens/_vorlage.html`. Die gemeinsame Hülle sowie die zuvor
 gefundenen screenspezifischen Interaktionslücken sind umgesetzt. Offen bleiben
-fachliche Entscheidungen, ein Bestandswiderspruch zur Offline-Regel und der
-bekannte Kontrastgrenzfall.
+fachliche Entscheidungen, zwei kleine Bestandsüberläufe und der bekannte
+Kontrastgrenzfall.
 
 ## Offene Fachfragen
 
@@ -24,16 +24,24 @@ bekannte Kontrastgrenzfall.
    Wartelistenzeilen. Filter und Mehrfachauswahl bilden weiterhin den
    tatsächlichen Tabellenbestand ab. Welche Zahl fachlich gelten soll, ist zu
    klären; der Verteiler-Bauabschnitt ändert diese Bestandsdaten nicht.
+5. **Mailingübersicht / Status und Sichtbarkeit:** Der allgemeine Listenvertrag
+   trägt beliebige ausgeschriebene Statuswerte, Ämterfilter und geschützte
+   Zustände. Welche Statuswerte fachlich gelten, welche Mailings zwischen
+   Ämtern sichtbar sind und wer Mailings anlegen darf, ist vor einem
+   Übersichts-Screen festzulegen.
+6. **Mailingübersicht / Mehrfachauswahl:** Auswahlspalte, seitenweise
+   Sammelauswahl und seitenübergreifender Auswahlzähler sind systemisch
+   vorhanden. Ob eine Mailingübersicht eine fachliche Mehrfachhandlung braucht,
+   ist nicht belegt; deshalb wird die Auswahl dort nicht vorweggenommen.
 
 ## Offener Technikbefund
 
-- **Externe Schriftadressen im Bestand:** `_vorlage.html`, der Styleguide und
-  die bisherigen Fachscreens binden Google Fonts ein, obwohl alle Dateien ohne
-  Internet und ohne externe Adressen laufen müssen. Die drei neuen
-  Verteiler-Screens übernehmen diese Verweise nicht und funktionieren mit der
-  im Schrifttoken vorgesehenen lokalen Ersatzschrift. Eine systemweite
-  Bereinigung oder eine lokal abgelegte Noto-Sans-Datei wäre ein eigener
-  Bauabschnitt, weil sie sämtliche Bestandsscreens berührt.
+- **Horizontale Bestandsüberläufe:** Im lokalen Firefox überschreitet die
+  Veranstaltungsübersicht bei einem 1024-Pixel-Fenster die innere Viewportbreite
+  um rund 22 Pixel; das Kontakt-Detail überschreitet sie bei 1280 Pixeln um rund
+  17 Pixel. Der pixelgenaue Vergleich der alten und neuen Klassenaliase ist bei
+  1024, 1280 und 1920 Pixeln identisch; die Konsolidierungsrunde hat diese
+  Geometrie daher nicht verursacht und ändert sie nicht nebenbei.
 
 ## Offener Barrierefreiheitsbefund
 
@@ -45,10 +53,16 @@ bekannte Kontrastgrenzfall.
 
 ## Behobene Umsetzungsbefunde
 
-- **Kontakte:** Beide Exporte und „Kontakt erfassen“ benennen die nicht
-  ausgeführte Handlung. Amtsauswahl, Suche und Hauptfilter wirken gemeinsam;
-  „Übernehmen“ schließt das Menü. Die sichtbare Startauswahl und der Reset
-  umfassen alle drei Ämter.
+- **Schrift / Offline-Betrieb:** Noto Sans liegt in den verwendeten Schnitten
+  400, 500, 600, 700 und 800 lokal als WOFF2 vor und wird zentral aus
+  `base.css` geladen. Vorlage, Styleguide und alle Fachscreens besitzen keine
+  externen Schriftverweise mehr; die Verteiler-Screens verwenden damit
+  dieselbe Schrift wie der Bestand.
+- **Kontakte:** Beide Exporte und „Kontakt anlegen“ benennen die nicht
+  ausgeführte Handlung. Kontaktart und Umfang sind getrennte Achsen; Suche,
+  beide Achsen und Amtsauswahl wirken gemeinsam. Ämteränderungen gelten
+  unmittelbar. Die sichtbare Startauswahl und der Reset umfassen alle drei
+  Ämter.
 - **Kontaktvorschau:** Zeilenklick, Vorschauknopf, Enter und Leertaste verwenden
   gemeinsam `selectContact(row)` und aktualisieren Seitenvorschau sowie
   responsive Detailzeile. Nur Sabine Keller besitzt eine vollständige
@@ -81,5 +95,5 @@ bekannte Kontrastgrenzfall.
   blockieren die Klick- und Tastaturprüfung nicht mehr. Auswahl, Vorschau und
   Detailziel werden aus der jeweils aktiven Zeile abgeleitet.
 
-Eine vollständige erneute Klick- und Tastaturprüfung aller Screens und
-Viewportbreiten steht nach diesen Reparaturen noch aus.
+Die vollständige erneute Klick-, Navigations- und Tastaturprüfung aller Screens
+bei 1024, 1280 und 1920 Pixeln wurde in der Konsolidierungsrunde durchgeführt.

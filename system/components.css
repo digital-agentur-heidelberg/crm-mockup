@@ -713,8 +713,10 @@
  * Zweck: Hauptarbeitsfläche mit ergänzender Objektinformation in einer Seitenzone.
  * Nicht verwenden: für Kontakt-Master-Detail; dort ändert sich bei 1129 px auch
  * das Interaktionsmodell. Dieses Raster stapelt wie event/form/mail bei 1099 px.
+ * Rolle: allgemeines Haupt-/Seitenraster; .event-grid bleibt Bestandsalias.
  */
-.object-work-grid {
+.object-work-grid,
+.event-grid {
   display: grid;
   grid-template-columns: minmax(var(--grid-event-main-min), 1fr) var(--grid-event-side);
   gap: var(--space-layout-compact);
@@ -971,6 +973,69 @@
 }
 
 /*
+ * PROTOTYP-LEISTE (.prototype-bar, .prototype-state)
+ * Zweck: Zustände eines klickbaren Entwurfs an gleichbleibender Stelle zeigen.
+ * Nicht verwenden: für fachliche Filter, Navigation oder Prozessschritte.
+ * Zustände: Ruhe, hover, focus, aktiv und deaktiviert.
+ */
+.prototype-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-cluster);
+  margin-bottom: var(--space-cluster);
+  padding: var(--space-control-gap) var(--space-control-block);
+  border: var(--border-width-default) dashed var(--color-border-control);
+  border-radius: var(--radius-control);
+  background: var(--color-surface-subtle);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-meta);
+}
+.prototype-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-control-gap);
+  font-weight: var(--font-weight-bold);
+}
+.prototype-label svg { width: var(--size-sticky-air); }
+.prototype-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-control-gap);
+  flex-wrap: wrap;
+}
+.prototype-state {
+  min-height: var(--size-control-compact);
+  padding: var(--space-status-gap) var(--space-control-block);
+  border: var(--border-width-default) solid transparent;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-meta);
+  font-weight: var(--font-weight-action);
+  cursor: pointer;
+}
+.prototype-state:hover,
+.prototype-state[data-demo-state="hover"] {
+  border-color: var(--color-border-control);
+  background: var(--color-surface-card);
+  color: var(--color-text);
+}
+.prototype-state[data-demo-state="focus"] {
+  outline: var(--border-width-focus) solid var(--color-warning);
+  outline-offset: var(--border-width-focus);
+}
+.prototype-state[aria-pressed="true"] {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+  color: var(--color-accent-strong);
+}
+.prototype-state:disabled {
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
+}
+
+/*
  * AUFGABEN-KACHEL (.task-card)
  * Zweck: priorisierte direkte Handlung im Arbeitsbereich.
  * Nicht verwenden: für statische Zusammenfassung oder Navigation ohne Kontext.
@@ -1136,38 +1201,143 @@
 }
 
 /*
- * KONTAKT-MASTER-DETAIL (.contact-layout, .contact-preview, .inline-detail)
- * Zweck: Kontaktliste mit kontextbewahrender Vorschau.
- * Nicht verwenden: wenn eine Zeile keine eigenständige Detailansicht besitzt.
- * Varianten: Seitenkarte ab 1130 px, Detailzeile bis 1129 px.
+ * LISTENSTEUERUNG UND PAGINATION
+ * (.list-controls, .list-controls-main, .list-actions,
+ *  .list-filter-groups, .list-pagination)
+ * Zweck: lokale Suche, Listenaktionen, getrennte Filterachsen und Seitenwahl
+ * in Objektübersichten.
+ * Nicht verwenden: für globale Suche, Prozessschritte oder Detailtabellen ohne
+ * eigenständige Übersicht.
+ * Zustände: Suche leer/gefüllt/fokussiert/deaktiviert; Filter aktiv/inaktiv;
+ * Pagination erste, mittlere, letzte, einzelne und deaktivierte Seite.
  */
+.list-controls { margin-bottom: var(--space-row); }
+.u-stack > .list-controls { margin-bottom: 0; }
+.list-controls-main,
 .contact-search-tools {
   display: grid;
   grid-template-columns: minmax(var(--grid-local-search-min), 1fr) auto;
   gap: var(--space-cluster);
   align-items: center;
-  margin-bottom: var(--space-row);
+  padding: var(--space-card-compact);
 }
+.list-search,
 .local-search { max-width: 620px; }
+.list-search,
+.local-search { position: relative; }
+.list-search > svg,
 .local-search > svg {
   left: var(--space-row);
   top: var(--space-control-inline);
 }
+.list-search > svg,
+.local-search > svg {
+  position: absolute;
+  width: var(--size-sticky-air);
+  color: var(--color-text-disabled);
+}
+.list-search .input,
 .local-search .input { padding-left: 41px; }
+.list-actions,
 .contact-actions,
 .contact-tools {
   display: flex;
   align-items: center;
   gap: var(--space-row-tight);
 }
+.list-actions,
 .contact-actions {
   justify-content: flex-end;
   flex-wrap: wrap;
 }
+.list-filter-groups,
+.contact-tools {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--size-search-preview-min)), 1fr));
+  align-items: start;
+  gap: var(--space-cluster-tight);
+  padding: var(--space-cluster) var(--space-card-compact);
+  border-top: var(--border-width-default) solid var(--color-border);
+}
+.list-filter-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-control-gap);
+  flex-wrap: wrap;
+}
+.list-filter-row > strong {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-label);
+}
+.list-filter-reset { margin-left: auto; }
+.list-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-cluster);
+  padding: var(--space-cluster) var(--space-stack-small);
+  border-top: var(--border-width-default) solid var(--color-border);
+  background: var(--color-surface-subtle);
+}
+.list-range {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-label);
+}
+.pagination-nav,
+.pagination-pages {
+  display: flex;
+  align-items: center;
+  gap: var(--space-control-gap);
+}
+.pagination-button {
+  min-width: var(--size-control-compact);
+  min-height: var(--size-control-compact);
+  display: inline-grid;
+  place-items: center;
+  padding: var(--space-status-gap) var(--space-control-block);
+  border: var(--border-width-default) solid var(--color-border-control);
+  border-radius: var(--radius-control);
+  background: var(--color-surface-card);
+  color: var(--color-text);
+  font-size: var(--font-size-label);
+  font-weight: var(--font-weight-action);
+  cursor: pointer;
+}
+.pagination-button:hover,
+.pagination-button[data-demo-state="hover"] {
+  border-color: var(--color-brand);
+  color: var(--color-brand-strong);
+}
+.pagination-button[data-demo-state="focus"] {
+  outline: var(--border-width-focus) solid var(--color-warning);
+  outline-offset: var(--border-width-focus);
+}
+.pagination-button[aria-current="page"] {
+  border-color: var(--color-brand);
+  background: var(--color-brand-soft);
+  color: var(--color-brand-strong);
+}
+.pagination-button:disabled {
+  border-color: var(--color-border);
+  background: var(--color-surface-page);
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
+}
+.pagination-ellipsis {
+  min-width: var(--size-control-compact);
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+/*
+ * KONTAKT-MASTER-DETAIL (.contact-layout, .contact-preview, .inline-detail)
+ * Zweck: Kontaktliste mit kontextbewahrender Vorschau.
+ * Nicht verwenden: wenn eine Zeile keine eigenständige Detailansicht besitzt.
+ * Varianten: Seitenkarte ab 1130 px, Detailzeile bis 1129 px.
+ */
 .contact-tools {
   justify-content: space-between;
-  gap: var(--space-cluster);
-  margin-bottom: var(--space-row);
 }
 .filter-popover {
   top: var(--size-search-control);
@@ -1182,6 +1352,7 @@
   align-items: start;
 }
 .list-card { overflow: visible; }
+/* Ergebnis-Metadaten sind die gemeinsame Kopfzeile einer Listenkarte. */
 .result-meta {
   display: flex;
   justify-content: space-between;
@@ -1622,13 +1793,14 @@
 .status-stat span { display: block; }
 .status-stat strong { font-size: 1.08rem; }
 .status-stat span { color: var(--color-text-muted); font-size: var(--font-size-meta); }
-.event-grid {
-  display: grid;
-  grid-template-columns: minmax(var(--grid-event-main-min), 1fr) var(--grid-event-side);
-  gap: var(--space-layout-compact);
-  align-items: start;
-}
+/*
+ * AUSWAHLTABELLENKARTE (.selection-table-card; Alias .participant-card)
+ * Rolle: Kartenhülle für eine Tabelle mit sichtbarer Mehrfachauswahl.
+ * Nicht verwenden: für Tabellen ohne Zeilenauswahl.
+ */
+.selection-table-card,
 .participant-card { overflow: hidden; }
+.selection-table-card tbody tr.is-checked,
 .participant-card tbody tr.is-checked { background: var(--color-brand-soft); }
 .capacity-overview { padding: var(--space-layout-compact) var(--space-card-asymmetric) var(--space-form-grid); }
 .capacity-numbers {
@@ -1755,6 +1927,8 @@
   font-size: 0.84rem;
   font-weight: var(--font-weight-semibold);
 }
+/* Rolle: eingerückte Beschreibungs- oder Referenzliste; .event-reference bleibt Bestandsalias. */
+.description-list--inset,
 .event-reference { padding: var(--space-control-gap) var(--space-stack-small) var(--space-cluster); }
 .wait-summary { padding: var(--space-card-compact) var(--space-card-asymmetric); }
 .wait-summary > p { margin-bottom: var(--space-control-inline); }
@@ -2311,8 +2485,18 @@
 }
 
 @media (max-width: 900px) {
+  .prototype-bar,
+  .list-pagination {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .list-controls-main,
   .contact-search-tools { grid-template-columns: 1fr; }
+  .list-filter-groups,
+  .contact-tools { grid-template-columns: 1fr; }
+  .list-search,
   .local-search { max-width: none; }
+  .list-actions,
   .contact-actions { justify-content: flex-start; }
   .task-grid { grid-template-columns: 1fr; }
   .head-facts { grid-template-columns: 1fr; }

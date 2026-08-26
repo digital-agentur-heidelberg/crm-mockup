@@ -96,7 +96,8 @@ hier arbeitet, baut innerhalb eines bestehenden Systems.
 
 1. **Plan zuerst**, im Chat, ohne Code: was gebaut wird, welche Komponenten
    vorhanden sind und welche fehlen. Bei fehlenden: erst System ergänzen,
-   dann Screen bauen – nie umgekehrt.
+   dann Screen bauen – nie umgekehrt. Die verbindliche Rollenprüfung und die
+   Zustands- und Rechtematrix aus `system/README.md` sind Teil dieses Schritts.
 2. **Nur den Auftrag umsetzen.** Nichts außerhalb anfassen: kein
    Aufräumen, kein Vereinheitlichen, keine Verbesserung nebenbei. Was
    auffällt, wird in `system/BEFUNDE-offen.md` notiert.
@@ -106,6 +107,7 @@ hier arbeitet, baut innerhalb eines bestehenden Systems.
 4. **Prüfen** nach jeder Runde:
    - die drei Prüfungen (`<style>`, `style=`, Farbwerte) – jeweils null
    - alle Screens per Doppelklick, ohne Netz
+   - offline dieselbe Noto Sans wie mit Netz, nicht nur vorhandene Symbole
    - jede Schaltfläche auf jedem Screen einmal drücken
    - alle Navigationswege durchklicken, aktiven Eintrag prüfen
    - 1024, 1280 und 1920 Pixel
