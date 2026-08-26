@@ -1,9 +1,10 @@
 # Offene Befunde aus der Klickprüfung
 
-Geprüft wurden die sieben Fachscreens und eine frische Kopie von
-`screens/_vorlage.html`. Die gemeinsame Hülle sowie die zuvor gefundenen
-screenspezifischen Interaktionslücken sind umgesetzt. Offen bleiben nur
-fachliche Entscheidungen und der bekannte Kontrastgrenzfall.
+Geprüft wurden die bisherigen Fachscreens, die drei Verteiler-Screens und eine
+frische Kopie von `screens/_vorlage.html`. Die gemeinsame Hülle sowie die zuvor
+gefundenen screenspezifischen Interaktionslücken sind umgesetzt. Offen bleiben
+fachliche Entscheidungen, ein Bestandswiderspruch zur Offline-Regel und der
+bekannte Kontrastgrenzfall.
 
 ## Offene Fachfragen
 
@@ -13,6 +14,26 @@ fachliche Entscheidungen und der bekannte Kontrastgrenzfall.
 2. **Veranstaltung / Warteliste und Platzangebot:** Die Schaltflächen benennen
    die im Entwurf nicht ausgeführte Handlung. Regeln, Frist und Nachricht des
    Platzangebots sind fachlich weiterhin nicht festgelegt.
+3. **Managed-Verteiler / ändernde Stelle:** Das Sperr-Muster muss benennen, wer
+   eine geschützte Definition ändern kann. Der Entwurf verwendet dafür die
+   neutrale Rollenbezeichnung „Zentrale CRM-Administration“. Die verbindliche
+   organisatorische Bezeichnung und der zugehörige Kontaktweg sind mit den
+   Fachämtern noch festzulegen.
+4. **Teilnehmendenliste / Statussummen:** Die Statusstrecke nennt acht Personen
+   auf der Warteliste, die fest verdrahtete Tabelle enthält zehn sichtbare
+   Wartelistenzeilen. Filter und Mehrfachauswahl bilden weiterhin den
+   tatsächlichen Tabellenbestand ab. Welche Zahl fachlich gelten soll, ist zu
+   klären; der Verteiler-Bauabschnitt ändert diese Bestandsdaten nicht.
+
+## Offener Technikbefund
+
+- **Externe Schriftadressen im Bestand:** `_vorlage.html`, der Styleguide und
+  die bisherigen Fachscreens binden Google Fonts ein, obwohl alle Dateien ohne
+  Internet und ohne externe Adressen laufen müssen. Die drei neuen
+  Verteiler-Screens übernehmen diese Verweise nicht und funktionieren mit der
+  im Schrifttoken vorgesehenen lokalen Ersatzschrift. Eine systemweite
+  Bereinigung oder eine lokal abgelegte Noto-Sans-Datei wäre ein eigener
+  Bauabschnitt, weil sie sämtliche Bestandsscreens berührt.
 
 ## Offener Barrierefreiheitsbefund
 

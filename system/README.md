@@ -21,7 +21,7 @@ Die verbindliche visuelle Referenz ist [styleguide.html](styleguide.html).
    ```
 
 3. Am `<body>` mit `data-screen` genau einen Navigationsbereich angeben:
-   `arbeitsbereich`, `kontakte`, `veranstaltungen` oder `mailings`.
+   `arbeitsbereich`, `kontakte`, `veranstaltungen`, `verteiler` oder `mailings`.
 4. Ausschließlich den Screeninhalt als `<main class="screen" id="main">`
    liefern. `shell.js` erzeugt Skip-Link, Seitennavigation, Kopfleiste und den
    umgebenden App-Rahmen.
@@ -107,15 +107,27 @@ Vorhanden:
     `data-prototype-record` mit `data-prototype-name`
  - **Icons nachziehen** – `CrmShell.rendered(container)`, Ereignis
    `crm:rendered`
-
- Noch nicht extrahiert, weil bislang nur zwei Beispiele vorliegen. Beim
- dritten Vorkommen zu extrahieren und hier zu dokumentieren:
- - **Mehrfachauswahl in Listen** – sichtbare Zeilen auswählen, alle
-   sichtbaren auswählen, Zeilenzustand setzen, Zähler führen,
-   Aktionsknöpfe aktivieren
- - **Filter** – `aria-pressed` setzen, Zeilen ein- und ausblenden,
-   Ergebniszahl aktualisieren
- - **Zustandsumschaltung** – lädt, leer, Fehler, gefüllt
+ - **Mehrfachauswahl in Listen** –
+   `CrmShell.createListSelection(options)` bindet Zeilencheckboxen und die
+   Wahl „alle sichtbaren“, setzt `.is-checked`, führt den sichtbaren
+   Auswahlzustand der Sammelcheckbox einschließlich `indeterminate`, liefert
+   ausgewählte und sichtbare Zeilen, aktualisiert Zähler über `onChange` und
+   aktiviert abhängige Aktionen. Filter rufen danach `refresh()` auf;
+   dynamisch ergänzte Zeilen werden mit `refreshRows()` neu gebunden. Eine
+   einzelne Vorschauwahl wie `.is-selected` gehört ausdrücklich nicht zu
+   diesem Vertrag.
+ - **Filter** – `CrmShell.createListFilter(options)` verwaltet benannte,
+   exklusive Kontrollgruppen, synchronisiert deren `aria-pressed`, blendet
+   Zeilen über die vom Screen gelieferte Funktion `matches(row, state)` ein
+   oder aus und übergibt sichtbare Zeilen an `onChange`. Textsuche und
+   mehrwertige Checkboxfilter bleiben screenbezogen und stoßen nach ihrer
+   Änderung `refresh()` an; der Vertrag schreibt keine bestimmte sichtbare
+   Filterkomponente vor.
+ - **Zustandsumschaltung** – `CrmShell.createStateSwitch(options)` zeigt aus
+   benannten Panels genau eines, synchronisiert optionale Auslöser über deren
+   Attribut und stellt `set(name)` bereit. Zustandsnamen, zeitliche Übergänge,
+   Fokusführung und fachliche Folgen bleiben beim Screen. Prozessschritte sind
+   kein Anwendungsfall dieses Vertrags.
 
 ## Entscheidungen bei uneinheitlichen Mustern
 
@@ -136,6 +148,9 @@ Vorhanden:
 - **Responsive Vorschau:** Kontakt-Master-Detail wechselt bei 1129 px in die
   Detailzeile. Die übrigen Zweispaltenlayouts stapeln bei 1099 px. Beide Werte
   sind benannte Umbruchtokens, weil das Verhalten sichtbar verschieden ist.
+  Das Objekt-Arbeitslayout des Verteilerdetails bestätigt 1099 px als
+  allgemeinen Stapelpunkt; bei 1129 px ändert allein die Kontaktliste zugleich
+  ihr Interaktionsmodell. Die Werte werden deshalb nicht zusammengelegt.
 - **Status:** Die Text-Statusmarke ist das Atom. Statuskacheln, Balken und
   Kapazitätswerte sind zusammengesetzte Datenansichten mit Text beziehungsweise
   zugänglicher Beschriftung und daher keine bloßen Chip-Varianten.
@@ -159,6 +174,8 @@ die meisten langen Verwaltungsangaben bewältigt.
 - Vorschlagskasten für eine zunächst unbestimmte Veranstaltungsart
 - vollständiger Mailing-Prozess mit Bausteinregeln, Problemsprung,
   Testnachweis und Versandbeleg
+- geschützter, aber lesbarer Teilbereich innerhalb eines weiter bearbeitbaren
+  Objekts
 
 Diese Komponenten dürfen für neue Screens verwendet werden, müssen bei der
 ersten weiteren Verwendung aber im Styleguide gegen den neuen Kontext geprüft

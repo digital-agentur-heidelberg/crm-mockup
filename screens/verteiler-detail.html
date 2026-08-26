@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Verteilerdetail – Heidelberg CRM</title>
+  <link rel="stylesheet" href="../system/tokens.css">
+  <link rel="stylesheet" href="../system/base.css">
+  <link rel="stylesheet" href="../system/components.css">
+  <script src="../system/vendor/lucide.js" defer></script>
+  <script src="../system/shell.js" defer></script>
+</head>
+<body data-screen="verteiler">
+  <main class="screen" id="main">
+    <a class="btn btn--quiet back-link" href="verteiler.html"><i data-lucide="arrow-left" aria-hidden="true"></i>Zur Verteilerübersicht</a>
+    <header class="page-head">
+      <div><p class="eyebrow">Verteiler · Definition und Mitglieder</p><h1>Verteiler verwalten</h1><p id="distribution-mode-note" aria-live="polite">Arbeitsverteiler: Definition und Mitgliedschaften sind bearbeitbar.</p></div>
+      <div class="filter-bar" aria-label="Ausprägung des Verteilers wechseln"><button class="filter-chip" type="button" aria-pressed="true" aria-controls="work-distribution" data-distribution-mode="work">Arbeitsverteiler</button><button class="filter-chip" type="button" aria-pressed="false" aria-controls="managed-distribution" data-distribution-mode="managed">Managed-Verteiler</button></div>
+    </header>
+
+    <div class="object-work-grid">
+      <section class="card participant-card" aria-labelledby="member-title">
+        <div class="card-head card-head--compact">
+          <div><h2 id="member-title">Mitglieder</h2><small><span id="member-count">25 Mitglieder</span> · <span id="member-selected-count" aria-live="polite">0 ausgewählt</span></small></div>
+          <div class="head-actions">
+            <details class="menu" id="add-member-menu"><summary class="btn btn--compact"><i data-lucide="user-plus" aria-hidden="true"></i>Mitglieder hinzufügen</summary><div class="menu-popover menu-popover--right filter-popover"><strong>Vorhandene Kontakte</strong><label class="check"><input type="checkbox" name="new-member" value="sabine"><span>Sabine Keller · GreenTech Solutions GmbH</span></label><label class="check"><input type="checkbox" name="new-member" value="aylin"><span>Dr. Aylin Yılmaz · BioRN Network e. V.</span></label><label class="check"><input type="checkbox" name="new-member" value="tobias"><span>Tobias Rehm · Rehm Präzisionstechnik KG</span></label><button class="btn btn--compact" id="add-members" type="button">Auswahl hinzufügen</button></div></details>
+            <button class="btn btn--compact" id="remove-members" type="button" disabled><i data-lucide="user-minus" aria-hidden="true"></i>Auswahl entfernen</button>
+          </div>
+        </div>
+        <div class="table-wrap"><table class="data-table"><thead><tr><th class="selection-col" scope="col"><input class="selection-check" id="select-visible-members" type="checkbox"><label class="u-sr-only" for="select-visible-members">Alle sichtbaren Mitglieder auswählen</label></th><th scope="col">Kontakt</th><th scope="col">Organisation</th><th scope="col">Erreichbarkeit</th><th scope="col">Hinzugefügt</th></tr></thead><tbody id="member-rows">
+          <tr><td class="selection-col"><input class="selection-check row-check" type="checkbox" aria-label="Marion Aksoy auswählen"></td><td><strong>Marion Aksoy</strong></td><td>Aksoy Medienhaus</td><td><span class="status status--success">E-Mail erlaubt</span></td><td>24.08.2026</td></tr>
+          <tr><td class="selection-col"><input class="selection-check row-check" type="checkbox" aria-label="Nora Ebert auswählen"></td><td><strong>Nora Ebert</strong></td><td>Heidelberg iT Management GmbH</td><td><span class="status status--success">E-Mail erlaubt</span></td><td>22.08.2026</td></tr>
+          <tr><td class="selection-col"><input class="selection-check row-check" type="checkbox" aria-label="Leonie Hartmann auswählen"></td><td><strong>Leonie Hartmann</strong></td><td>UnterwegsTheater Heidelberg</td><td><span class="status status--success">E-Mail erlaubt</span></td><td>21.08.2026</td></tr>
+          <tr><td class="selection-col"><input class="selection-check row-check" type="checkbox" aria-label="Florian Weber auswählen"></td><td><strong>Florian Weber</strong></td><td>C. Josef Lamy GmbH</td><td><span class="status status--success">E-Mail erlaubt</span></td><td>21.08.2026</td></tr>
+          <tr><td class="selection-col"><input class="selection-check row-check" type="checkbox" aria-label="Elena Petrova auswählen"></td><td><strong>Elena Petrova</strong></td><td>SNP Schneider-Neureither &amp; Partner SE</td><td><span class="status status--success">E-Mail erlaubt</span></td><td>20.08.2026</td></tr>
+          <tr><td class="selection-col"><input class="selection-check row-check" type="checkbox" aria-label="Jonas Schilling auswählen"></td><td><strong>Jonas Schilling</strong></td><td>Medienforum Heidelberg e. V.</td><td><span class="status status--success">E-Mail erlaubt</span></td><td>20.08.2026</td></tr>
+          <tr><td class="selection-col"><input class="selection-check row-check" type="checkbox" aria-label="Sophie Lang auswählen"></td><td><strong>Sophie Lang</strong></td><td>Heidelberger Kunstverein</td><td><span class="status status--success">E-Mail erlaubt</span></td><td>20.08.2026</td></tr>
+          <tr><td class="selection-col"><input class="selection-check row-check" type="checkbox" aria-label="Ravi Menon auswählen"></td><td><strong>Ravi Menon</strong></td><td>EMBL Heidelberg</td><td><span class="status status--success">E-Mail erlaubt</span></td><td>19.08.2026</td></tr>
+          <tr><td class="selection-col"><input class="selection-check row-check" type="checkbox" aria-label="Katrin Fuchs auswählen"></td><td><strong>Katrin Fuchs</strong></td><td>Musik- und Singschule Heidelberg</td><td><span class="status status--warning">Nur Post erlaubt</span></td><td>19.08.2026</td></tr>
+          <tr><td class="selection-col"><input class="selection-check row-check" type="checkbox" aria-label="Matthias Brenner auswählen"></td><td><strong>Matthias Brenner</strong></td><td>Stadtwerke Heidelberg Netze GmbH</td><td><span class="status status--success">E-Mail erlaubt</span></td><td>18.08.2026</td></tr>
+          <tr><td class="selection-col"><input class="selection-check row-check" type="checkbox" aria-label="Svenja Kohl auswählen"></td><td><strong>Svenja Kohl</strong></td><td>Karlstorbahnhof Heidelberg</td><td><span class="status status--success">E-Mail erlaubt</span></td><td>18.08.2026</td></tr>
+          <tr><td class="selection-col"><input class="selection-check row-check" type="checkbox" aria-label="Rainer Vollmer auswählen"></td><td><strong>Rainer Vollmer</strong></td><td>InnovationLab GmbH</td><td><span class="status status--success">E-Mail erlaubt</span></td><td>18.08.2026</td></tr>
+          <tr><td class="selection-col"><input class="selection-check row-check" type="checkbox" aria-label="Nadine Graf auswählen"></td><td><strong>Nadine Graf</strong></td><td>halle02</td><td><span class="status status--success">E-Mail erlaubt</span></td><td>17.08.2026</td></tr>
+          <tr><td class="selection-col"><input class="selection-check row-check" type="checkbox" aria-label="Lukas Bernhard auswählen"></td><td><strong>Lukas Bernhard</strong></td><td>Kulturfenster Heidelberg e. V.</td><td><span class="status status--success">E-Mail erlaubt</span></td><td>17.08.2026</td></tr>
+          <tr><td class="selection-col"><input class="selection-check row-check" type="checkbox" aria-label="Miriam Schott auswählen"></td><td><strong>Prof. Dr. Miriam Schott</strong></td><td>Universität Heidelberg</td><td><span class="status status--success">E-Mail erlaubt</span></td><td>17.08.2026</td></tr>
+          <tr><td class="selection-col"><input class="selection-check row-check" type="checkbox" aria-label="David Kunz auswählen"></td><td><strong>David Kunz</strong></td><td>Ameria GmbH</td><td><span class="status status--success">E-Mail erlaubt</span></td><td>14.08.2026</td></tr>
+          <tr><td class="selection-col"><input class="selection-check row-check" type="checkbox" aria-label="Carolin Beck auswählen"></td><td><strong>Carolin Beck</strong></td><td>Deutsch-Amerikanisches Institut</td><td><span class="status status--success">E-Mail erlaubt</span></td><td>14.08.2026</td></tr>
+          <tr><td class="selection-col"><input class="selection-check row-check" type="checkbox" aria-label="Amir Haddad auswählen"></td><td><strong>Amir Haddad</strong></td><td>ProMinent GmbH</td><td><span class="status status--success">E-Mail erlaubt</span></td><td>14.08.2026</td></tr>
+          <tr><td class="selection-col"><input class="selection-check row-check" type="checkbox" aria-label="Jana Seifert auswählen"></td><td><strong>Jana Seifert</strong></td><td>Theater und Orchester Heidelberg</td><td><span class="status status--success">E-Mail erlaubt</span></td><td>13.08.2026</td></tr>
+          <tr><td class="selection-col"><input class="selection-check row-check" type="checkbox" aria-label="Benedikt Rauch auswählen"></td><td><strong>Benedikt Rauch</strong></td><td>Heidelberger Dienste gGmbH</td><td><span class="status status--success">E-Mail erlaubt</span></td><td>13.08.2026</td></tr>
+          <tr><td class="selection-col"><input class="selection-check row-check" type="checkbox" aria-label="Maja Nguyen auswählen"></td><td><strong>Maja Nguyen</strong></td><td>Dezernat 16</td><td><span class="status status--warning">E-Mail nicht erlaubt</span></td><td>13.08.2026</td></tr>
+          <tr><td class="selection-col"><input class="selection-check row-check" type="checkbox" aria-label="Oliver Stamm auswählen"></td><td><strong>Oliver Stamm</strong></td><td>Heidelberg Materials AG</td><td><span class="status status--success">E-Mail erlaubt</span></td><td>12.08.2026</td></tr>
+          <tr><td class="selection-col"><input class="selection-check row-check" type="checkbox" aria-label="Hanna Özdemir auswählen"></td><td><strong>Hanna Özdemir</strong></td><td>Metropolink Festival</td><td><span class="status status--success">E-Mail erlaubt</span></td><td>10.08.2026</td></tr>
+          <tr><td class="selection-col"><input class="selection-check row-check" type="checkbox" aria-label="Cem Arslan auswählen"></td><td><strong>Cem Arslan</strong></td><td>Arslan Elektrotechnik GmbH</td><td><span class="status status--success">E-Mail erlaubt</span></td><td>04.08.2026</td></tr>
+          <tr><td class="selection-col"><input class="selection-check row-check" type="checkbox" aria-label="Meike Walter auswählen"></td><td><strong>Meike Walter</strong></td><td>Heidelberger Frühling gGmbH</td><td><span class="status status--success">E-Mail erlaubt</span></td><td>20.07.2026</td></tr>
+        </tbody></table></div>
+        <div class="card-body--compact"><a class="btn btn--primary" id="mailing-handoff" href="mailing.html?verteiler=umweltwirtschaft"><i data-lucide="send" aria-hidden="true"></i>Als Empfängerkreis an Mailing übergeben</a></div>
+      </section>
+
+      <aside class="detail-col">
+        <div id="work-distribution">
+          <section class="card form-card" aria-labelledby="work-definition-title"><div class="section-title"><span class="section-title-icon"><i data-lucide="list-tree" aria-hidden="true"></i></span><h2 id="work-definition-title">Verteiler Umweltwirtschaft</h2></div><div class="field"><label for="work-name">Name</label><input class="input" id="work-name" value="Verteiler Umweltwirtschaft"></div><div class="field"><label for="work-description">Beschreibung</label><textarea class="textarea" id="work-description">Unternehmen und Netzwerke der Heidelberger Umweltwirtschaft.</textarea></div><div class="field"><label for="work-definition">Definition</label><textarea class="textarea" id="work-definition">Kontakte werden durch die Wirtschaftsförderung nach fachlicher Relevanz aufgenommen.</textarea></div><button class="btn btn--primary btn--compact" id="save-work-definition" type="button">Definition speichern</button></section>
+          <section class="card card-body"><h2>Stammangaben</h2><dl class="description-list"><div><dt>Zuständiges Amt</dt><dd>Wirtschaftsförderung</dd></div><div><dt>Art</dt><dd>Arbeitsverteiler</dd></div><div><dt>Erzeugt</dt><dd>12. März 2024 · Julia König</dd></div><div><dt>Geändert</dt><dd>24. August 2026 · Julia König</dd></div></dl></section>
+        </div>
+        <div id="managed-distribution" hidden>
+          <section class="protected-section" aria-labelledby="managed-definition-title" aria-describedby="managed-definition-reason"><div class="protected-section-head"><span class="protected-section-icon"><i data-lucide="lock-keyhole" aria-hidden="true"></i></span><div><strong id="managed-definition-title">Definition geschützt</strong><p id="managed-definition-reason">Zentral verwaltet. Änderungen nimmt die Zentrale CRM-Administration vor.</p></div></div><div class="protected-section-body"><h2>Heidelberger Unternehmen · aktiv</h2><p>Aktive Unternehmen mit bestätigtem Standort im Stadtgebiet Heidelberg.</p><dl class="description-list"><div><dt>Definition</dt><dd>Unternehmensstatus aktiv und Anschrift innerhalb des Heidelberger Stadtgebiets</dd></div><div><dt>Datenquelle</dt><dd>zentral gepflegte Stammdaten</dd></div></dl></div></section>
+          <section class="card card-body"><h2>Stammangaben</h2><dl class="description-list"><div><dt>Zuständiges Amt</dt><dd>Wirtschaftsförderung</dd></div><div><dt>Art</dt><dd>Managed-Verteiler</dd></div><div><dt>Definition änderbar durch</dt><dd>Zentrale CRM-Administration</dd></div><div><dt>Geändert</dt><dd>25. August 2026 · zentrale Regel</dd></div></dl><p class="notice"><i data-lucide="users" aria-hidden="true"></i><span><strong>Mitgliedschaften bleiben bearbeitbar.</strong><br>Sie können Kontakte unten hinzufügen oder entfernen.</span></p></section>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script>
+    window.addEventListener('load',()=>{
+      const memberBody=document.getElementById('member-rows');
+      const selection=window.CrmShell.createListSelection({rows:'#member-rows tr',selectAll:'#select-visible-members',actions:'#remove-members',onChange:selected=>{document.getElementById('member-selected-count').textContent=selected.length+' ausgewählt';document.getElementById('member-count').textContent=memberBody.querySelectorAll('tr').length+' Mitglieder'}});
+      window.CrmShell.createStateSwitch({controls:'[data-distribution-mode]',attribute:'data-distribution-mode',initial:window.location.hash==='#managed'?'managed':'work',panels:{work:document.getElementById('work-distribution'),managed:document.getElementById('managed-distribution')},onChange:mode=>{document.getElementById('distribution-mode-note').textContent=mode==='work'?'Arbeitsverteiler: Definition und Mitgliedschaften sind bearbeitbar.':'Managed-Verteiler: Die Definition ist zentral geschützt; Mitgliedschaften bleiben bearbeitbar.';document.getElementById('mailing-handoff').href=mode==='work'?'mailing.html?verteiler=umweltwirtschaft':'mailing.html?verteiler=unternehmen-aktiv'}});
+      document.getElementById('save-work-definition').addEventListener('click',()=>window.CrmShell.showToast('Definition des Arbeitsverteilers wurde gespeichert.','success'));
+      document.getElementById('remove-members').addEventListener('click',()=>{const selected=selection.getSelectedRows();selected.forEach(row=>row.remove());selection.refreshRows();window.CrmShell.showToast(selected.length+' '+(selected.length===1?'Mitglied wurde':'Mitglieder wurden')+' entfernt.','success')});
+      const candidates={sabine:['Sabine Keller','GreenTech Solutions GmbH'],aylin:['Dr. Aylin Yılmaz','BioRN Network e. V.'],tobias:['Tobias Rehm','Rehm Präzisionstechnik KG']};
+      document.getElementById('add-members').addEventListener('click',()=>{const chosen=[...document.querySelectorAll('input[name="new-member"]:checked')];if(chosen.length===0){window.CrmShell.showToast('Wählen Sie mindestens einen Kontakt aus.','error');return}chosen.forEach(input=>{const data=candidates[input.value],row=document.createElement('tr');row.innerHTML='<td class="selection-col"><input class="selection-check row-check" type="checkbox"></td><td><strong></strong></td><td></td><td><span class="status status--success">E-Mail erlaubt</span></td><td>Heute</td>';row.querySelector('input').setAttribute('aria-label',data[0]+' auswählen');row.querySelector('strong').textContent=data[0];row.children[2].textContent=data[1];memberBody.prepend(row);input.checked=false;input.disabled=true});selection.refreshRows();document.getElementById('add-member-menu').open=false;window.CrmShell.showToast(chosen.length+' '+(chosen.length===1?'Mitglied wurde':'Mitglieder wurden')+' hinzugefügt.','success')});
+    });
+  </script>
+  <!-- Design-Rationale: Das allgemeine 1099-px-Objektraster trennt Mitgliederarbeit und Definition. Signature-Element ist der sichtbar lesbare, aber vor jeder Aktion begründete Schutz der Managed-Definition; bewusst riskant ist die direkte Umschaltung zweier Objektarten auf derselben Detailseite. -->
+</body>
+</html>

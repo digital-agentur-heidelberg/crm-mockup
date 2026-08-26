@@ -61,20 +61,15 @@
     </main>
   <script>
     const rows=[...document.querySelectorAll('#event-rows tr')];
-    const panels={overview:document.getElementById('overview-state'),loading:document.getElementById('loading-state'),empty:document.getElementById('empty-state'),error:document.getElementById('error-state')};
-    let period='upcoming';
-    let viewState='overview';
+    let eventFilter,eventStates;
     function prepareOccupancy(){rows.forEach(row=>{const occupancy=row.querySelector('.occupancy'),meter=occupancy.querySelector('meter'),value=Number(meter.value),max=Number(meter.max),ratio=value/max;occupancy.classList.toggle('occupancy--full',value>=max);occupancy.classList.toggle('occupancy--tight',value<max&&ratio>=0.8);meter.low=0.8*max;meter.high=max;meter.optimum=0;const meaning=value>=max?'ausgebucht':ratio>=0.8?'Belegung knapp':'Plätze verfügbar';meter.setAttribute('aria-label',meter.textContent.trim()+', '+meaning)})}
     function selectedOffices(){return [...document.querySelectorAll('input[name="office"]:checked')].map(input=>input.value)}
-    function setView(next){viewState=next;Object.entries(panels).forEach(([name,panel])=>panel.hidden=name!==next);document.querySelectorAll('[data-view-state]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.viewState===next)))}
-    function render(){const offices=selectedOffices();let visible=0;rows.forEach(row=>{row.hidden=!(row.dataset.window.split(' ').includes(period)&&offices.includes(row.dataset.office));if(!row.hidden)visible++});const label=period==='past'?'vergangene':'anstehende',summary=document.querySelector('#office-menu summary');document.getElementById('event-count').textContent=visible+' '+label+(visible===1?' Veranstaltung':' Veranstaltungen');summary.innerHTML='<i data-lucide="landmark" aria-hidden="true"></i>Ämter · '+offices.length+' gewählt';window.CrmShell.rendered(summary);if(viewState==='overview'&&visible===0)setView('empty')}
-    document.querySelectorAll('[data-period]').forEach(button=>button.addEventListener('click',()=>{period=button.dataset.period;document.querySelectorAll('[data-period]').forEach(item=>item.setAttribute('aria-pressed',String(item===button)));setView('overview');render()}));
-    document.querySelectorAll('[data-view-state]').forEach(button=>button.addEventListener('click',()=>setView(button.dataset.viewState)));
-    document.getElementById('apply-offices').addEventListener('click',()=>{document.getElementById('office-menu').open=false;setView('overview');render()});
-    document.getElementById('reset-filters').addEventListener('click',()=>{document.querySelectorAll('input[name="office"]').forEach(input=>input.checked=true);document.querySelector('[data-period="upcoming"]').click()});
-    document.getElementById('retry-events').addEventListener('click',()=>{setView('loading');setTimeout(()=>{setView('overview');render()},650)});
+    function render(){eventFilter.refresh()}
+    document.getElementById('apply-offices').addEventListener('click',()=>{document.getElementById('office-menu').open=false;eventStates.set('overview');render()});
+    document.getElementById('reset-filters').addEventListener('click',()=>{document.querySelectorAll('input[name="office"]').forEach(input=>input.checked=true);eventStates.set('overview');eventFilter.set('period','upcoming')});
+    document.getElementById('retry-events').addEventListener('click',()=>{eventStates.set('loading');setTimeout(()=>{eventStates.set('overview');render()},650)});
     document.querySelectorAll('#event-rows a').forEach(link=>link.addEventListener('click',event=>{if(link.textContent.trim()!=='Branchendialog Kreativwirtschaft'){event.preventDefault();window.CrmShell.showPrototypeNotice('record','Veranstaltung',link.textContent.trim())}}));
-    window.addEventListener('load',()=>{prepareOccupancy();render()});
+    window.addEventListener('load',()=>{prepareOccupancy();eventStates=window.CrmShell.createStateSwitch({controls:'[data-view-state]',attribute:'data-view-state',initial:'overview',panels:{overview:document.getElementById('overview-state'),loading:document.getElementById('loading-state'),empty:document.getElementById('empty-state'),error:document.getElementById('error-state')}});document.querySelectorAll('[data-period]').forEach(button=>button.addEventListener('click',()=>eventStates.set('overview')));eventFilter=window.CrmShell.createListFilter({rows:rows,groups:[{name:'period',controls:'[data-period]',attribute:'data-period',initial:'upcoming'}],matches:(row,state)=>row.dataset.window.split(' ').includes(state.period)&&selectedOffices().includes(row.dataset.office),onChange:(visible,state)=>{const label=state.period==='past'?'vergangene':'anstehende',summary=document.querySelector('#office-menu summary'),offices=selectedOffices();document.getElementById('event-count').textContent=visible.length+' '+label+(visible.length===1?' Veranstaltung':' Veranstaltungen');summary.innerHTML='<i data-lucide="landmark" aria-hidden="true"></i>Ämter · '+offices.length+' gewählt';window.CrmShell.rendered(summary);if(eventStates.get()==='overview'&&visible.length===0)eventStates.set('empty')}})});
   </script>
 </body>
 </html>

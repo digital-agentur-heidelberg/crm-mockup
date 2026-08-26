@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arbeitsverteiler anlegen – Heidelberg CRM</title>
+  <link rel="stylesheet" href="../system/tokens.css">
+  <link rel="stylesheet" href="../system/base.css">
+  <link rel="stylesheet" href="../system/components.css">
+  <script src="../system/vendor/lucide.js" defer></script>
+  <script src="../system/shell.js" defer></script>
+</head>
+<body data-screen="verteiler">
+  <main class="screen" id="main">
+    <a class="btn btn--quiet back-link" href="verteiler.html"><i data-lucide="arrow-left" aria-hidden="true"></i>Zur Verteilerübersicht</a>
+    <header class="page-head">
+      <div><p class="eyebrow">Neuer Verteiler · fokussierter Vorgang</p><h1>Arbeitsverteiler anlegen</h1><p>Legen Sie Zweck und fachliche Definition fest. Mitglieder ergänzen Sie anschließend im Verteilerdetail.</p></div>
+    </header>
+
+    <div class="form-grid">
+      <form class="card form-card" id="distribution-form">
+        <div class="field"><label for="distribution-name">Name</label><input class="input" id="distribution-name" required value="Verteiler Umweltwirtschaft"></div>
+        <div class="field"><label for="distribution-description">Beschreibung</label><textarea class="textarea" id="distribution-description" required>Unternehmen und Netzwerke der Heidelberger Umweltwirtschaft.</textarea></div>
+        <div class="field"><label for="distribution-office">Zuständiges Amt</label><select class="select" id="distribution-office" required><option>Wirtschaftsförderung</option><option>Kulturamt</option><option>OB-Referat</option></select></div>
+        <div class="field"><label for="distribution-definition">Definition</label><textarea class="textarea" id="distribution-definition" required>Kontakte werden durch das zuständige Amt nach fachlicher Relevanz aufgenommen.</textarea><small class="u-muted">Beschreiben Sie nachvollziehbar, wer in diesen Verteiler gehört.</small></div>
+        <div class="button-row"><a class="btn" href="verteiler.html">Abbrechen</a><button class="btn btn--primary" id="create-distribution" type="submit"><i data-lucide="list-plus" aria-hidden="true"></i>Arbeitsverteiler anlegen</button></div>
+      </form>
+
+      <aside class="card card-body" aria-labelledby="distribution-draft-title">
+        <h2 id="distribution-draft-title">Arbeitsverteiler im Überblick</h2>
+        <dl class="summary-list"><div><dt>Name</dt><dd id="summary-distribution-name">Verteiler Umweltwirtschaft</dd></div><div><dt>Beschreibung</dt><dd id="summary-distribution-description">Unternehmen und Netzwerke der Heidelberger Umweltwirtschaft.</dd></div><div><dt>Zuständiges Amt</dt><dd id="summary-distribution-office">Wirtschaftsförderung</dd></div><div><dt>Definition</dt><dd id="summary-distribution-definition">Kontakte werden durch das zuständige Amt nach fachlicher Relevanz aufgenommen.</dd></div><div><dt>Art</dt><dd>Arbeitsverteiler</dd></div><div><dt>Status</dt><dd><span class="status status--info" id="summary-distribution-status" aria-live="polite">Noch nicht angelegt</span></dd></div></dl>
+        <p class="notice"><i data-lucide="info" aria-hidden="true"></i><span>Definition und Mitgliedschaften dieses Arbeitsverteilers bleiben für das zuständige Amt bearbeitbar.</span></p>
+      </aside>
+    </div>
+  </main>
+
+  <script>
+    window.addEventListener('load',()=>{
+      const fields={name:document.getElementById('distribution-name'),description:document.getElementById('distribution-description'),office:document.getElementById('distribution-office'),definition:document.getElementById('distribution-definition')};
+      function renderSummary(){Object.entries(fields).forEach(([name,field])=>{document.getElementById('summary-distribution-'+name).textContent=field.value.trim()||'Noch offen'})}
+      Object.values(fields).forEach(field=>{field.addEventListener('input',renderSummary);field.addEventListener('change',renderSummary)});
+      document.getElementById('distribution-form').addEventListener('submit',event=>{event.preventDefault();document.getElementById('summary-distribution-status').className='status status--success';document.getElementById('summary-distribution-status').textContent='Arbeitsverteiler angelegt';document.getElementById('create-distribution').disabled=true;window.CrmShell.showToast('Arbeitsverteiler wurde angelegt. Mitglieder können Sie im Detail ergänzen.','success')});
+      renderSummary();
+    });
+  </script>
+  <!-- Design-Rationale: Das vorhandene Formularraster hält den Vorgang bewusst schmal und zeigt nur die vier verlangten Angaben. Signature-Element ist die live mitlesbare Definition; bewusst riskant ist der unmittelbare Abschluss ohne zusätzliche Freigabestufe, weil dafür keine Fachregel vorliegt. -->
+</body>
+</html>

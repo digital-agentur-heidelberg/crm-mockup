@@ -665,6 +665,63 @@
 }
 
 /*
+ * GESCHÜTZTER TEILBEREICH (.protected-section)
+ * Zweck: lesbaren Inhalt zeigen, dessen Bearbeitung aus benanntem Grund bei
+ * einer benannten Stelle liegt. Die Kennzeichnung ist ohne Interaktion sichtbar.
+ * Nicht verwenden: wenn der Inhalt selbst nicht eingesehen werden darf; dafür
+ * ist .no-access vorgesehen. Keine wirkungslosen Bearbeitungsaktionen einbauen.
+ * Zustand: geschützt und lesbar; der umgebende Datensatz kann weiter editierbar sein.
+ */
+.protected-section {
+  overflow: hidden;
+  border: var(--border-width-emphasis) solid var(--color-info-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-card);
+}
+
+.protected-section-head {
+  display: grid;
+  grid-template-columns: var(--size-icon-section) 1fr;
+  gap: var(--space-cluster);
+  align-items: start;
+  padding: var(--space-card-compact) var(--space-card-inner);
+  border-bottom: var(--border-width-default) solid var(--color-info-border);
+  background: var(--color-info-soft);
+  color: var(--color-info);
+}
+
+.protected-section-icon {
+  width: var(--size-icon-section);
+  height: var(--size-icon-section);
+  display: grid;
+  place-items: center;
+  border: var(--border-width-default) solid var(--color-info-border);
+  border-radius: var(--radius-control);
+  background: var(--color-surface-card);
+}
+
+.protected-section-icon svg { width: var(--size-sticky-air); }
+.protected-section-head strong { display: block; }
+.protected-section-head p {
+  margin: var(--space-hairline) 0 0;
+  font-size: var(--font-size-meta);
+}
+.protected-section-body { padding: var(--space-card-inner); }
+
+/*
+ * OBJEKT-ARBEITSLAYOUT (.object-work-grid)
+ * Zweck: Hauptarbeitsfläche mit ergänzender Objektinformation in einer Seitenzone.
+ * Nicht verwenden: für Kontakt-Master-Detail; dort ändert sich bei 1129 px auch
+ * das Interaktionsmodell. Dieses Raster stapelt wie event/form/mail bei 1099 px.
+ */
+.object-work-grid {
+  display: grid;
+  grid-template-columns: minmax(var(--grid-event-main-min), 1fr) var(--grid-event-side);
+  gap: var(--space-layout-compact);
+  align-items: start;
+}
+
+/*
  * INTELLIGENTE SUCHE (.smart-search)
  * Zweck: globale Suche mit gruppierten Vorschlägen und Kontextvorschau.
  * Nicht verwenden: als lokaler Tabellenfilter.
@@ -2248,7 +2305,8 @@
   .work-grid,
   .event-grid,
   .form-grid,
-  .mail-grid { grid-template-columns: 1fr; }
+  .mail-grid,
+  .object-work-grid { grid-template-columns: 1fr; }
   .preview-card { position: static; }
 }
 

@@ -5,6 +5,7 @@
     { screen: "arbeitsbereich", label: "Arbeitsbereich", href: "arbeitsbereich.html", icon: "waypoints" },
     { screen: "kontakte", label: "Kontakte", href: "kontakte.html", icon: "contact-round" },
     { screen: "veranstaltungen", label: "Veranstaltungen", href: "veranstaltungen.html", icon: "calendar-days" },
+    { screen: "verteiler", label: "Verteiler", href: "verteiler.html", icon: "mails" },
     { screen: "mailings", label: "Mailings", href: "mailing.html", icon: "send" }
   ];
 
@@ -112,17 +113,18 @@
       group: "Verteiler",
       kind: "Verteiler",
       title: "Verteiler Umweltwirtschaft",
-      meta: "54 aktive Kontakte · E-Mail erlaubt",
-      href: "mailing.html",
+      meta: "25 aktive Kontakte · E-Mail erlaubt",
+      href: "verteiler-detail.html",
       icon: "mails",
       status: "Verteiler aktiv",
       statusClass: "status--info",
       description: "Unternehmen und Netzwerke der Heidelberger Umweltwirtschaft",
       facts: [
         { icon: "landmark", text: "Wirtschaftsförderung" },
-        { icon: "mail-check", text: "54 erreichbare Kontakte" }
+        { icon: "mail-check", text: "25 erreichbare Kontakte" }
       ],
-      keywords: "umwelt wirtschaft mailing empfaenger"
+      keywords: "umwelt wirtschaft mailing empfaenger",
+      available: true
     },
     {
       group: "Verteiler",
@@ -233,6 +235,207 @@
     showToast(message, "prototype");
   }
 
+  function elements(value, root) {
+    if (!value) {
+      return [];
+    }
+    if (typeof value === "string") {
+      return Array.prototype.slice.call((root || document).querySelectorAll(value));
+    }
+    if (value.nodeType) {
+      return [value];
+    }
+    return Array.prototype.slice.call(value);
+  }
+
+  function createListSelection(options) {
+    var settings = options || {};
+    var root = settings.root || document;
+    var rows = [];
+    var selectAll = elements(settings.selectAll, root)[0] || null;
+    var actions = elements(settings.actions, root);
+    var boundChecks = [];
+
+    function checkboxFor(row) {
+      return row.querySelector(settings.checkbox || ".row-check");
+    }
+
+    function selectedRows() {
+      return rows.filter(function (row) {
+        var checkbox = checkboxFor(row);
+        return checkbox && checkbox.checked;
+      });
+    }
+
+    function visibleRows() {
+      return rows.filter(function (row) {
+        return !row.hidden;
+      });
+    }
+
+    function update() {
+      var selected = selectedRows();
+      var visible = visibleRows();
+      var selectedVisible = visible.filter(function (row) {
+        var checkbox = checkboxFor(row);
+        return checkbox && checkbox.checked;
+      });
+      rows.forEach(function (row) {
+        var checkbox = checkboxFor(row);
+        row.classList.toggle("is-checked", Boolean(checkbox && checkbox.checked));
+      });
+      if (selectAll) {
+        selectAll.checked = visible.length > 0 && selectedVisible.length === visible.length;
+        selectAll.indeterminate = selectedVisible.length > 0 && selectedVisible.length < visible.length;
+      }
+      actions.forEach(function (action) {
+        action.disabled = selected.length === 0;
+      });
+      if (settings.onChange) {
+        settings.onChange(selected, visible);
+      }
+      return selected;
+    }
+
+    function bindRows() {
+      boundChecks.forEach(function (checkbox) {
+        checkbox.removeEventListener("change", update);
+      });
+      rows = elements(settings.rows, root);
+      boundChecks = rows.map(checkboxFor).filter(Boolean);
+      boundChecks.forEach(function (checkbox) {
+        checkbox.addEventListener("change", update);
+      });
+    }
+
+    if (selectAll) {
+      selectAll.addEventListener("change", function () {
+        visibleRows().forEach(function (row) {
+          var checkbox = checkboxFor(row);
+          if (checkbox) {
+            checkbox.checked = selectAll.checked;
+          }
+        });
+        update();
+      });
+    }
+    bindRows();
+    update();
+
+    return {
+      getSelectedRows: selectedRows,
+      getVisibleRows: visibleRows,
+      refresh: update,
+      refreshRows: function () {
+        bindRows();
+        return update();
+      }
+    };
+  }
+
+  function createListFilter(options) {
+    var settings = options || {};
+    var root = settings.root || document;
+    var rows = elements(settings.rows, root);
+    var values = {};
+    var groups = settings.groups || [];
+
+    function controlValue(group, control) {
+      return control.getAttribute(group.attribute);
+    }
+
+    function reflect(group) {
+      elements(group.controls, root).forEach(function (control) {
+        control.setAttribute("aria-pressed", String(controlValue(group, control) === values[group.name]));
+      });
+    }
+
+    function refresh() {
+      var visible = [];
+      rows.forEach(function (row) {
+        row.hidden = settings.matches ? !settings.matches(row, values) : false;
+        if (!row.hidden) {
+          visible.push(row);
+        }
+      });
+      if (settings.onChange) {
+        settings.onChange(visible, values);
+      }
+      return visible;
+    }
+
+    function set(name, value, shouldRefresh) {
+      values[name] = value;
+      groups.forEach(function (group) {
+        if (group.name === name) {
+          reflect(group);
+        }
+      });
+      if (shouldRefresh !== false) {
+        refresh();
+      }
+    }
+
+    groups.forEach(function (group) {
+      values[group.name] = group.initial;
+      elements(group.controls, root).forEach(function (control) {
+        control.addEventListener("click", function () {
+          set(group.name, controlValue(group, control));
+        });
+      });
+      reflect(group);
+    });
+    refresh();
+
+    return {
+      getState: function () {
+        return Object.assign({}, values);
+      },
+      getVisibleRows: function () {
+        return rows.filter(function (row) { return !row.hidden; });
+      },
+      refresh: refresh,
+      set: set
+    };
+  }
+
+  function createStateSwitch(options) {
+    var settings = options || {};
+    var root = settings.root || document;
+    var controls = elements(settings.controls, root);
+    var panels = settings.panels || {};
+    var current = settings.initial;
+
+    function set(next) {
+      if (!Object.prototype.hasOwnProperty.call(panels, next)) {
+        return current;
+      }
+      Object.keys(panels).forEach(function (name) {
+        panels[name].hidden = name !== next;
+      });
+      controls.forEach(function (control) {
+        control.setAttribute("aria-pressed", String(control.getAttribute(settings.attribute) === next));
+      });
+      current = next;
+      if (settings.onChange) {
+        settings.onChange(next);
+      }
+      return current;
+    }
+
+    controls.forEach(function (control) {
+      control.addEventListener("click", function () {
+        set(control.getAttribute(settings.attribute));
+      });
+    });
+    set(current);
+
+    return {
+      get: function () { return current; },
+      set: set
+    };
+  }
+
   document.addEventListener("crm:rendered", function (event) {
     renderIcons(event.target);
   });
@@ -260,7 +463,10 @@
     renderIcons: renderIcons,
     rendered: rendered,
     showToast: showToast,
-    showPrototypeNotice: showPrototypeNotice
+    showPrototypeNotice: showPrototypeNotice,
+    createListSelection: createListSelection,
+    createListFilter: createListFilter,
+    createStateSwitch: createStateSwitch
   };
 
   var main = document.querySelector("main.screen");
