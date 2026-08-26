@@ -231,6 +231,7 @@
   });
 
   window.CrmShell = {
+    openSearch: openSearch,
     renderIcons: renderIcons,
     rendered: rendered,
     showToast: showToast
@@ -412,10 +413,24 @@
     renderIcons(popover);
   }
 
-  function openSearch() {
+  function showSearch() {
     renderResults(search.value);
     popover.hidden = false;
     search.setAttribute("aria-expanded", "true");
+  }
+
+  function openSearch(prefill) {
+    if (!search) {
+      return;
+    }
+    var hadFocus = document.activeElement === search;
+    if (typeof prefill === "string") {
+      search.value = prefill;
+    }
+    search.focus();
+    if (popover.hidden || (hadFocus && typeof prefill === "string")) {
+      showSearch();
+    }
   }
 
   function closeSearch() {
@@ -424,12 +439,7 @@
     search.removeAttribute("aria-activedescendant");
   }
 
-  function focusSearch() {
-    search.focus();
-    openSearch();
-  }
-
-  search.addEventListener("focus", openSearch);
+  search.addEventListener("focus", showSearch);
   search.addEventListener("input", function () {
     renderResults(search.value);
     if (popover.hidden) {
@@ -441,7 +451,7 @@
     if (event.key === "ArrowDown") {
       event.preventDefault();
       if (popover.hidden) {
-        openSearch();
+        showSearch();
       } else if (matches.length) {
         setActive(activeIndex + 1, true);
       }
@@ -466,10 +476,16 @@
   document.addEventListener("keydown", function (event) {
     if ((event.ctrlKey || event.metaKey) && event.key.toLocaleLowerCase("de") === "k") {
       event.preventDefault();
-      focusSearch();
+      openSearch();
     }
   });
   document.addEventListener("click", function (event) {
+    var trigger = event.target.closest("[data-open-search]");
+    if (trigger) {
+      event.preventDefault();
+      openSearch(trigger.hasAttribute("data-search-query") ? trigger.getAttribute("data-search-query") : undefined);
+      return;
+    }
     if (!event.target.closest(".smart-search")) {
       closeSearch();
     }
@@ -477,7 +493,5 @@
   sideNav.querySelector("[data-shell-help]").addEventListener("click", function () {
     showToast("Die Hilfe öffnet sich passend zu Ihrem aktuellen Bereich.", "info");
   });
-
-  window.CrmShell.focusSearch = focusSearch;
   renderIcons(document);
 }());

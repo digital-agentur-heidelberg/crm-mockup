@@ -10,17 +10,17 @@
   <link rel="stylesheet" href="../system/tokens.css">
   <link rel="stylesheet" href="../system/base.css">
   <link rel="stylesheet" href="../system/components.css">
-  <script src="https://unpkg.com/lucide@1.34.0/dist/umd/lucide.min.js" defer></script>
+  <script src="../system/vendor/lucide.js" defer></script>
   <script src="../system/shell.js" defer></script>
 </head>
 <body data-screen="arbeitsbereich">
     <main class="screen" id="main">
-      <div class="page-head"><div><p class="eyebrow">Dienstag, 25. August 2026</p><h1>Guten Morgen, Frau König.</h1><p>Termine, Rückmeldungen und Änderungen – nach dem geordnet, was Ihre Aufmerksamkeit braucht.</p></div><button class="btn btn--primary" type="button" id="focus-search"><i data-lucide="phone-incoming" aria-hidden="true"></i>Kontakt im Gespräch finden</button></div>
+      <div class="page-head"><div><p class="eyebrow">Dienstag, 25. August 2026</p><h1>Guten Morgen, Frau König.</h1><p>Termine, Rückmeldungen und Änderungen – nach dem geordnet, was Ihre Aufmerksamkeit braucht.</p></div><button class="btn btn--primary" type="button" data-open-search><i data-lucide="phone-incoming" aria-hidden="true"></i>Kontakt im Gespräch finden</button></div>
       <div class="work-grid">
         <article class="card thread-card" aria-labelledby="tasks-title">
           <div class="card-head"><div><h2 id="tasks-title">Was steht gerade an?</h2><p>Häufige Aufgaben in Ihrer Sprache</p></div><span class="status status--success">Arbeitsbereit</span></div>
           <div class="task-grid">
-            <button class="task-card" type="button" id="task-find-contact"><span class="task-card-top"><span class="task-icon"><i data-lucide="phone-incoming" aria-hidden="true"></i></span><span class="task-index" aria-hidden="true">01</span></span><strong>Kontakt während eines Anrufs finden</strong><span class="task-context"><b>Direktsuche</b> · Name, Firma oder Telefonnummer genügen</span></button>
+            <button class="task-card" type="button" data-open-search><span class="task-card-top"><span class="task-icon"><i data-lucide="phone-incoming" aria-hidden="true"></i></span><span class="task-index" aria-hidden="true">01</span></span><strong>Kontakt während eines Anrufs finden</strong><span class="task-context"><b>Direktsuche</b> · Name, Firma oder Telefonnummer genügen</span></button>
             <a class="task-card" href="kontakt-detail.html"><span class="task-card-top"><span class="task-icon"><i data-lucide="notebook-pen" aria-hidden="true"></i></span><span class="task-index" aria-hidden="true">02</span></span><strong>Gespräch bei Sabine Keller festhalten</strong><span class="task-context"><b>Vor 18 Minuten</b> · zuletzt geöffneter Kontakt</span></a>
             <a class="task-card" href="veranstaltung.html"><span class="task-card-top"><span class="task-icon"><i data-lucide="users" aria-hidden="true"></i></span><span class="task-index" aria-hidden="true">03</span></span><strong>Anmeldungen zum Branchendialog prüfen</strong><span class="task-context"><b>8 Personen</b> · warten derzeit auf einen Platz</span></a>
             <a class="task-card" href="mailing.html"><span class="task-card-top"><span class="task-icon"><i data-lucide="send" aria-hidden="true"></i></span><span class="task-index" aria-hidden="true">04</span></span><strong>Einladung an Verteiler fertigstellen</strong><span class="task-context"><b>96 Empfänger</b> · Entwurf noch nicht versendet</span></a>
@@ -32,9 +32,6 @@
         </aside>
       </div>
     </main>
-  <script>
-    document.getElementById('focus-search').addEventListener('click',()=>window.CrmShell.focusSearch());document.getElementById('task-find-contact').addEventListener('click',()=>window.CrmShell.focusSearch());
-  </script>
   <!-- Design-Rationale: Palette und Layout entsprechen unverändert 99-hybrid_v3. Signature-Element ist das Aufgabenraster; bewusst riskant bleibt die globale Suche mit direkten Aufgaben. -->
 </body>
 </html>

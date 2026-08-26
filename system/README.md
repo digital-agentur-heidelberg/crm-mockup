@@ -16,7 +16,7 @@ Die verbindliche visuelle Referenz ist [styleguide.html](styleguide.html).
    <link rel="stylesheet" href="../system/tokens.css">
    <link rel="stylesheet" href="../system/base.css">
    <link rel="stylesheet" href="../system/components.css">
-   <script src="https://unpkg.com/lucide@1.34.0/dist/umd/lucide.min.js" defer></script>
+   <script src="../system/vendor/lucide.js" defer></script>
    <script src="../system/shell.js" defer></script>
    ```
 
@@ -37,6 +37,14 @@ neuer Screen bindet `shell.js` ein, setzt `data-screen` und enthält ausschließ
 seinen Inhalt. Navigationseinträge, aktiver Zustand, Suchdaten und Suchverhalten
 werden nur in `shell.js` gepflegt.
 
+Die globale Suche wird von außen ausschließlich über die benannte Schnittstelle
+`CrmShell.openSearch(text)` geöffnet. `text` ist optional und belegt die Suche
+vor. Reine HTML-Auslöser erhalten `data-open-search`; mit dem ebenfalls
+optionalen Attribut `data-search-query` können sie einen Suchtext mitgeben. Die
+Hülle ruft auch in diesem Fall `CrmShell.openSearch` auf. Screen-Skripte greifen
+nie direkt auf `#global-search`, dessen Fokus, Wert oder Popover zu. So bleiben
+Fokusführung, Ergebnisansage und Öffnungszustand ein gemeinsamer Vertrag.
+
 Screens enthalten weder `<style>`-Blöcke noch `style`-Attribute. Kleine,
 screenbezogene Interaktionen dürfen als Vanilla-JavaScript im Dokument stehen;
 fachliche Daten bleiben fest verdrahtet.
@@ -48,6 +56,13 @@ die Icons nach. Flüchtige Rückmeldungen laufen über
 `CrmShell.showToast(text, variante)` mit `success`, `info` oder `error`;
 Schaltflächen mit `data-toast` und optional `data-toast-variant` werden direkt
 von der Hülle bedient.
+
+Lucide liegt als UMD-Bibliothek in `vendor/lucide.js`; abgelegt ist Version
+1.34.0. Die Screens und die Vorlage laden nur diesen relativen Pfad und benötigen
+für Symbole kein Netz. Für einen Versionswechsel die neue UMD-Datei unter
+demselben Namen ersetzen, die Versionsangabe hier aktualisieren und anschließend
+alle verwendeten `data-lucide`-Namen sowie dynamisch nachgezogene Icons prüfen.
+An den Screen-Köpfen ist beim Versionswechsel nichts zu ändern.
 
 ## Eine fehlende Komponente ergänzen
 
