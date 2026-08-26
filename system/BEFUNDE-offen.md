@@ -17,10 +17,11 @@ Punkte sind fachlich oder screenspezifisch und wurden bewusst nicht erfunden.
    Erfassung und gibt keine Rückmeldung.
 4. **Kontakte / Weitere Filter — keine erkennbare Wirkung:** Die Amtsauswahl lässt sich verändern, aber
    „Übernehmen“ schließt das Menü nicht und filtert die Liste nicht.
-5. **Kontakte / Kontaktvorschau — falsch/ohne Wirkung:** Die Vorschau-Schaltflächen ab dem zweiten
-   Eintrag reagieren nicht. Ein Klick auf eine Tabellenzeile wählt ebenfalls
-   keine Vorschau; Leertaste und Enter ändern nur die Zeilenmarkierung, nicht
-   den angezeigten Kontakt.
+5. **Kontakte / Kontaktvorschau — falsch/ohne Wirkung:** Beim ersten Klick auf
+   einen bislang nicht ausgewählten Kontakt öffnet beziehungsweise aktualisiert
+   sich die Vorschau rechts nicht. Auch die Vorschau-Schaltflächen ab dem
+   zweiten Eintrag reagieren nicht. Leertaste und Enter ändern nur die
+   Zeilenmarkierung, nicht den angezeigten Kontakt.
 6. **Kontakt-Detail / Verlauf — keine Reaktion:** „Ältere Einträge anzeigen“ hat noch keine
    erkennbare Wirkung.
 7. **Veranstaltung / Teilnehmende — keine Reaktion:** „Auswahl anschreiben“ wird nach einer
