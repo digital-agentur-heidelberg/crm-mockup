@@ -46,6 +46,33 @@ Kontrastgrenzfall.
    Bestätigungsverfahren für sehr große Zuordnungen ist fachlich nicht
    festgelegt. Der Entwurf beziffert deshalb jede Menge unmittelbar vor der
    Ausführung, setzt aber keine unbelegte Grenze.
+10. **Kontaktanlage / Pflichtangaben:** Verbindlich benannt sind weder die
+    Pflichtfelder für den Abschluss noch die Regeln je Kontaktart. Der Entwurf
+    verlangt für den Abschluss nur Name oder Bezeichnung und eine bestätigte
+    Kontaktart; ein unvollständiger Entwurf bleibt speicherbar.
+11. **Kontaktanlage / Kontaktarten:** Das Inventar verwendet Person und
+    Institution, das Briefing nennt zusätzlich Personen an Firmen. Ob dieser
+    Bezug eine Kontaktart, eine Beziehung oder eine weitere Anlageentscheidung
+    ist, muss mit den Fachämtern geklärt werden. Der Entwurf erfindet dafür
+    keine dritte Art.
+12. **Kontaktanlage / Dublettenlogik:** Schwellen, Gewichtung, Rangfolge und
+    Auslösezeitpunkt der Dublettenprüfung sind nicht festgelegt. Die
+    Testfassung verwendet deshalb ausschließlich fest verdrahtete, vorhandene
+    Kontakte und die Prototypzustände; sie behauptet keinen späteren
+    Algorithmus.
+13. **Kontaktanlage / Ergänzen eines Bestandskontakts:** Welche Felder bei
+    „Vorhandenen Kontakt um meine Angaben ergänzen“ übernommen, verworfen oder
+    zur Entscheidung gestellt werden, ist nicht beschrieben. Die Handlung
+    bleibt sichtbar, führt aber im Entwurf keine Zusammenführung aus.
+14. **Kontaktanlage / Begründung der Neuanlage:** Verbindliche Gründe für
+    „Trotzdem neu anlegen“ fehlen. Variante A verwendet drei neutrale Gründe
+    sowie „Anderer Grund“ mit Pflichtfreitext. Auswahlhäufigkeit und Freitext
+    sind Messpunkte des Fachtests und keine vorweggenommene Fachregel.
+15. **Kontaktanlage / Rechte:** Wer welche Kontaktart oder einzelne Felder
+    ämterübergreifend anlegen beziehungsweise bearbeiten darf und wie Grund
+    und zuständige Stelle heißen, bleibt geparkt. Sichtbare Testannahme ist:
+    Die angemeldete Person darf Personen und Institutionen im eigenen Amt
+    anlegen.
 
 ## Offener Umsetzungsbefund
 

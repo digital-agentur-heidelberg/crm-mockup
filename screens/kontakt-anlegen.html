@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kontakt anlegen – Heidelberg CRM</title>
+  <link rel="stylesheet" href="../system/tokens.css">
+  <link rel="stylesheet" href="../system/base.css">
+  <link rel="stylesheet" href="../system/components.css">
+  <script src="../system/vendor/lucide.js" defer></script>
+  <script src="../system/shell.js" defer></script>
+</head>
+<body data-screen="kontakte" data-prototype-states="start checking check-error no-duplicates duplicate acknowledged" data-prototype-state-labels="K05.1 · Erfassung|K05.2 · Prüfung läuft|K05.3 · Prüfungsfehler|K05.4 · Kein Treffer|K05.5 · Mögliche Dublette|K05.6 · Kenntnisnahme" data-prototype-initial="start" data-prototype-variants="a b" data-prototype-variant-labels="Variante A · unterbrechend|Variante B · begleitend" data-variant="a">
+  <main class="screen" id="main">
+    <header class="page-head">
+      <div>
+        <p class="eyebrow">Gemeinsamer Kontaktbestand · Neuanlage</p>
+        <h1>Kontakt anlegen</h1>
+        <p>Erfassen Sie, was bereits bekannt ist. Die Kontaktart wird erst danach vorgeschlagen.</p>
+      </div>
+      <div class="head-actions">
+        <a class="btn" href="kontakte.html"><i data-lucide="arrow-left" aria-hidden="true"></i>Zur Kontaktliste</a>
+        <button class="btn" id="save-draft" type="button"><i data-lucide="save" aria-hidden="true"></i>Entwurf speichern</button>
+      </div>
+    </header>
+
+    <div class="notice" role="note">
+      <i data-lucide="landmark" aria-hidden="true"></i>
+      <span><strong>Testannahme:</strong> Sie dürfen Personen und Institutionen für Ihr eigenes Amt, die Wirtschaftsförderung, anlegen.</span>
+    </div>
+
+    <section class="validation-summary" id="contact-validation" tabindex="-1" aria-labelledby="contact-validation-title" hidden>
+      <h2 id="contact-validation-title">Kontakt kann noch nicht angelegt werden</h2>
+      <p>Prüfen Sie die folgenden Angaben:</p>
+      <ul class="validation-summary-list" id="contact-validation-list"></ul>
+    </section>
+
+    <div class="form-grid" id="contact-work-grid">
+      <form class="card form-card" id="contact-form" novalidate>
+        <fieldset class="form-section">
+          <legend>Bekannte Angaben</legend>
+          <div class="field">
+            <label for="contact-name">Name oder Bezeichnung <span class="field-required">Pflichtangabe</span></label>
+            <input class="input" id="contact-name" name="name" value="Sabine Keler" aria-describedby="contact-name-help contact-name-error" autocomplete="name">
+            <p class="field-help" id="contact-name-help">Tragen Sie den Namen einer Person oder die Bezeichnung einer Institution ein.</p>
+            <p class="field-error" id="contact-name-error" hidden>Geben Sie einen Namen oder eine Bezeichnung ein.</p>
+            <div class="async-check async-check--inline" id="inline-checking" data-async-state="running" data-prototype-variant="b" role="status" aria-live="polite" hidden>
+              <div class="spinner" aria-hidden="true"></div>
+              <div><strong>Dublettenprüfung läuft</strong><p>Sie können die bekannten Angaben weiter erfassen.</p></div>
+            </div>
+          </div>
+          <div class="field">
+            <label for="contact-organisation">Organisation oder beruflicher Bezug</label>
+            <input class="input" id="contact-organisation" name="organisation" value="GreenTech Solutions GmbH" autocomplete="organization">
+          </div>
+          <div class="field-grid">
+            <div class="field">
+              <label for="contact-street">Straße und Hausnummer</label>
+            <input class="input" id="contact-street" name="street" value="Eppelheimer Straße 82" autocomplete="street-address">
+            </div>
+            <div class="field">
+              <label for="contact-postcode">Postleitzahl</label>
+            <input class="input" id="contact-postcode" name="postcode" value="69123" inputmode="numeric" autocomplete="postal-code">
+            </div>
+          </div>
+          <div class="field">
+            <label for="contact-city">Ort</label>
+            <input class="input" id="contact-city" name="city" value="Heidelberg" autocomplete="address-level2">
+          </div>
+          <div class="field-grid">
+            <div class="field">
+              <label for="contact-email">E-Mail-Adresse</label>
+            <input class="input" id="contact-email" name="email" type="email" value="s.keller@greentech-hd.de" autocomplete="email">
+            </div>
+            <div class="field">
+              <label for="contact-phone">Telefonnummer</label>
+              <input class="input" id="contact-phone" name="phone" type="tel" value="06221 54567" autocomplete="tel">
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="form-section">
+          <legend>Kontaktart bestätigen</legend>
+          <section class="proposal-box" id="contact-kind-box" tabindex="-1" aria-labelledby="contact-kind-title">
+            <p class="eyebrow">Nach den bekannten Angaben</p>
+            <h3 id="contact-kind-title">Welche Kontaktart passt?</h3>
+            <p>Aus dem Namen wird „Person“ vorgeschlagen. Sie können den Vorschlag bestätigen oder ändern.</p>
+            <div class="field">
+              <label for="contact-kind">Kontaktart <span class="field-required">Pflichtangabe für den Abschluss</span></label>
+              <select class="select" id="contact-kind" name="kind" aria-describedby="contact-kind-help contact-kind-error">
+                <option value="">Vorschlag noch nicht bestätigt</option>
+                <option value="Person">Person</option>
+                <option value="Institution">Institution</option>
+              </select>
+              <p class="field-help" id="contact-kind-help">Der Entwurf kann auch ohne bestätigte Kontaktart gespeichert werden.</p>
+              <p class="field-error" id="contact-kind-error" hidden>Bestätigen oder ändern Sie die vorgeschlagene Kontaktart.</p>
+            </div>
+            <span class="status status--info" id="contact-kind-status">Vorschlag · Person · Bestätigung offen</span>
+          </section>
+        </fieldset>
+      </form>
+
+      <section class="card card-body" id="state-start" aria-labelledby="start-title">
+        <span class="status status--info">K05.1 · noch nicht geprüft</span>
+        <h2 id="start-title">Bekannte Angaben prüfen</h2>
+        <p>Die Dublettenprüfung berücksichtigt Name, Organisation, Anschrift und Erreichbarkeit.</p>
+        <dl class="summary-list">
+          <div><dt>Verantwortliches Amt</dt><dd>Wirtschaftsförderung</dd></div>
+          <div><dt>Bearbeitung</dt><dd>Julia König</dd></div>
+          <div><dt>Zwischenspeichern</dt><dd>Auch unvollständig möglich</dd></div>
+        </dl>
+        <button class="btn btn--primary" id="start-check" type="button"><i data-lucide="scan-search" aria-hidden="true"></i>Dubletten prüfen</button>
+      </section>
+
+      <section class="async-check async-check--stage" id="state-checking" data-async-state="running" role="status" aria-live="polite" hidden>
+        <div data-prototype-variant="a">
+          <div class="spinner" aria-hidden="true"></div>
+          <h2>Angaben werden auf mögliche Dubletten geprüft</h2>
+          <p>Name, Organisation, Anschrift und Erreichbarkeit werden verglichen. Ihre Eingaben bleiben erhalten.</p>
+        </div>
+        <div data-prototype-variant="b" hidden>
+          <span class="status status--info">K05.2 · Prüfung läuft</span>
+          <h2>Prüfung begleitet die Eingabe</h2>
+          <p>Der Prüfhinweis steht direkt am Namensfeld. Sie können weiterarbeiten.</p>
+        </div>
+      </section>
+
+      <section class="async-check" id="state-check-error" data-async-state="error" role="alert" hidden>
+        <span class="status status--danger">K05.3 · technisch fehlgeschlagen</span>
+        <h2>Dublettenprüfung fehlgeschlagen</h2>
+        <p>Der Vorgang und alle Eingaben bleiben erhalten. Versuchen Sie die Prüfung erneut.</p>
+        <button class="btn" id="retry-check" type="button"><i data-lucide="refresh-cw" aria-hidden="true"></i>Erneut prüfen</button>
+      </section>
+
+      <section class="async-check" id="state-no-duplicates" data-async-state="empty" role="status" hidden>
+        <span class="status status--success">K05.4 · Prüfung abgeschlossen</span>
+        <h2>Keine mögliche Dublette gefunden</h2>
+        <p>Die bekannten Angaben stimmen mit keinem vorhandenen Kontakt ausreichend überein.</p>
+        <div id="no-duplicate-success" tabindex="-1" hidden></div>
+        <button class="btn btn--primary" id="create-without-duplicate" type="button">Kontakt anlegen</button>
+      </section>
+
+      <section class="async-check" id="state-duplicate" data-async-state="results" aria-labelledby="duplicate-title" hidden>
+        <span class="status status--warning">K05.5 · ein möglicher Treffer</span>
+        <h2 id="duplicate-title">Mögliche Dubletten gefunden</h2>
+        <p>Vergleichen Sie die unterscheidenden Angaben, bevor Sie fortfahren.</p>
+        <ul class="candidate-list">
+          <li class="card card-body--compact">
+            <div class="section-title"><span class="section-title-icon"><i data-lucide="user-round" aria-hidden="true"></i></span><h3>Sabine Keller</h3></div>
+            <span class="status status--warning" id="sabine-match-reason">Ähnliche Schreibweise · gleiche Kontaktdaten</span>
+            <dl class="summary-list">
+              <div><dt>Organisation</dt><dd>GreenTech Solutions GmbH</dd></div>
+              <div><dt>Anschrift</dt><dd>Eppelheimer Straße 82 · 69123 Heidelberg</dd></div>
+              <div><dt>E-Mail</dt><dd>s.keller@greentech-hd.de</dd></div>
+              <div><dt>Zuständigkeit</dt><dd>Wirtschaftsförderung · Julia König</dd></div>
+            </dl>
+            <div class="button-row" data-prototype-variant="a">
+              <a class="btn btn--primary" href="kontakt-detail.html">Vorhandenen Kontakt öffnen</a>
+              <button class="btn" type="button" data-prototype-action="Vorhandenen Kontakt Sabine Keller um die erfassten Angaben ergänzen">Um meine Angaben ergänzen</button>
+            </div>
+            <div class="button-row" data-prototype-variant="b" hidden>
+              <a class="btn" href="kontakt-detail.html">Vorhandenen Kontakt öffnen</a>
+              <button class="btn" type="button" data-prototype-action="Vorhandenen Kontakt Sabine Keller um die erfassten Angaben ergänzen">Um meine Angaben ergänzen</button>
+            </div>
+          </li>
+        </ul>
+        <div class="button-row">
+          <button class="btn" id="continue-new" type="button">Trotzdem neu anlegen</button>
+        </div>
+      </section>
+
+      <section class="card card-body" id="state-acknowledged" aria-label="Kenntnisnahme des Prüfergebnisses" hidden>
+        <span class="status status--warning">K05.6 · Kenntnisnahme</span>
+        <div data-prototype-variant="a">
+          <h2>Neuanlage begründen</h2>
+          <p>Sie haben mögliche Dubletten geprüft. Wählen Sie aus, warum trotzdem ein neuer Kontakt entstehen soll.</p>
+          <fieldset class="form-section" id="duplicate-reasons">
+            <legend>Grund für die Neuanlage</legend>
+            <label class="check"><input type="radio" name="duplicate-reason" value="Andere Person"><span>Es handelt sich um eine andere Person.</span></label>
+            <label class="check"><input type="radio" name="duplicate-reason" value="Andere Institution"><span>Es handelt sich um eine andere Institution.</span></label>
+            <label class="check"><input type="radio" name="duplicate-reason" value="Kein Treffer passt"><span>Keiner der angezeigten Kontakte passt.</span></label>
+            <label class="check"><input type="radio" name="duplicate-reason" value="Anderer Grund"><span>Anderer Grund</span></label>
+            <div class="field" id="other-reason-field" hidden>
+              <label for="other-reason">Anderen Grund beschreiben <span class="field-required">Pflichtangabe bei dieser Auswahl</span></label>
+              <textarea class="textarea" id="other-reason" name="other-reason" aria-describedby="other-reason-error"></textarea>
+              <p class="field-error" id="other-reason-error" hidden>Beschreiben Sie den anderen Grund.</p>
+            </div>
+          </fieldset>
+          <button class="btn btn--primary" id="create-after-reason" type="button" disabled>Kontakt neu anlegen</button>
+        </div>
+        <div data-prototype-variant="b" hidden>
+          <h2>Prüfergebnis bestätigen</h2>
+          <p>Die Anlage bleibt Ihre Hauptaktion. Bestätigen Sie unmittelbar davor, dass Sie die möglichen Dubletten geprüft haben.</p>
+          <label class="check"><input id="acknowledge-duplicate" type="checkbox"><span>Ich habe die möglichen Dubletten geprüft und möchte einen neuen Kontakt anlegen.</span></label>
+          <button class="btn btn--primary" id="create-after-acknowledgement" type="button" disabled>Kontakt neu anlegen</button>
+        </div>
+        <div id="creation-success" tabindex="-1" hidden></div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    window.addEventListener('load', function () {
+      var form = document.getElementById('contact-form');
+      var workGrid = document.getElementById('contact-work-grid');
+      var validation = document.getElementById('contact-validation');
+      var validationList = document.getElementById('contact-validation-list');
+      var nameField = document.getElementById('contact-name');
+      var kindField = document.getElementById('contact-kind');
+      var inlineChecking = document.getElementById('inline-checking');
+      var currentState = 'start';
+      var states;
+      var guard = window.CrmShell.createUnsavedGuard({ form: workGrid, saveControls: '#save-draft' });
+
+      function variant() {
+        return document.body.getAttribute('data-variant') || 'a';
+      }
+
+      function renderLayout(state) {
+        currentState = state;
+        var interrupted = variant() === 'a' && ['checking', 'duplicate', 'acknowledged'].indexOf(state) !== -1;
+        form.querySelectorAll('input, select, textarea, button').forEach(function (control) {
+          control.disabled = interrupted;
+        });
+        form.setAttribute('aria-disabled', String(interrupted));
+        inlineChecking.hidden = !(variant() === 'b' && state === 'checking');
+        if (state === 'duplicate') {
+          var normalizedName = nameField.value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('de');
+          document.getElementById('sabine-match-reason').textContent = normalizedName.indexOf('sabine kel') !== -1 ? 'Ähnliche Schreibweise · gleiche Kontaktdaten' : 'Ähnliche Kontaktdaten';
+        }
+        if (interrupted) {
+          window.requestAnimationFrame(function () {
+            var decision = document.querySelector('#state-' + state + ' h2');
+            if (decision) {
+              decision.setAttribute('tabindex', '-1');
+              decision.focus();
+            }
+          });
+        }
+      }
+
+      function setState(next) {
+        states.set(next);
+      }
+
+      function showValidation() {
+        var errors = [];
+        var nameMissing = !nameField.value.trim();
+        var kindMissing = !kindField.value;
+        nameField.setAttribute('aria-invalid', String(nameMissing));
+        kindField.setAttribute('aria-invalid', String(kindMissing));
+        document.getElementById('contact-name-error').hidden = !nameMissing;
+        document.getElementById('contact-kind-error').hidden = !kindMissing;
+        if (nameMissing) {
+          errors.push({ href: '#contact-name', text: 'Name oder Bezeichnung eingeben' });
+        }
+        if (kindMissing) {
+          errors.push({ href: '#contact-kind', text: 'Kontaktart bestätigen' });
+        }
+        validationList.innerHTML = '';
+        errors.forEach(function (error) {
+          var item = document.createElement('li');
+          var link = document.createElement('a');
+          link.href = error.href;
+          link.textContent = error.text;
+          item.appendChild(link);
+          validationList.appendChild(item);
+        });
+        validation.hidden = errors.length === 0;
+        if (errors.length) {
+          validation.focus();
+        }
+        return errors.length === 0;
+      }
+
+      function escapeMarkup(value) {
+        return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+
+      function successMarkup() {
+        var name = nameField.value.trim();
+        var safeName = escapeMarkup(name);
+        return '<div class="notice notice--success" role="status"><i data-lucide="circle-check" aria-hidden="true"></i><span><strong>Kontakt neu angelegt:</strong> ' + safeName + ' liegt im gemeinsamen Kontaktbestand und wird von der Wirtschaftsförderung betreut.</span></div><button class="btn btn--primary" type="button" data-prototype-record="Kontakt" data-prototype-name="' + safeName + ' (neu)">Neuen Kontakt öffnen</button>';
+      }
+
+      function completeCreation(target) {
+        if (!showValidation()) {
+          return;
+        }
+        target.innerHTML = successMarkup();
+        target.hidden = false;
+        guard.markSaved();
+        window.CrmShell.rendered(target);
+        target.focus();
+      }
+
+      states = window.CrmShell.createStateSwitch({
+        controls: '[data-prototype-state]',
+        attribute: 'data-prototype-state',
+        initial: 'start',
+        panels: {
+          start: document.getElementById('state-start'),
+          checking: document.getElementById('state-checking'),
+          'check-error': document.getElementById('state-check-error'),
+          'no-duplicates': document.getElementById('state-no-duplicates'),
+          duplicate: document.getElementById('state-duplicate'),
+          acknowledged: document.getElementById('state-acknowledged')
+        },
+        onChange: renderLayout
+      });
+
+      document.addEventListener('crm:prototype-variant', function () { renderLayout(currentState); });
+      document.getElementById('start-check').addEventListener('click', function () { setState('checking'); });
+      document.getElementById('retry-check').addEventListener('click', function () { setState('checking'); });
+      document.getElementById('continue-new').addEventListener('click', function () { setState('acknowledged'); });
+      document.getElementById('create-without-duplicate').addEventListener('click', function () { completeCreation(document.getElementById('no-duplicate-success')); });
+      document.getElementById('save-draft').addEventListener('click', function () {
+        guard.markSaved();
+        window.CrmShell.showToast('Entwurf gespeichert. Unvollständige Angaben bleiben erhalten.', 'success');
+      });
+      kindField.addEventListener('change', function () {
+        document.getElementById('contact-kind-status').textContent = kindField.value ? 'Bestätigt · ' + kindField.value : 'Vorschlag · Person · Bestätigung offen';
+      });
+
+      document.querySelectorAll('input[name="duplicate-reason"]').forEach(function (control) {
+        control.addEventListener('change', function () {
+          var other = control.value === 'Anderer Grund';
+          document.getElementById('other-reason-field').hidden = !other;
+          document.getElementById('create-after-reason').disabled = false;
+        });
+      });
+      document.getElementById('create-after-reason').addEventListener('click', function () {
+        var chosen = document.querySelector('input[name="duplicate-reason"]:checked');
+        var otherField = document.getElementById('other-reason');
+        var otherMissing = chosen && chosen.value === 'Anderer Grund' && !otherField.value.trim();
+        otherField.setAttribute('aria-invalid', String(otherMissing));
+        document.getElementById('other-reason-error').hidden = !otherMissing;
+        if (otherMissing) {
+          otherField.focus();
+          return;
+        }
+        completeCreation(document.getElementById('creation-success'));
+      });
+
+      document.getElementById('acknowledge-duplicate').addEventListener('change', function (event) {
+        document.getElementById('create-after-acknowledgement').disabled = !event.currentTarget.checked;
+      });
+      document.getElementById('create-after-acknowledgement').addEventListener('click', function () {
+        completeCreation(document.getElementById('creation-success'));
+      });
+      renderLayout('start');
+    });
+  </script>
+  <!-- Design-Rationale: Das allgemeine Formularraster und der nachgelagerte Vorschlagskasten bleiben in beiden Testvarianten identisch. Die einzige Testvariable ist, ob die Dublettenprüfung den Vorgang unterbricht oder begleitet. -->
+</body>
+</html>
