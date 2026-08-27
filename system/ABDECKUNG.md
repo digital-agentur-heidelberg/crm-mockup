@@ -16,14 +16,14 @@ oder nur als knappe Screenbezeichnung beschreibt.
 |---|---|---|---|
 | Global · R01 | Gesamte Bildschirmübersicht für Abnahmerunden | `index.html` erschließt alle Fachscreens nach Bereich und ist sichtbar als Prototyp-Hilfsmittel gekennzeichnet; sie gehört nicht zur Fachanwendung. | Hilfsmittel · vorhanden |
 | Global · S01 | Arbeitsstart: direkte Suche, zuletzt verwendete Kontakte, Veranstaltungen und Arbeitsstand | `arbeitsbereich.html` bietet Direktsuche, vier aktuelle Aufgaben, Tagespunkte und Änderungen in der eigenen Zuständigkeit. Persönlich zuletzt geöffnete Kontakte und Veranstaltungen sind derzeit nicht als eigene Einstiege umgesetzt. | teilweise |
-| Global · F01 | Druckbare Übersicht aller offenen Fachfragen | Als Screen ersatzlos entfallen; die offenen Fachfragen bleiben in `BEFUNDE-offen.md` und Abschnitt 4 dieses Abgleichs. | entfällt |
+| Global · F01 | Druckbare Übersicht aller offenen Fachfragen | Als Screen ersatzlos entfallen; die offenen Fachfragen bleiben in `BEFUNDE-offen.md` und Abschnitt 5 dieses Abgleichs. | entfällt |
 | Global · F02–F17 | Detail und Varianten der 16 Fachfragen | Als Screens ersatzlos entfallen; die Fachfragen werden nicht Teil des Übergabebestands. | entfällt |
 | Kontakte · K01 | Zuletzt verwendete Kontakte als Einstieg | Der persönliche Einstieg wurde aus `kontakte.html` wieder herausgenommen; der Screen beginnt direkt mit der vollständigen Kontaktliste. | entfällt |
 | Kontakte · K01 success | Suchergebnisse einschließlich weiterem Ergebnisabschnitt | Lokale Suche, mehrere Filterachsen, 205 Treffer und echte Pagination mit 25 Einträgen pro Seite sind benutzbar. | vorhanden |
 | Kontakte · K01b | Keine Treffer | Rücksetzbarer Leerzustand ist über die Prototypsteuerung und durch Filter erreichbar. | vorhanden |
 | Kontakte · K01c | Ladezustand | Ladezustand erhält Listenstand und sperrt vorübergehend Listenaktionen. | vorhanden |
 | Kontakte · K01d | Fehlerzustand | Fehlerzustand mit „Erneut laden“ und erhaltenen Filtern ist benutzbar. | vorhanden |
-| Kontakte · K01e / V04 | Mehrfachauswahl und Sammelaktion „Zu Verteiler hinzufügen“ | Seitenübergreifende Mehrfachauswahl ist vorhanden; angeboten werden nur Exporte. Die Zuordnung zu einem Verteiler fehlt. | teilweise |
+| Kontakte · K01e / V04 | Mehrfachauswahl und Sammelaktion „Zu Verteiler hinzufügen“ | Seitenübergreifende Mehrfachauswahl und die Zuordnung zu einem Verteiler sind vorhanden. Derselbe Zuordnungsvertrag trägt auch den umgekehrten Einstieg aus dem Verteilerdetail. | vorhanden |
 | Kontakte · K02 | Person: Übersicht | Die 360°-Ansicht für Sabine Keller bündelt Identität, Erreichbarkeit, Verbindungen, Zuständigkeit und nächste Schritte. | vorhanden |
 | Kontakte · K02b | Person: Stammdaten | Erreichbarkeit, Anschrift, Organisation und Zuständigkeit sind in der 360°-Ansicht enthalten; die andere Gruppierung ist eine Strukturabweichung, keine Inhaltslücke. | vorhanden |
 | Kontakte · K02c | Person: Akte | Kontaktverlauf, Gesprächsnotiz, Teilnahmen, Verteiler, nächste Schritte und Zuschüsse sind in der 360°-Ansicht benutzbar. | vorhanden |
@@ -52,8 +52,8 @@ oder nur als knappe Screenbezeichnung beschreibt.
 | Veranstaltungen · E01a | Ladezustand | Über die Prototypsteuerung benutzbar. | vorhanden |
 | Veranstaltungen · E01b | Leere Übersicht | Leerer Bestand beziehungsweise keine Treffer mit Rücksetzhandlung ist benutzbar. | vorhanden |
 | Veranstaltungen · E01c | Fehlerzustand | Fehlerzustand mit „Erneut laden“ und erhaltenem Listenstand ist benutzbar. | vorhanden |
-| Veranstaltungen · E02 / E03 | Veranstaltungsdetail mit Teilnehmenden | Detail, Anmeldestatus, Statusfilter, Mehrfachauswahl, Kapazität, Veranstaltungsangaben und Warteliste sind benutzbar. | vorhanden |
-| Veranstaltungen · E02e | Veranstaltungsdetail ohne Teilnehmende | Ein fachlich leerer Teilnehmendenzustand fehlt. | offen |
+| Veranstaltungen · E02 / E03 | Veranstaltungsdetail mit Teilnehmenden | Detail, abgeleitete Statussummen, Statusfilter, echte Pagination, seitenübergreifende Mehrfachauswahl, Einzel- und Sammeländerung des Status, Kapazität, Veranstaltungsangaben und Warteliste sind benutzbar. Die eigene Veranstaltung ist bearbeitbar; die Veranstaltung eines fremden Amts bleibt lesbar, aber für die Statuspflege gesperrt. | vorhanden |
+| Veranstaltungen · E02e | Veranstaltungsdetail ohne Teilnehmende | Der fachlich leere Bestand ist über `veranstaltung.html?fixture=leer` erreichbar und besitzt anders als ein leeres Such- oder Filterergebnis keinen vorgetäuschten Rücksetzweg. | vorhanden |
 | Veranstaltungen · E04 | Veranstaltung bearbeiten | Kein Bearbeitungszustand vorhanden. | offen |
 | Veranstaltungen · E05 | Fachlich blockierter Anlegeentwurf ohne Erfolgspfad | Grunddaten, nachgelagerter Artvorschlag, Entwurfsspeicherung und blockierende Veröffentlichungsprüfung sind benutzbar; eine echte Veröffentlichung findet nicht statt. | vorhanden |
 | Mailing · M01 | Vorlage und Empfängerkreis | Beides ist vorhanden, im Entwurf jedoch auf die Stufen „Vorlage“ und „Empfängerkreis“ verteilt. Ein Verteiler kann aus dem Verteilerdetail übernommen werden; die feste Zuordnung eines Mailings zu genau einem Verteiler ist noch nicht durchgängig modelliert. | teilweise |
@@ -67,7 +67,7 @@ oder nur als knappe Screenbezeichnung beschreibt.
 | Mailing · M06 | Abhängiger Versandbeleg, kein realer Versand | Nach dem simulierten Versand erscheint ein Beleg; ein realer Versand erfolgt im statischen Entwurf nicht. | vorhanden |
 | Darüber hinaus · Veranstaltungsübersicht | Fachlich ausgebaute Langlistenansicht | Über die knappe Inventarbezeichnung hinaus: 60 plausible Termine, echte Seitenwechsel, Zeitraum- und Mehrfach-Ämterfilter, ausgeschriebene Online-Registrierung und native Belegungswerte. | darüber hinaus |
 | Darüber hinaus · Listenanatomie | Gemeinsamer Aufbau langer Übersichten | Getrennte Rollen für lokale Suche, Aktionen, Filterachsen, Ergebnismetadaten, Tabelle, Pagination sowie gefüllt/lädt/leer/Fehler sind für Kontakte, Veranstaltungen und Verteiler vorhanden. | darüber hinaus |
-| Darüber hinaus · Sammelaktionen | Bereichsübergreifende Auswahlverträge | Seitenübergreifende Auswahl, Kontakt-Export, Anschreiben ausgewählter Teilnehmender sowie Hinzufügen und Entfernen von Verteilermitgliedern sind vorhanden; V04 selbst bleibt teilweise. | darüber hinaus |
+| Darüber hinaus · Sammelaktionen | Bereichsübergreifende Auswahlverträge | Seitenübergreifende Auswahl, Kontakt-Export, Verteilerzuordnung, Anschreiben und Statusänderung ausgewählter Teilnehmender sowie Hinzufügen und Entfernen von Verteilermitgliedern sind vorhanden. | darüber hinaus |
 | Darüber hinaus · Prototyp-Konventionen | Zustände, Hilfsmittel und nicht ausgebaute Ziele ohne Routenabhängigkeit | Sichtbare Prototyp-Zustandsleiste, ebenso gekennzeichneter Prototyp-Index, Toasts, Nicht-hinterlegt-Rückmeldungen, erhaltener Bildschirm statt falscher Navigation und gemeinsames Nachziehen dynamischer Icons sind vorhanden. | darüber hinaus |
 | Darüber hinaus · Gemeinsame Hülle | Offline-Navigation und intelligente Suche | Eine zentrale, vollständig offline laufende Hülle erzeugt Navigation, aktive Bereiche, globale Kontakt- und Handlungssuche, Hilfe, Profil und Rückmeldungen. | darüber hinaus |
 | Darüber hinaus · Kontaktliste | Master-Detail-Vorschau | Einzelauswahl und Mehrfachauswahl bleiben getrennt; die Vorschau wechselt bei schmaler Breite in eine Detailzeile. | darüber hinaus |
@@ -142,11 +142,13 @@ nicht, welche Fassung später umgesetzt wird.
 
 ## 3. Neue Anforderungen nach den Fachantworten
 
-- **A – Teilnehmendenstatus in der Liste bearbeitbar:** Der Status wird je
-  Zeile in der Teilnehmendenliste geändert, in der Regel durch das Fachamt, das
-  die Veranstaltung erstellt hat. Statuswechsel je Zeile, voraussichtlich auch
-  als Sammelaktion der vorhandenen Mehrfachauswahl, Rückmeldung und
-  Rechteprüfung bilden einen eigenen Systemvertrag und Bauabschnitt.
+- **A – Teilnehmendenstatus in der Liste bearbeitbar — umgesetzt:** Der Status
+  wird je Zeile oder als Sammelaktion der vorhandenen Mehrfachauswahl geändert.
+  Einzel- und Sammeländerungen verwenden denselben Systemvertrag und
+  Rückgängig-Stapel. Die eigene Veranstaltung ist für die Testpersona
+  bearbeitbar; die Veranstaltung eines fremden Amts bleibt lesbar, aber für
+  Auswahl und Statuspflege gesperrt. Statusvokabular und erlaubte Übergänge
+  bleiben Fachfragen für den Test.
 - **B – Mailings am Verteiler:** Mailings hängen immer an einem Verteiler.
   Einzelmailings und individuelle Gruppenmailings führen aus der Kontaktliste
   in Richtung Outlook oder Mailprogramm, wie im Screen-Inventar beschrieben.
@@ -155,29 +157,54 @@ nicht, welche Fassung später umgesetzt wird.
   Mailing-Prozess; eine Liste oder Historie am Verteilerdetail ist nicht
   gebaut. Der geplante Mailing-Bauabschnitt beginnt damit im Verteilerdetail
   statt in einer eigenständigen Übersicht.
-- **C – Zähler sind Ableitungen:** Eine Zahl neben einer Liste wird aus dieser
-  Liste berechnet und nie unabhängig gepflegt. Dies gilt für Statussummen der
-  Teilnehmenden, Mitgliederzahl eines Verteilers, Empfängerzahl eines Mailings
-  und Belegung einer Veranstaltung.
+- **C – Zähler sind Ableitungen — innerhalb der Screens umgesetzt:** Eine Zahl
+  neben einer Liste wird aus dieser Liste berechnet und nie unabhängig
+  gepflegt. Dies gilt für Statussummen der Teilnehmenden, Mitgliederzahl eines
+  Verteilers, Empfängerzahl eines Mailings und Belegung einer Veranstaltung.
+  Davon getrennt bleibt die offene gemeinsame Fixture: Die fachlich
+  zusammengehörigen Ausgangsmengen weichen zwischen Verteilerübersicht,
+  Verteilerdetail und Mailing noch voneinander ab.
 
 ## 4. Reihenfolge der Bauabschnitte
 
 ### Vor dem Testing
 
 Erledigt sind die Such- und Filterprüfung (Befunde 09 und 10), der
-Teilnehmendenstatus samt abgeleiteten Zählern (Befund 11) sowie die horizontalen
-Überläufe in `veranstaltungen.html` bei 1024 Pixeln und
+Teilnehmendenstatus samt abgeleiteten Zählern und fachlichem Leerzustand
+(Befund 11), die echte Teilnehmendenpagination (Befund 12), die
+Mitgliederpagination und Prototyp-Ausprägungen des Verteilerdetails (Befund 14)
+sowie die horizontalen Überläufe in `veranstaltungen.html` bei 1024 Pixeln und
 `kontakt-detail.html` bei 1280 Pixeln.
 
 Ausstehend ist die in Befund 07 genannte vollständige manuelle Browserrunde:
 Tastaturweg, ARIA, Kontrast und die Viewports über den gesamten Bestand.
 
+### Im ersten Usertest
+
+Getestet werden die tatsächlich gebauten Wege: Arbeitsstart und Suche,
+Kontaktliste und Personendetail, Kontaktanlage mit Dublettenprüfung,
+Verteilerzuordnung aus beiden Richtungen, Arbeits- und Managed-Verteiler,
+Veranstaltungsübersicht, Teilnehmendenarbeit, Veranstaltung anlegen sowie der
+vorhandene Mailingprozess. Die Fachfragen aus Abschnitt 5 werden über diese
+Aufgaben erhoben; sie werden vor dem Test nicht durch erfundene Rechte oder
+Prozessregeln geschlossen.
+
+Nicht als umgesetzte Lösung getestet werden persönliche Öffnungshistorie,
+Institutionendetail, Kontakt- und Veranstaltungbearbeitung, vollständig
+geschützte Objekte, zugehörige Mailings am Verteiler sowie reale Exporte,
+Nachrichten oder Versandhandlungen. F01–F17 bleiben Dokumentation und werden
+nicht als Fachscreens ergänzt.
+
 ### Nach dem Testing
 
-Institutionen, Kontakt bearbeiten, Veranstaltung bearbeiten, Mailing am
-Verteiler. Institutionen hängen am Verbindungsmodell aus Frage 11; dessen
-Bezeichnungen werden im Test erhoben. Vorher zu bauen hieße, das Modell zu
-raten.
+Nach den fachlichen und organisatorischen Entscheidungen folgen
+Institutionendetail, Kontakt bearbeiten einschließlich Kontakterlaubnis und
+Deaktivierung, Veranstaltung bearbeiten einschließlich Absage und Löschung
+sowie Mailing am Verteiler einschließlich fester Verteilerzuordnung und der
+noch fehlenden Lade-, Leer- und Fehlerzustände. Die persönliche
+Öffnungshistorie bleibt eine davon getrennte Umsetzungsfrage. Institutionen
+hängen am Verbindungsmodell aus Frage 11; dessen Bezeichnungen werden im Test
+erhoben. Vorher zu bauen hieße, das Modell zu raten.
 
 ## 5. Fachfragen nach dem Testing
 
@@ -287,14 +314,15 @@ für fachliche Fragen auf diesen Abschnitt.
 
 ### Notizen aus dem Abgleich
 
-- Im aktuellen Ordner liegen zehn Fachscreens, das Prototyp-Hilfsmittel
+- Im aktuellen Ordner liegen elf Fachscreens, das Prototyp-Hilfsmittel
   `index.html` und `_vorlage.html`. R01 zählt ausdrücklich nicht als
   Produktscreen; F01–F17 werden nicht als Dateien ergänzt.
 - Die Statusstrecke zeigt zehn Wartelistenplätze, passend zur Tabelle. Sie ist
-  aus der Liste abgeleitet; siehe Abschnitt 3 und Frage 17.
-- Die bereits dokumentierten horizontalen Bestandsüberläufe der
+  aus der Liste abgeleitet; siehe Abschnitt 3 und Befund 11.
+- Die früher dokumentierten horizontalen Bestandsüberläufe der
   Veranstaltungsübersicht bei 1024 Pixeln und des Kontakt-Details bei 1280
-  Pixeln bleiben offen.
+  Pixeln sind behoben; die vollständige manuelle Browserrunde über den gesamten
+  Bestand bleibt davon unberührt ausstehend.
 - CD Steingrau auf Weiß erreicht 4,44:1. Die Kombination bleibt auf
   deaktivierte Inhalte und nichttextliche Symbole beschränkt; die fachliche
   beziehungsweise barrierefachliche Entscheidung dazu steht weiterhin aus.
