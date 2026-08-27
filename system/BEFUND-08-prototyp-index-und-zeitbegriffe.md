@@ -1,4 +1,4 @@
-# Befund 12 – Prototyp-Index und Zeitbegriffe
+# Befund 08 – Prototyp-Index und Zeitbegriffe
 
 Stand: 26. August 2026.
 

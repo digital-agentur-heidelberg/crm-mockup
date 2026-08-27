@@ -1,6 +1,6 @@
 # Routen- und Screen-Inventar des Klickprototyps
 
-Stand: 26.08.2026. Quelle ist ausschließlich der statische Klickprototyp in
+Stand: 27.08.2026. Quelle ist ausschließlich der statische Klickprototyp in
 `frontend/prototype/`. Dieses Inventar beschreibt keine Produkt- oder
 BFF-Routen.
 
@@ -87,6 +87,19 @@ Die Sammelaktion V04 ist die Kontakt-Route
 
 `page=2` ist ein im Prototyp verlinkter Darstellungsparameter der Übersicht;
 er ändert derzeit nicht die angezeigten Fixtures.
+
+## Fortschreibung der Anforderungen
+
+- **Teilnehmendenstatus:** Im Veranstaltungsdetail soll der Status je Zeile in
+  der Teilnehmendenliste bearbeitbar sein, voraussichtlich auch als
+  Sammelaktion. Rückmeldung und Rechteprüfung gehören dazu.
+- **Mailing am Verteiler:** Mailings hängen immer an einem Verteiler und werden
+  in dessen Detail dargestellt; die Darstellungsform ist offen. Einzelmailings
+  und individuelle Gruppenmailings führen aus der Kontaktliste in Richtung
+  Outlook oder Mailprogramm.
+- **Abgeleitete Zähler:** Statussummen der Teilnehmenden, Mitgliederzahl eines
+  Verteilers, Empfängerzahl eines Mailings und Belegung einer Veranstaltung
+  werden aus der jeweiligen Liste berechnet und nicht unabhängig gepflegt.
 
 ## Mailing
 
