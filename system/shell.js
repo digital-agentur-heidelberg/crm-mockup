@@ -257,8 +257,24 @@
     var root = settings.root || document;
     var rows = [];
     var selectAll = elements(settings.selectAll, root)[0] || null;
+    var selectMatched = elements(settings.selectMatched, root)[0] || null;
+    var restrictToPage = elements(settings.restrictToPage, root)[0] || null;
+    var scopeRegion = elements(settings.scopeRegion, root)[0] || null;
+    var scopeMessage = elements(settings.scopeMessage, root)[0] || null;
+    var resetNotice = elements(settings.resetNotice, root)[0] || null;
+    var emptyReason = elements(settings.emptyReason, root)[0] || null;
     var actions = elements(settings.actions, root);
     var boundChecks = [];
+    var matched = [];
+    var page = [];
+    var scope = "explicit";
+    var itemSingular = settings.itemSingular || "Eintrag";
+    var itemPlural = settings.itemPlural || "Einträge";
+
+    function onRowChange() {
+      scope = "explicit";
+      update();
+    }
 
     function checkboxFor(row) {
       return row.querySelector(settings.checkbox || ".row-check");
@@ -272,9 +288,54 @@
     }
 
     function visibleRows() {
-      return rows.filter(function (row) {
-        return !row.hidden;
+      return page.slice();
+    }
+
+    function matchedRows() {
+      return matched.slice();
+    }
+
+    function isAlreadyIncluded(row) {
+      return settings.isAlreadyIncluded ? settings.isAlreadyIncluded(row) : row.getAttribute("data-already-included") === "true";
+    }
+
+    function setResetNotice(message) {
+      if (!resetNotice) {
+        return;
+      }
+      resetNotice.textContent = message || "";
+      resetNotice.hidden = !message;
+    }
+
+    function setChecked(items, checked) {
+      items.forEach(function (row) {
+        var checkbox = checkboxFor(row);
+        if (checkbox) {
+          checkbox.checked = checked;
+        }
       });
+    }
+
+    function pageIsSelected(selected, visible) {
+      return visible.length > 0 && visible.every(function (row) {
+        return selected.indexOf(row) !== -1;
+      });
+    }
+
+    function selectionText(selected, visible) {
+      var count = selected.length;
+      var noun = count === 1 ? itemSingular : itemPlural;
+      var outsidePage = selected.some(function (row) { return visible.indexOf(row) === -1; });
+      if (scope === "all-matches") {
+        return "Alle " + count + " " + itemPlural + " dieser Filterung sind ausgewählt.";
+      }
+      if (pageIsSelected(selected, visible) && !outsidePage) {
+        return count + " " + itemPlural + " auf dieser Seite sind ausgewählt.";
+      }
+      if (outsidePage) {
+        return count + " " + itemPlural + " auf mehreren Seiten ausgewählt.";
+      }
+      return count + " " + noun + " ausgewählt.";
     }
 
     function update() {
@@ -295,25 +356,57 @@
       actions.forEach(function (action) {
         action.disabled = selected.length === 0;
       });
+      if (emptyReason) {
+        emptyReason.hidden = selected.length > 0;
+      }
+      if (scopeRegion) {
+        scopeRegion.hidden = selected.length === 0;
+      }
+      if (scopeMessage) {
+        scopeMessage.textContent = selected.length ? selectionText(selected, visible) : "";
+      }
+      if (selectMatched) {
+        var canSelectMatched = scope !== "all-matches" && pageIsSelected(selected, visible) && matchedRows().length > selected.length;
+        selectMatched.hidden = !canSelectMatched;
+        if (canSelectMatched) {
+          selectMatched.textContent = "Alle " + matchedRows().length + " " + itemPlural + " dieser Filterung auswählen";
+        }
+      }
+      if (restrictToPage) {
+        restrictToPage.hidden = scope !== "all-matches";
+      }
+      var alreadyIncluded = selected.filter(isAlreadyIncluded);
+      var meta = {
+        scope: scope,
+        selectedRows: selected.slice(),
+        pageRows: visible.slice(),
+        matchedRows: matchedRows(),
+        selectedCount: selected.length,
+        alreadyIncludedRows: alreadyIncluded,
+        alreadyIncludedCount: alreadyIncluded.length,
+        actionableRows: selected.filter(function (row) { return !isAlreadyIncluded(row); }),
+        actionableCount: selected.length - alreadyIncluded.length
+      };
       if (settings.onChange) {
-        settings.onChange(selected, visible);
+        settings.onChange(selected, visible, meta);
       }
       return selected;
     }
 
     function bindRows() {
       boundChecks.forEach(function (checkbox) {
-        checkbox.removeEventListener("change", update);
+        checkbox.removeEventListener("change", onRowChange);
       });
       rows = elements(settings.rows, root);
       boundChecks = rows.map(checkboxFor).filter(Boolean);
       boundChecks.forEach(function (checkbox) {
-        checkbox.addEventListener("change", update);
+        checkbox.addEventListener("change", onRowChange);
       });
     }
 
     if (selectAll) {
       selectAll.addEventListener("change", function () {
+        scope = "explicit";
         visibleRows().forEach(function (row) {
           var checkbox = checkboxFor(row);
           if (checkbox) {
@@ -323,15 +416,73 @@
         update();
       });
     }
+    if (selectMatched) {
+      selectMatched.addEventListener("click", function () {
+        scope = "all-matches";
+        setChecked(rows, false);
+        setChecked(matchedRows(), true);
+        setResetNotice("");
+        update();
+      });
+    }
+    if (restrictToPage) {
+      restrictToPage.addEventListener("click", function () {
+        scope = "explicit";
+        setChecked(rows, false);
+        setChecked(visibleRows(), true);
+        update();
+      });
+    }
     bindRows();
+    matched = rows.slice();
+    page = rows.filter(function (row) { return !row.hidden; });
     update();
 
     return {
       getSelectedRows: selectedRows,
       getVisibleRows: visibleRows,
-      refresh: update,
+      getMatchedRows: matchedRows,
+      getState: function () {
+        var selected = selectedRows();
+        var included = selected.filter(isAlreadyIncluded);
+        return {
+          scope: scope,
+          selectedRows: selected,
+          pageRows: visibleRows(),
+          matchedRows: matchedRows(),
+          selectedCount: selected.length,
+          alreadyIncludedRows: included,
+          alreadyIncludedCount: included.length,
+          actionableRows: selected.filter(function (row) { return !isAlreadyIncluded(row); }),
+          actionableCount: selected.length - included.length
+        };
+      },
+      refresh: function () {
+        page = rows.filter(function (row) { return !row.hidden; });
+        matched = page.slice();
+        return update();
+      },
+      syncCollection: function (view) {
+        var next = view || {};
+        var collectionChanged = next.reason === "filter" || next.reason === "query" || next.reason === "reset";
+        if (scope === "all-matches" && collectionChanged) {
+          setChecked(rows, false);
+          scope = "explicit";
+          setResetNotice("Die Auswahl aller Treffer wurde aufgehoben, weil sich Suche oder Filter geändert haben.");
+        }
+        matched = next.matchedRows ? next.matchedRows.slice() : matched;
+        page = next.pageRows ? next.pageRows.slice() : page;
+        return update();
+      },
+      clear: function () {
+        setChecked(rows, false);
+        scope = "explicit";
+        return update();
+      },
       refreshRows: function () {
         bindRows();
+        matched = rows.slice();
+        page = rows.filter(function (row) { return !row.hidden; });
         return update();
       }
     };
@@ -725,6 +876,359 @@
     };
   }
 
+  function createDialog(options) {
+    var settings = options || {};
+    var dialog = elements(settings.dialog)[0];
+    var openers = elements(settings.openers);
+    var returnFocus = null;
+
+    if (!dialog) {
+      return null;
+    }
+
+    function focusable() {
+      return elements('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])', dialog)
+        .filter(function (control) { return !control.hidden && control.getAttribute("aria-hidden") !== "true"; });
+    }
+
+    function open(trigger) {
+      returnFocus = trigger || document.activeElement;
+      if (settings.onOpen) {
+        settings.onOpen(trigger);
+      }
+      if (typeof dialog.showModal === "function") {
+        dialog.showModal();
+      } else {
+        dialog.setAttribute("open", "");
+      }
+      var initial = elements(settings.initialFocus || "[data-dialog-initial]", dialog)[0] || focusable()[0];
+      if (initial) {
+        initial.focus();
+      }
+    }
+
+    function close(value) {
+      if (dialog.open && typeof dialog.close === "function") {
+        dialog.close(value || "close");
+      } else {
+        dialog.removeAttribute("open");
+        if (settings.onClose) {
+          settings.onClose(value || "close");
+        }
+        if (returnFocus && document.contains(returnFocus)) {
+          returnFocus.focus();
+        }
+      }
+    }
+
+    openers.forEach(function (opener) {
+      opener.addEventListener("click", function () { open(opener); });
+    });
+    elements("[data-dialog-close]", dialog).forEach(function (control) {
+      control.addEventListener("click", function () { close("close"); });
+    });
+    dialog.addEventListener("keydown", function (event) {
+      if (event.key !== "Tab") {
+        return;
+      }
+      var controls = focusable();
+      if (!controls.length) {
+        event.preventDefault();
+        return;
+      }
+      var first = controls[0];
+      var last = controls[controls.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+    dialog.addEventListener("close", function () {
+      if (settings.onClose) {
+        settings.onClose(dialog.returnValue);
+      }
+      if (returnFocus && document.contains(returnFocus)) {
+        returnFocus.focus();
+      }
+    });
+
+    return { dialog: dialog, open: open, close: close };
+  }
+
+  function contactCatalog() {
+    var givenNames = ["Anna", "Benjamin", "Carolin", "Daniel", "Elena", "Florian", "Hanna", "Jonas", "Katrin", "Lukas", "Maja", "Nadine", "Oliver", "Ravi", "Sophie"];
+    var familyNames = ["Aksoy", "Beck", "Brenner", "Ebert", "Fuchs", "Graf", "Hartmann", "Kohl", "Nguyen", "Petrova", "Schilling", "Weber"];
+    var organisations = [
+      "GreenTech Solutions GmbH", "BioRN Network e. V.", "Heidelberg iT Management GmbH", "UnterwegsTheater Heidelberg", "C. Josef Lamy GmbH",
+      "SNP Schneider-Neureither & Partner SE", "Medienforum Heidelberg e. V.", "Heidelberger Kunstverein", "EMBL Heidelberg", "Musik- und Singschule Heidelberg",
+      "Stadtwerke Heidelberg Netze GmbH", "Karlstorbahnhof Heidelberg", "InnovationLab GmbH", "halle02", "Kulturfenster Heidelberg e. V.",
+      "Universität Heidelberg", "Ameria GmbH", "Deutsch-Amerikanisches Institut", "ProMinent GmbH", "Theater und Orchester Heidelberg",
+      "Heidelberger Dienste gGmbH", "Heidelberg Materials AG", "Metropolink Festival", "Dezernat 16", "Heidelberger Frühling gGmbH"
+    ];
+    var offices = ["Wirtschaftsförderung", "Kulturamt", "OB-Referat"];
+    var contacts = [];
+
+    function slug(value) {
+      return normalizeText(value).replace(/ß/g, "ss").replace(/[^a-z0-9]+/g, ".").replace(/^\.|\.$/g, "");
+    }
+
+    givenNames.forEach(function (givenName, givenIndex) {
+      familyNames.forEach(function (familyName, familyIndex) {
+        var index = contacts.length;
+        var organisation = organisations[index % organisations.length];
+        contacts.push({
+          id: "person-" + (index + 1),
+          name: givenName + " " + familyName,
+          organisation: organisation,
+          email: slug(givenName + "." + familyName) + "@" + slug(organisation).replace(/\./g, "-") + ".de",
+          kind: "person",
+          scopes: (index % 3 === 0 ? "mine " : "") + (index % 5 === 0 ? "needs" : ""),
+          office: offices[(givenIndex + familyIndex) % offices.length],
+          permission: index % 17 === 0 ? "E-Mail nicht erlaubt" : (index % 11 === 0 ? "Nur Post erlaubt" : "E-Mail erlaubt"),
+          memberOf: index % 23 === 0 ? ["umweltwirtschaft"] : (index % 29 === 0 ? ["unternehmen-aktiv"] : [])
+        });
+      });
+    });
+    organisations.forEach(function (organisation, index) {
+      contacts.push({
+        id: "organisation-" + (index + 1),
+        name: organisation,
+        organisation: "Organisation · Heidelberg",
+        email: "kontakt@" + slug(organisation).replace(/\./g, "-") + ".de",
+        kind: "org",
+        scopes: (index % 4 === 0 ? "mine " : "") + (index % 6 === 0 ? "needs" : ""),
+        office: offices[index % offices.length],
+        permission: index % 9 === 0 ? "E-Mail nicht erlaubt" : "E-Mail erlaubt",
+        memberOf: index % 8 === 0 ? ["umweltwirtschaft"] : []
+      });
+    });
+    return contacts;
+  }
+
+  function createDistributionAssignment(options) {
+    var settings = options || {};
+    var contacts = settings.contacts || contactCatalog();
+    var dialog = document.createElement("dialog");
+    var workspace;
+    var summary;
+    var submit;
+    var dialogController;
+    var selectedTarget = null;
+    var selectionController = null;
+    var listView = null;
+
+    function contactNoun(count) {
+      return count === 1 ? "Kontakt" : "Kontakte";
+    }
+
+    dialog.className = "work-dialog";
+    dialog.setAttribute("aria-labelledby", "assignment-dialog-title");
+    dialog.innerHTML =
+      '<header class="work-dialog-head"><div><p class="eyebrow">Kontakte zuordnen</p><h2 id="assignment-dialog-title">Kontakte einem Verteiler hinzufügen</h2><p id="assignment-dialog-subtitle"></p></div><button class="btn btn--quiet btn--compact dialog-close" type="button" data-dialog-close aria-label="Zuordnung schließen"><i data-lucide="x" aria-hidden="true"></i>Schließen</button></header>' +
+      '<div class="work-dialog-body"><section class="assignment-context" id="assignment-context"></section><div id="assignment-workspace"></div></div>' +
+      '<footer class="work-dialog-foot"><div class="assignment-summary" id="assignment-summary" aria-live="polite"><strong>Auswahl erforderlich</strong><p>Wählen Sie die Zuordnung aus.</p></div><div class="button-row"><button class="btn" type="button" data-dialog-close>Abbrechen</button><button class="btn btn--primary" id="assignment-submit" type="button" disabled>Kontakte hinzufügen</button></div></footer>';
+    document.body.appendChild(dialog);
+    workspace = dialog.querySelector("#assignment-workspace");
+    summary = dialog.querySelector("#assignment-summary");
+    submit = dialog.querySelector("#assignment-submit");
+
+    function fixedContacts() {
+      return settings.getFixedContacts ? settings.getFixedContacts() : [];
+    }
+
+    function isMember(contact, distribution) {
+      return contact.memberOf && contact.memberOf.indexOf(distribution.id) !== -1;
+    }
+
+    function setSummary(selectedCount, addedCount, includedCount, distribution) {
+      var title = summary.querySelector("strong");
+      var copy = summary.querySelector("p");
+      if (!selectedCount || !distribution) {
+        title.textContent = "Auswahl erforderlich";
+        copy.textContent = settings.mode === "choose-distribution" ? "Wählen Sie einen Verteiler aus." : "Wählen Sie mindestens einen Kontakt aus.";
+        submit.disabled = true;
+        submit.textContent = "Kontakte hinzufügen";
+        return;
+      }
+      title.textContent = selectedCount + (selectedCount === 1 ? " ausgewählter Kontakt" : " ausgewählte Kontakte");
+      copy.textContent = "Sie fügen " + selectedCount + (selectedCount === 1 ? " ausgewählten Kontakt" : " ausgewählte Kontakte") + " dem Verteiler „" + distribution.name + "“ hinzu. " + addedCount + " " + (addedCount === 1 ? "wird" : "werden") + " hinzugefügt; " + includedCount + " " + (includedCount === 1 ? "ist" : "sind") + " bereits enthalten und " + (includedCount === 1 ? "wird" : "werden") + " übersprungen.";
+      submit.disabled = addedCount === 0;
+      submit.textContent = addedCount + " " + contactNoun(addedCount) + " hinzufügen";
+    }
+
+    function showSuccess(added, included, distribution) {
+      var message = added + " " + contactNoun(added) + " " + (added === 1 ? "wurde" : "wurden") + " hinzugefügt. " + included + " " + contactNoun(included) + " " + (included === 1 ? "war" : "waren") + " bereits enthalten und " + (included === 1 ? "wurde" : "wurden") + " übersprungen.";
+      workspace.innerHTML = '<section class="card assignment-success" role="status"><span class="status status--success"><i data-lucide="circle-check" aria-hidden="true"></i>Zuordnung abgeschlossen</span><h3></h3><p></p></section>';
+      workspace.querySelector("h3").textContent = distribution.name;
+      workspace.querySelector("p").textContent = message;
+      summary.querySelector("strong").textContent = "Zuordnung abgeschlossen";
+      summary.querySelector("p").textContent = message;
+      submit.hidden = true;
+      showToast(message, "success");
+      rendered(workspace);
+    }
+
+    function renderTargetChoice() {
+      var chosenContacts = fixedContacts();
+      var context = dialog.querySelector("#assignment-context");
+      var list = document.createElement("ul");
+      context.innerHTML = "<strong>Kontakte stehen fest</strong><p></p>";
+      context.querySelector("p").textContent = chosenContacts.length + " ausgewählte " + contactNoun(chosenContacts.length) + ". Wählen Sie den Verteiler.";
+      dialog.querySelector("#assignment-dialog-subtitle").textContent = "Kontakte stehen fest, der Verteiler wird gewählt.";
+      workspace.innerHTML = '<section aria-labelledby="assignment-target-title"><h3 id="assignment-target-title">Verteiler wählen</h3></section>';
+      list.className = "assignment-targets";
+      (settings.distributions || []).forEach(function (distribution, index) {
+        var item = document.createElement("li");
+        var label = document.createElement("label");
+        var radio = document.createElement("input");
+        var copy = document.createElement("span");
+        var status = document.createElement("span");
+        label.className = "assignment-target";
+        radio.type = "radio";
+        radio.name = "assignment-target";
+        radio.value = distribution.id;
+        if (index === 0) {
+          radio.setAttribute("data-dialog-initial", "");
+        }
+        copy.innerHTML = "<strong></strong><small></small>";
+        copy.querySelector("strong").textContent = distribution.name;
+        copy.querySelector("small").textContent = distribution.office + " · " + distribution.members + " Mitglieder";
+        status.className = "status " + (distribution.managed ? "status--info" : "");
+        status.textContent = distribution.managed ? "Managed-Verteiler" : "Arbeitsverteiler";
+        radio.addEventListener("change", function () {
+          var included = chosenContacts.filter(function (contact) { return isMember(contact, distribution); }).length;
+          selectedTarget = distribution;
+          setSummary(chosenContacts.length, chosenContacts.length - included, included, distribution);
+        });
+        label.appendChild(radio);
+        label.appendChild(copy);
+        label.appendChild(status);
+        item.appendChild(label);
+        list.appendChild(item);
+      });
+      workspace.querySelector("section").appendChild(list);
+      setSummary(0, 0, 0, null);
+      submit.onclick = function () {
+        var included = chosenContacts.filter(function (contact) { return isMember(contact, selectedTarget); });
+        var added = chosenContacts.filter(function (contact) { return !isMember(contact, selectedTarget); });
+        added.forEach(function (contact) { contact.memberOf = (contact.memberOf || []).concat(selectedTarget.id); });
+        if (settings.onComplete) {
+          settings.onComplete({ distribution: selectedTarget, addedContacts: added, alreadyIncludedContacts: included });
+        }
+        showSuccess(added.length, included.length, selectedTarget);
+      };
+    }
+
+    function renderContactChoice() {
+      var distribution = settings.getDistribution ? settings.getDistribution() : settings.distribution;
+      var context = dialog.querySelector("#assignment-context");
+      var rows;
+      var offices = ["Wirtschaftsförderung", "Kulturamt", "OB-Referat"];
+      context.innerHTML = "<strong>Verteiler steht fest</strong><p></p>";
+      context.querySelector("p").textContent = distribution.name + " · " + (distribution.managed ? "Managed-Verteiler; Mitgliedschaften bleiben bearbeitbar." : "Arbeitsverteiler");
+      dialog.querySelector("#assignment-dialog-subtitle").textContent = "Der Verteiler steht fest, Kontakte werden gesucht.";
+      workspace.innerHTML =
+        '<section class="card list-controls" aria-labelledby="assignment-filter-title"><h3 class="u-sr-only" id="assignment-filter-title">Kontakte suchen und filtern</h3><div class="list-controls-main"><div class="list-search"><i data-lucide="search" aria-hidden="true"></i><label class="u-sr-only" for="assignment-search">Nach Name, Organisation oder E-Mail suchen</label><input class="input" id="assignment-search" type="search" autocomplete="off" placeholder="Name, Organisation oder E-Mail" data-dialog-initial></div></div><div class="list-filter-groups"><div class="list-filter-row" role="group" aria-label="Nach Kontaktart filtern"><strong>Kontaktart</strong><button class="filter-chip" type="button" aria-pressed="true" data-assignment-kind="all">Alle</button><button class="filter-chip" type="button" aria-pressed="false" data-assignment-kind="person">Personen</button><button class="filter-chip" type="button" aria-pressed="false" data-assignment-kind="org">Organisationen</button></div><div class="list-filter-row" role="group" aria-label="Kontaktumfang einschränken"><strong>Umfang</strong><button class="filter-chip" type="button" aria-pressed="false" data-assignment-scope="mine">Meine Zuständigkeit</button><button class="filter-chip" type="button" aria-pressed="false" data-assignment-scope="needs">Rückmeldung offen</button></div><div class="list-filter-row"><strong>Zuständigkeit</strong><details class="menu"><summary class="filter-chip"><i data-lucide="landmark" aria-hidden="true"></i>Ämter: alle</summary><div class="menu-popover menu-popover--left filter-popover"><strong>Verantwortliches Amt</strong><label class="check"><input type="checkbox" name="assignment-office" value="Wirtschaftsförderung" checked><span>Wirtschaftsförderung</span></label><label class="check"><input type="checkbox" name="assignment-office" value="Kulturamt" checked><span>Kulturamt</span></label><label class="check"><input type="checkbox" name="assignment-office" value="OB-Referat" checked><span>OB-Referat</span></label></div></details><button class="btn btn--quiet btn--compact list-filter-reset" id="assignment-reset" type="button" hidden>Filter zurücksetzen</button></div></div></section>' +
+        '<p class="selection-reset-notice" id="assignment-selection-reset" role="status" hidden></p>' +
+        '<section class="card assignment-result-card" aria-labelledby="assignment-result-title"><div class="assignment-result-meta"><h3 id="assignment-result-title" tabindex="-1">Kontakte</h3><p><span id="assignment-result-count" aria-live="polite"></span> · <span id="assignment-selected-count" aria-live="polite">0 ausgewählt</span></p></div><div class="selection-scope" id="assignment-selection-scope" hidden><p id="assignment-selection-message"></p><button class="btn btn--compact" id="assignment-select-matched" type="button" hidden></button><button class="btn btn--quiet btn--compact" id="assignment-restrict-page" type="button" hidden>Auswahl auf diese Seite beschränken</button></div><div class="table-wrap"><table class="data-table data-table--static"><thead><tr><th class="selection-col" scope="col"><input class="selection-check" id="assignment-select-page" type="checkbox"><label class="u-sr-only" id="assignment-select-page-label" for="assignment-select-page">Alle Kontakte auf dieser Seite auswählen</label></th><th scope="col">Kontakt</th><th scope="col">Organisation</th><th scope="col">E-Mail</th><th scope="col">Kontakterlaubnis und Mitgliedschaft</th></tr></thead><tbody id="assignment-contact-rows"></tbody></table></div><footer class="list-pagination" id="assignment-pagination"><p class="list-range" data-list-range aria-live="polite" aria-atomic="true"></p><nav class="pagination-nav" data-pagination-nav aria-label="Kontaktseiten"><button class="pagination-button" type="button" data-page-previous aria-label="Vorherige Kontaktseite"><i data-lucide="chevron-left" aria-hidden="true"></i></button><div class="pagination-pages" data-page-list></div><button class="pagination-button" type="button" data-page-next aria-label="Nächste Kontaktseite"><i data-lucide="chevron-right" aria-hidden="true"></i></button></nav></footer></section>';
+      var body = workspace.querySelector("#assignment-contact-rows");
+      contacts.forEach(function (contact) {
+        var row = document.createElement("tr");
+        var included = isMember(contact, distribution);
+        row.setAttribute("data-kind", contact.kind);
+        row.setAttribute("data-scope", contact.scopes);
+        row.setAttribute("data-office", contact.office);
+        row.setAttribute("data-search", contact.name + " " + contact.organisation + " " + contact.email);
+        row.setAttribute("data-contact-id", contact.id);
+        row.setAttribute("data-already-included", String(included));
+        row.innerHTML = '<td class="selection-col"><input class="selection-check row-check" type="checkbox"></td><td class="primary-cell"><strong></strong></td><td></td><td></td><td><span class="status"></span></td>';
+        row.querySelector("input").setAttribute("aria-label", contact.name + " auswählen" + (included ? "; bereits enthalten und wird übersprungen" : ""));
+        row.querySelector("strong").textContent = contact.name;
+        row.children[2].textContent = contact.organisation;
+        row.children[3].textContent = contact.email;
+        row.querySelector(".status").className = "status " + (included ? "status--info" : (contact.permission === "E-Mail erlaubt" ? "status--success" : "status--warning"));
+        row.querySelector(".status").textContent = included ? "Bereits enthalten · wird übersprungen" : contact.permission;
+        body.appendChild(row);
+      });
+      rows = Array.prototype.slice.call(body.querySelectorAll("tr"));
+      selectionController = createListSelection({
+        root: workspace,
+        rows: rows,
+        selectAll: "#assignment-select-page",
+        selectMatched: "#assignment-select-matched",
+        restrictToPage: "#assignment-restrict-page",
+        scopeRegion: "#assignment-selection-scope",
+        scopeMessage: "#assignment-selection-message",
+        resetNotice: "#assignment-selection-reset",
+        actions: submit,
+        itemSingular: "Kontakt",
+        itemPlural: "Kontakte",
+        onChange: function (selected, visible, state) {
+          workspace.querySelector("#assignment-selected-count").textContent = state.selectedCount + " ausgewählt · " + state.actionableCount + " hinzufügbar · " + state.alreadyIncludedCount + " bereits enthalten";
+          setSummary(state.selectedCount, state.actionableCount, state.alreadyIncludedCount, distribution);
+        }
+      });
+      listView = createListView({
+        root: workspace,
+        rows: rows,
+        query: "#assignment-search",
+        pagination: "#assignment-pagination",
+        resultFocus: "#assignment-result-title",
+        resetControls: "#assignment-reset",
+        pageSize: 25,
+        itemName: "Treffern",
+        groups: [
+          { name: "kind", type: "exclusive", controls: "[data-assignment-kind]", attribute: "data-assignment-kind", initial: "all" },
+          { name: "scope", type: "toggle", controls: "[data-assignment-scope]", attribute: "data-assignment-scope", initial: [] },
+          { name: "office", type: "checkbox", controls: 'input[name="assignment-office"]', initial: offices }
+        ],
+        searchText: function (row) { return row.getAttribute("data-search"); },
+        matches: function (row, state) {
+          var scopes = row.getAttribute("data-scope").split(" ").filter(Boolean);
+          return (state.kind === "all" || state.kind === row.getAttribute("data-kind")) && state.scope.every(function (scope) { return scopes.indexOf(scope) !== -1; }) && state.office.indexOf(row.getAttribute("data-office")) !== -1;
+        },
+        onChange: function (view) {
+          workspace.querySelector("#assignment-result-count").textContent = view.total + " Treffer";
+          workspace.querySelector("#assignment-select-page-label").textContent = "Alle " + view.pageRows.length + " Kontakte auf dieser Seite auswählen";
+          selectionController.syncCollection(view);
+        }
+      });
+      submit.onclick = function () {
+        var state = selectionController.getState();
+        var selectedContacts = state.selectedRows.map(function (row) {
+          return contacts.filter(function (contact) { return contact.id === row.getAttribute("data-contact-id"); })[0];
+        });
+        var included = selectedContacts.filter(function (contact) { return isMember(contact, distribution); });
+        var added = selectedContacts.filter(function (contact) { return !isMember(contact, distribution); });
+        added.forEach(function (contact) { contact.memberOf = (contact.memberOf || []).concat(distribution.id); });
+        if (settings.onComplete) {
+          settings.onComplete({ distribution: distribution, addedContacts: added, alreadyIncludedContacts: included });
+        }
+        showSuccess(added.length, included.length, distribution);
+      };
+      rendered(workspace);
+    }
+
+    function render() {
+      submit.hidden = false;
+      selectedTarget = null;
+      selectionController = null;
+      listView = null;
+      if (settings.mode === "choose-distribution") {
+        renderTargetChoice();
+      } else {
+        renderContactChoice();
+      }
+      rendered(dialog);
+    }
+
+    dialogController = createDialog({ dialog: dialog, openers: settings.openers, onOpen: render });
+    return { dialog: dialog, controller: dialogController, contacts: contacts };
+  }
+
   function createStateSwitch(options) {
     var settings = options || {};
     var root = settings.root || document;
@@ -793,6 +1297,9 @@
     createListSelection: createListSelection,
     createListFilter: createListFilter,
     createListView: createListView,
+    createDialog: createDialog,
+    createDistributionAssignment: createDistributionAssignment,
+    getAssignmentContacts: contactCatalog,
     createStateSwitch: createStateSwitch
   };
 
@@ -863,7 +1370,6 @@
   var prototypeStateNames = (document.body.getAttribute("data-prototype-states") || "").trim().split(/\s+/).filter(Boolean);
   if (prototypeStateNames.length) {
     var prototypeLabels = {
-      recent: "Zuletzt geöffnet",
       filled: "Gefüllt",
       overview: "Übersicht",
       loading: "Lädt",

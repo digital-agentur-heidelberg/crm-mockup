@@ -39,9 +39,6 @@ Die verbindliche visuelle Referenz ist [styleguide.html](styleguide.html).
    Listenübersichten ergänzen `data-prototype-states="filled loading empty
    error"`. `shell.js` setzt daraus vor dem Seitenkopf die gemeinsame,
    ausdrücklich als Prototypsteuerung bezeichnete Zustandsleiste ein.
-   Die Kontaktsuche setzt davor `recent` und verwendet diesen Zustand als
-   persönlichen Einstieg „Zuletzt geöffnet“; Suche oder Filter wechseln in
-   die regulären Listenstände.
 6. Ausschließlich den Screeninhalt als `<main class="screen" id="main">`
    liefern. `shell.js` erzeugt Skip-Link, Seitennavigation, Kopfleiste und den
    umgebenden App-Rahmen.
@@ -142,14 +139,41 @@ Vorhanden:
    `crm:rendered`
  - **Mehrfachauswahl in Listen** –
    `CrmShell.createListSelection(options)` bindet Zeilencheckboxen und die
-   Wahl „alle sichtbaren“, setzt `.is-checked`, führt den sichtbaren
-   Auswahlzustand der Sammelcheckbox einschließlich `indeterminate`, liefert
-   ausgewählte und sichtbare Zeilen, aktualisiert Zähler über `onChange` und
-   aktiviert abhängige Aktionen. Filter rufen danach `refresh()` auf;
-   dynamisch ergänzte Zeilen werden mit `refreshRows()` neu gebunden. Eine
+   ausdrückliche Wahl „alle Einträge auf dieser Seite“, setzt `.is-checked`,
+   führt den Seitenzustand der Sammelcheckbox einschließlich `indeterminate`,
+   liefert ausgewählte, sichtbare und gefilterte Zeilen, aktualisiert Zähler
+   über `onChange` und aktiviert abhängige Aktionen. Mit `selectMatched`,
+   `restrictToPage`, `scopeRegion` und `scopeMessage` bietet derselbe Vertrag
+   die zweite, bewusst ausgelöste Menge „alle Treffer dieser Filterung“ an.
+   `syncCollection(view)` erhält nach jeder Listenänderung `matchedRows`,
+   `pageRows` und `reason` aus `createListView`. Ändern sich Suche oder Filter
+   im Zustand „alle Treffer“, hebt der Vertrag die gesamte seitenübergreifende
+   Auswahl auf und schreibt sichtbar: „Die Auswahl aller Treffer wurde
+   aufgehoben, weil sich Suche oder Filter geändert haben.“ Eine automatische
+   Neubezifferung ist unzulässig, weil sie die fachliche Menge ohne erneute
+   Zustimmung austauschen würde. Die Statusdaten trennen `selectedCount`,
+   `actionableCount` und `alreadyIncludedCount`; die Ausführungsoberfläche
+   nennt alle drei unmittelbar vor der Handlung. Dynamisch ergänzte Zeilen
+   werden mit `refreshRows()` neu gebunden. Eine
    einzelne Vorschauwahl wie `.is-selected` gehört ausdrücklich nicht zu
    diesem Vertrag. In einer paginierten Liste bedeutet sichtbar ausschließlich
    die aktuelle Seite; die Auswahl anderer Seiten bleibt trotzdem erhalten.
+ - **Sammelaktion** – `.bulk-action` verbindet eine bezifferte Auswahl mit
+   einem erweiterbaren `.menu`. Ohne Auswahl ist der Auslöser nativ deaktiviert
+   und über sichtbaren, mit `aria-describedby` verbundenen Text begründet.
+   Kontakt-, Teilnehmenden- und Mitgliederlisten verwenden denselben Auslöser
+   „Sammelaktion“; allein die angebotenen fachlichen Einträge unterscheiden
+   sich.
+ - **Modaler Arbeitsdialog** – `CrmShell.createDialog(options)` öffnet ein
+   natives `<dialog>`, setzt den Anfangsfokus, hält den Tab-Fokus im Dialog,
+   lässt Escape schließen und gibt den Fokus an den Auslöser zurück.
+   `CrmShell.createDistributionAssignment(options)` verwendet diesen Vertrag
+   für dieselbe Zuordnung aus zwei Richtungen: feste Kontakte mit
+   Verteilerwahl oder fester Verteiler mit Kontaktsuche. Suche, Filter,
+   Pagination, Auswahlmengen, bereits enthaltene Kontakte und beide
+   Ergebniszahlen bleiben gemeinsame Systemlogik. Der Dialog hat nur eine
+   vertikale Scrollfläche; Tabellen erzeugen darin keine zweite vertikale
+   Scrollzone.
  - **Filter** – `CrmShell.createListFilter(options)` verwaltet benannte,
    exklusive Kontrollgruppen, synchronisiert deren `aria-pressed`, blendet
    Zeilen über die vom Screen gelieferte Funktion `matches(row, state)` ein

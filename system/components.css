@@ -941,6 +941,140 @@
 }
 .menu-choice:disabled:hover { background: var(--color-surface-card); }
 
+/*
+ * SAMMELAKTION (.bulk-action)
+ * Zweck: erweiterbares Aktionsmenü für eine bezifferte Listenauswahl.
+ * Nicht verwenden: für Einzelaktionen oder unbezifferte Kontextmenüs.
+ * Zustände: ohne Auswahl mit sichtbarer Begründung, bereit, offen, deaktiviert.
+ */
+.bulk-action {
+  display: grid;
+  justify-items: end;
+  gap: var(--space-status-gap);
+}
+.bulk-action-main {
+  display: flex;
+  align-items: center;
+  gap: var(--space-control-gap);
+}
+.bulk-action-count { min-width: var(--size-control-compact); text-align: center; }
+
+/*
+ * AUSWAHLMENGE (.selection-scope)
+ * Zweck: aktuelle Seite und alle Treffer einer Filterung unterscheidbar machen.
+ * Nicht verwenden: als allgemeine Hinweisleiste ohne Auswahlhandlung.
+ * Zustände: einzelne Auswahl, Seite vollständig, alle Treffer, nach Filterwechsel.
+ */
+.selection-scope,
+.selection-reset-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-cluster);
+  padding: var(--space-control-block) var(--space-card-compact);
+  border-top: var(--border-width-default) solid var(--color-info-border);
+  border-bottom: var(--border-width-default) solid var(--color-info-border);
+  background: var(--color-info-soft);
+  color: var(--color-info);
+}
+.selection-scope[hidden],
+.selection-reset-notice[hidden] { display: none; }
+.selection-scope p,
+.selection-reset-notice { margin: 0; font-size: var(--font-size-label); }
+.selection-scope .btn { flex: 0 0 auto; }
+
+/*
+ * MODALER ARBEITSDIALOG UND ZUORDNUNG
+ * (.work-dialog, .assignment-context, .assignment-summary)
+ * Zweck: umfangreiche, kontexterhaltende Auswahl mit genau einer vertikalen
+ * Scrollfläche, festem Arbeitskontext und Ausführungszusammenfassung.
+ * Nicht verwenden: für einfache Bestätigungen oder reine Meldungen.
+ * Zustände: bereit, lädt, leer, Fehler, deaktiviert, Erfolg.
+ */
+.work-dialog {
+  width: min(calc(var(--size-page-copy-max) + var(--size-search-suggestion-min)), calc(100vw - (var(--space-layout-wide) * 2)));
+  max-height: calc(100vh - (var(--space-layout-wide) * 2));
+  padding: 0;
+  overflow: auto;
+  border: var(--border-width-default) solid var(--color-border-control);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-page);
+  color: var(--color-text);
+  box-shadow: var(--shadow-raised);
+}
+.work-dialog::backdrop { background: var(--color-overlay); }
+.work-dialog-head,
+.work-dialog-foot {
+  position: sticky;
+  z-index: var(--layer-table-head);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-cluster);
+  padding: var(--space-card-compact) var(--space-card-inner);
+  background: var(--color-surface-card);
+}
+.work-dialog-head { top: 0; border-bottom: var(--border-width-default) solid var(--color-border); }
+.work-dialog-head p { margin: var(--space-status-gap) 0 0; color: var(--color-text-muted); }
+.work-dialog-foot {
+  bottom: 0;
+  align-items: center;
+  border-top: var(--border-width-default) solid var(--color-border);
+}
+.work-dialog-body { padding: var(--space-card-inner); }
+.work-dialog-body > * + * { margin-top: var(--space-card-compact); }
+.dialog-close { flex: 0 0 auto; }
+.assignment-context,
+.assignment-summary {
+  padding: var(--space-card-compact);
+  border: var(--border-width-default) solid var(--color-info-border);
+  border-radius: var(--radius-control);
+  background: var(--color-info-soft);
+}
+.assignment-context p,
+.assignment-summary p { margin: var(--space-status-gap) 0 0; }
+.assignment-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-cluster-tight);
+  margin-top: var(--space-cluster);
+}
+.assignment-metric {
+  padding: var(--space-cluster-tight);
+  border-radius: var(--radius-small);
+  background: var(--color-surface-card);
+}
+.assignment-metric strong,
+.assignment-metric span { display: block; }
+.assignment-metric strong { font-size: var(--font-size-title-card); }
+.assignment-metric span { color: var(--color-text-muted); font-size: var(--font-size-meta); }
+.assignment-targets {
+  display: grid;
+  gap: var(--space-cluster-tight);
+  padding: 0;
+  list-style: none;
+}
+.assignment-target {
+  display: grid;
+  grid-template-columns: var(--size-selection-column) 1fr auto;
+  align-items: center;
+  gap: var(--space-cluster-tight);
+  padding: var(--space-row);
+  border: var(--border-width-default) solid var(--color-border);
+  border-radius: var(--radius-control);
+  background: var(--color-surface-card);
+}
+.assignment-target:has(input:checked) {
+  border-color: var(--color-brand);
+  background: var(--color-brand-soft);
+}
+.assignment-target small { display: block; color: var(--color-text-muted); }
+.assignment-result-card { overflow: hidden; }
+.assignment-result-meta { padding: var(--space-cluster) var(--space-card-compact); }
+.assignment-result-meta p { margin: 0; }
+.assignment-success { padding: var(--space-card-inner); }
+.assignment-success h3 { margin-top: var(--space-cluster); }
+
 .filter-bar {
   display: flex;
   align-items: center;
@@ -2493,6 +2627,7 @@
 .demo-identity { margin-bottom: 0; }
 .demo-status-track { margin-bottom: 0; }
 .demo-task { max-width: 330px; }
+.demo-work-dialog { position: static; max-height: none; margin: 0; }
 .type-sample-title { font-size: var(--font-size-page-title); line-height: var(--line-height-page-title); letter-spacing: var(--letter-spacing-title); }
 .type-sample-section { font-size: var(--font-size-title-section); line-height: var(--line-height-heading); }
 .type-sample-body { font-size: var(--font-size-body); line-height: var(--line-height-body); }
@@ -2548,6 +2683,20 @@
 }
 
 @media (max-width: 900px) {
+  .work-dialog {
+    width: calc(100vw - (var(--space-cluster) * 2));
+    max-height: calc(100vh - (var(--space-cluster) * 2));
+  }
+  .work-dialog-head,
+  .work-dialog-foot,
+  .selection-scope {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .assignment-metrics { grid-template-columns: 1fr; }
+  .assignment-target { grid-template-columns: var(--size-selection-column) 1fr; }
+  .assignment-target > .status { grid-column: 2; justify-self: start; }
+  .bulk-action { justify-items: start; }
   .prototype-bar,
   .list-pagination {
     align-items: flex-start;

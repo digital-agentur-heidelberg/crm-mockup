@@ -52,6 +52,7 @@
   --color-info: var(--color-accent-strong);
   --color-info-soft: var(--color-accent-soft);
   --color-info-border: #bad7df; /* Ableitung aus CD Himmelblau */
+  --color-overlay: rgba(32, 35, 38, 0.56); /* modale Arbeitsflächen */
 
   /* Typografie */
   --font-family-ui: "Noto Sans", Arial, sans-serif;

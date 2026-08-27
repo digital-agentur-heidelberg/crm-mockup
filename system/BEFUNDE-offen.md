@@ -33,6 +33,19 @@ Kontrastgrenzfall.
    Sammelauswahl und seitenübergreifender Auswahlzähler sind systemisch
    vorhanden. Ob eine Mailingübersicht eine fachliche Mehrfachhandlung braucht,
    ist nicht belegt; deshalb wird die Auswahl dort nicht vorweggenommen.
+7. **Verteilerzuordnung / Kontakterlaubnis:** Offen ist, ob ein Kontakt ohne
+   E-Mail-Kontakterlaubnis einem Verteiler hinzugefügt werden darf. Der heutige
+   Entwurf zeigt die Kontakterlaubnis in der Trefferzeile, lässt die Zuordnung
+   aber zu; Ausschlüsse greifen wie bisher erst beim Versand. Eine fachliche
+   Sperre wird nicht vorweggenommen.
+8. **Verteilerzuordnung / fremde Verteiler:** Nicht festgelegt ist, wer
+   Mitgliedschaften in Verteilern anderer Ämter bearbeiten darf und welche
+   Stelle eine fehlende Berechtigung begründen müsste. Der Entwurf bildet nur
+   den zugänglichen Arbeitsfall ab und erfindet keine zusätzliche Rolle.
+9. **Verteilerzuordnung / Mengengrenze:** Eine Obergrenze oder ein besonderes
+   Bestätigungsverfahren für sehr große Zuordnungen ist fachlich nicht
+   festgelegt. Der Entwurf beziffert deshalb jede Menge unmittelbar vor der
+   Ausführung, setzt aber keine unbelegte Grenze.
 
 ## Offener Umsetzungsbefund
 

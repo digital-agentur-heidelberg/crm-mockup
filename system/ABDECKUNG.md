@@ -15,11 +15,11 @@ oder nur als knappe Screenbezeichnung beschreibt.
 | Bereich | Inhalt / Zustand | Entwurf | Zustand |
 |---|---|---|---|
 | Global · R01 | Gesamte Bildschirmübersicht für Abnahmerunden | `index.html` erschließt alle Fachscreens nach Bereich und ist sichtbar als Prototyp-Hilfsmittel gekennzeichnet; sie gehört nicht zur Fachanwendung. | Hilfsmittel · vorhanden |
-| Global · S01 | Arbeitsstart: direkte Suche, zuletzt verwendete Kontakte, Veranstaltungen und Arbeitsstand | `arbeitsbereich.html` bietet Direktsuche, vier aktuelle Aufgaben, Tagespunkte und Änderungen in der eigenen Zuständigkeit. Persönlich zuletzt geöffnete Kontakte stehen als Einstieg in `kontakte.html`; zuletzt geöffnete Veranstaltungen fehlen weiterhin. | teilweise |
+| Global · S01 | Arbeitsstart: direkte Suche, zuletzt verwendete Kontakte, Veranstaltungen und Arbeitsstand | `arbeitsbereich.html` bietet Direktsuche, vier aktuelle Aufgaben, Tagespunkte und Änderungen in der eigenen Zuständigkeit. Persönlich zuletzt geöffnete Kontakte und Veranstaltungen sind derzeit nicht als eigene Einstiege umgesetzt. | teilweise |
 | Global · F01 | Druckbare Übersicht aller offenen Fachfragen | Als Screen ersatzlos entfallen; die offenen Fachfragen bleiben in `BEFUNDE-offen.md` und Abschnitt 4 dieses Abgleichs. | entfällt |
 | Global · F02–F17 | Detail und Varianten der 16 Fachfragen | Als Screens ersatzlos entfallen; die Fachfragen werden nicht Teil des Übergabebestands. | entfällt |
-| Kontakte · K01 | Zuletzt verwendete Kontakte als Einstieg | `kontakte.html` beginnt mit der persönlichen Liste „Zuletzt geöffnet“ und trennt deren Zeitpunkt sichtbar von „Zuletzt geändert“; Suche und Filter führen in die vollständige Kontaktliste. | vorhanden |
-| Kontakte · K01 success | Suchergebnisse einschließlich weiterem Ergebnisabschnitt | Lokale Suche, mehrere Filterachsen, 31 Treffer und echte Pagination mit 25 Einträgen pro Seite sind benutzbar. | vorhanden |
+| Kontakte · K01 | Zuletzt verwendete Kontakte als Einstieg | Der persönliche Einstieg wurde aus `kontakte.html` wieder herausgenommen; der Screen beginnt direkt mit der vollständigen Kontaktliste. | entfällt |
+| Kontakte · K01 success | Suchergebnisse einschließlich weiterem Ergebnisabschnitt | Lokale Suche, mehrere Filterachsen, 205 Treffer und echte Pagination mit 25 Einträgen pro Seite sind benutzbar. | vorhanden |
 | Kontakte · K01b | Keine Treffer | Rücksetzbarer Leerzustand ist über die Prototypsteuerung und durch Filter erreichbar. | vorhanden |
 | Kontakte · K01c | Ladezustand | Ladezustand erhält Listenstand und sperrt vorübergehend Listenaktionen. | vorhanden |
 | Kontakte · K01d | Fehlerzustand | Fehlerzustand mit „Erneut laden“ und erhaltenen Filtern ist benutzbar. | vorhanden |
@@ -85,13 +85,10 @@ nicht, welche Fassung später umgesetzt wird.
   Arbeitsbereich weiterhin um vier aktuelle Handlungen und Tagespunkte; der
   dritte Block heißt nun eindeutig „Änderungen in meiner Zuständigkeit“ und
   zeigt Änderungen anderer, die die eigene Arbeit betreffen. Persönlich zuletzt
-  geöffnete Kontakte stehen wegen des Telefonwegs in der Kontaktsuche. Zuletzt
-  geöffnete Veranstaltungen fehlen weiterhin.
-- **Kontaktliste:** Der Prototyp trennt zuletzt verwendete Kontakte,
-  Suchergebnis und Zustände über Aufrufparameter; der Entwurf übernimmt diese
-  Trennung als persönlichen Einstieg „Zuletzt geöffnet“ und anschließende
-  Langliste auf derselben Arbeitsfläche. „Zuletzt geändert“ benennt dort die
-  Änderung am Datensatz, „Letzter fachlicher Kontakt“ in der Langliste das
+  geöffnete Kontakte und Veranstaltungen sind derzeit nicht als eigene
+  Einstiege umgesetzt.
+- **Kontaktliste:** Der Screen beginnt direkt mit der vollständigen,
+  paginierten Kontaktliste. „Letzter fachlicher Kontakt“ bezeichnet dort das
   jüngste Gespräch, Schreiben oder Treffen mit der Person.
 - **Kontaktinhalte:** Der Prototyp verteilt Übersicht, Stammdaten, Akte und
   Datenschutz für Person und Institution auf vier Register; der Entwurf bündelt
@@ -247,15 +244,15 @@ anlegen; Abschnitt 08 verwendet sie, statt sie neu zu bauen.
 
 ### Bauabschnitt 12 – Verbleibender Arbeitsstart
 
-- **Abdeckung:** nur noch der fehlende Anteil von S01: zuletzt geöffnete
-  Veranstaltungen. R01 ist als Prototyp-Hilfsmittel erledigt; F01–F17 entfallen
-  ersatzlos als Screens.
-- **Voraussichtliche Systemlücke:** keine neue Listenanatomie. Das persönliche
-  Einstiegsmuster „Zuletzt geöffnet“ ist mit der Kontaktsuche vorhanden und
-  kann nach fachlicher Bestätigung für Veranstaltungen geprüft werden.
-- **Warum zuletzt:** Der unmittelbare Telefonweg und der Kontakt-Einstieg sind
-  abgedeckt; der verbleibende Veranstaltungsanteil ist gegenüber den zuvor
-  aufgeführten fachlichen Lücken nachrangig.
+- **Abdeckung:** Der persönliche Wiedereinstieg für Kontakte und Veranstaltungen
+  ist derzeit nicht Bestandteil der Fachscreens. R01 ist als
+  Prototyp-Hilfsmittel erledigt; F01–F17 entfallen ersatzlos als Screens.
+- **Voraussichtliche Systemlücke:** keine neue Listenanatomie. Vor einem späteren
+  persönlichen Einstieg müssen Umfang und Datenhaltung fachlich bestätigt
+  werden.
+- **Warum zuletzt:** Der unmittelbare Telefonweg bleibt über Suche und
+  Kontaktliste abgedeckt; ein zusätzlicher persönlicher Wiedereinstieg ist
+  gegenüber den zuvor aufgeführten fachlichen Lücken nachrangig.
 - **Klärung vor Start:** welche vorhandenen Veranstaltungsangaben in einem
   persönlichen Öffnungsverlauf für die schnelle Wiederaufnahme erforderlich
   sind.
