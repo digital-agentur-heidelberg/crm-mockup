@@ -135,8 +135,9 @@
         <span class="status status--warning">K05.5 · ein möglicher Treffer</span>
         <h2 id="duplicate-title">Mögliche Dubletten gefunden</h2>
         <p>Vergleichen Sie die unterscheidenden Angaben, bevor Sie fortfahren.</p>
-        <ul class="candidate-list">
-          <li class="card card-body--compact">
+        <div class="u-stack">
+          <ul class="candidate-list">
+            <li class="card card-body--compact">
             <div class="section-title"><span class="section-title-icon"><i data-lucide="user-round" aria-hidden="true"></i></span><h3>Sabine Keller</h3></div>
             <span class="status status--warning" id="sabine-match-reason">Ähnliche Schreibweise · gleiche Kontaktdaten</span>
             <dl class="summary-list">
@@ -149,10 +150,11 @@
               <a class="btn btn--primary" href="kontakt-detail.html">Vorhandenen Kontakt öffnen</a>
               <button class="btn" type="button" data-prototype-action="Vorhandenen Kontakt Sabine Keller um die erfassten Angaben ergänzen">Um meine Angaben ergänzen</button>
             </div>
-          </li>
-        </ul>
-        <div class="button-row">
-          <button class="btn" id="continue-new" type="button">Trotzdem neu anlegen</button>
+            </li>
+          </ul>
+          <div class="button-row">
+            <button class="btn" id="continue-new" type="button">Trotzdem neu anlegen</button>
+          </div>
         </div>
       </section>
 
@@ -253,7 +255,7 @@
       function successMarkup() {
         var name = nameField.value.trim();
         var safeName = escapeMarkup(name);
-        return '<div class="notice notice--success" role="status"><i data-lucide="circle-check" aria-hidden="true"></i><span><strong>Kontakt neu angelegt:</strong> ' + safeName + ' liegt im gemeinsamen Kontaktbestand und wird von der Wirtschaftsförderung betreut.</span></div><button class="btn btn--primary" type="button" data-prototype-record="Kontakt" data-prototype-name="' + safeName + ' (neu)">Neuen Kontakt öffnen</button>';
+        return '<div class="u-stack"><div class="notice notice--success" role="status"><i data-lucide="circle-check" aria-hidden="true"></i><span><strong>Kontakt neu angelegt:</strong> ' + safeName + ' liegt im gemeinsamen Kontaktbestand und wird von der Wirtschaftsförderung betreut.</span></div><button class="btn btn--primary" type="button" data-prototype-record="Kontakt" data-prototype-name="' + safeName + ' (neu)">Neuen Kontakt öffnen</button></div>';
       }
 
       function completeCreation(target) {
@@ -285,7 +287,13 @@
       document.getElementById('start-check').addEventListener('click', function () { setState('checking'); });
       document.getElementById('retry-check').addEventListener('click', function () { setState('checking'); });
       document.getElementById('continue-new').addEventListener('click', function () { setState('acknowledged'); });
-      document.getElementById('create-without-duplicate').addEventListener('click', function () { completeCreation(document.getElementById('no-duplicate-success')); });
+      document.getElementById('create-without-duplicate').addEventListener('click', function (event) {
+        var success = document.getElementById('no-duplicate-success');
+        completeCreation(success);
+        if (!success.hidden) {
+          event.currentTarget.hidden = true;
+        }
+      });
       document.getElementById('save-draft').addEventListener('click', function () {
         guard.markSaved();
         window.CrmShell.showToast('Entwurf gespeichert. Unvollständige Angaben bleiben erhalten.', 'success');
