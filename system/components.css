@@ -413,8 +413,9 @@
 
 /*
  * EINGEBETTETE LISTE (.embedded-list)
- * Zweck: Suche, Filter, Treffermenge und Nachladen innerhalb eines Objekts.
- * Nicht verwenden: für Listenübersichten mit Seitenkopf oder Pagination.
+ * Zweck: Suche, Filter, Treffermenge und Listenabschluss innerhalb eines Objekts.
+ * Nicht verwenden: für Listenübersichten mit Seitenkopf.
+ * Varianten: schrittweises Nachladen oder Pagination bei einer Arbeitsliste.
  * Zustände: gefüllt, fachlich leer, kein Treffer, lädt und gesperrt.
  */
 .embedded-list { display: grid; gap: var(--space-cluster); }
@@ -427,6 +428,7 @@
 .embedded-list-tools .list-search { flex: 1 1 var(--grid-local-search-min); }
 .embedded-list-tools .status-stats { flex: 1 1 100%; margin-top: 0; }
 .embedded-list-footer { display: flex; justify-content: space-between; align-items: center; gap: var(--space-cluster); }
+.embedded-list-footer > .list-pagination { flex: 1 1 var(--grid-local-search-min); }
 
 /*
  * TOAST-AKTION (.toast-action)
@@ -2314,7 +2316,7 @@
 }
 
 .occupancy-summary strong {
-  color: var(--color-brand-strong);
+  color: var(--color-accent);
   font-size: 1rem;
 }
 

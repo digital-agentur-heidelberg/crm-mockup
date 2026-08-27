@@ -237,15 +237,16 @@ Vorhanden:
    Bedienhandlung den Fokus auf den Ergebnisanfang. Der Auswahlcontroller
    bleibt ein eigener Vertrag und wird nach jeder Listenänderung mit
    `refresh()` abgeglichen.
-- **Eingebettete Liste** – `CrmShell.createEmbeddedList(options)` hält für
-   einen Objektabschnitt die drei Mengen Gesamtbestand, geladene Zeilen und
-   gefilterte Treffer getrennt. Die Metadaten nennen sie ausdrücklich, zum
-   Beispiel „4 gefilterte Teilnehmende · 30 geladen · 53 gesamt“.
-   Sie bietet lokale Suche, exklusive Statusfilter, Mehrfachauswahl über den
-   bestehenden Auswahlvertrag und Nachladen in Schritten; Pagination,
-   Übersichtsseitenkopf und globale Suche gehören bewusst nicht dazu.
-   Fachlich leerer Bestand und ein leeres Such- oder Filterergebnis erhalten
-   verschiedene Zustände und Rücksetzwege.
+ - **Eingebettete Arbeitsliste** – Ein Objektabschnitt mit Suche, Statusfilter
+   und Mehrfachauswahl verwendet bei mehr als einer Arbeitsseite
+   `CrmShell.createListView(options)` mit derselben 25er-Pagination wie eine
+   Listenübersicht. Die Bereichsangabe und die Seitennavigation stehen unter
+   der Tabelle; Auswahl anderer Seiten bleibt erhalten. Gesamtwerte des
+   Objekts, etwa Statusstrecke, Warteliste und Belegung einer Veranstaltung,
+   bleiben von Treffermenge und aktueller Seite getrennt. Fachlich leerer
+   Bestand und ein leeres Such- oder Filterergebnis erhalten verschiedene
+   Zustände und Rücksetzwege. `CrmShell.createEmbeddedList(options)` bleibt
+   für kleine, schrittweise nachgeladene Objektlisten ohne Seitenwechsel.
 - **Unmittelbare Zeilenzustandsänderung** –
    `CrmShell.createRowStatusChange(options)` ändert einen benannten Zustand
    sofort für eine Menge von Zeilen; eine Einzeländerung ist eine Menge mit

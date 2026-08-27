@@ -63,7 +63,8 @@ wird im Test über die Aufgabenstellung adressiert.
   „Branchendialog Kreativwirtschaft“ besitzt eine Detailseite; andere Ziele
   bleiben sichtbar und melden den nicht hinterlegten Datensatz.
 - **Teilnehmendenstatus und Überläufe:** Die eingebettete Teilnehmendenliste
-  trennt gefiltert, geladen und gesamt. Statusstrecke, Belegung und Warteliste
+  trennt gefilterte Menge, aktuelle Seite und Gesamtbestand mit derselben
+  Pagination wie die Kontaktliste. Statusstrecke, Belegung und Warteliste
   leiten sich aus dem vollständigen Datenbestand ab. Einzel- und
   Sammeländerungen teilen einen Rückgängig-Stapel; die Veranstaltungsübersicht
   bei 1024 Pixeln und das Kontakt-Detail bei 1280 Pixeln überlaufen nicht mehr.
