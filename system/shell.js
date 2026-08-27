@@ -190,7 +190,7 @@
     toast.className = "toast toast--success";
     toast.hidden = true;
     toast.setAttribute("aria-hidden", "true");
-    toast.innerHTML = '<i data-toast-icon data-lucide="circle-check" aria-hidden="true"></i><span data-toast-text></span>';
+    toast.innerHTML = '<i data-toast-icon data-lucide="circle-check" aria-hidden="true"></i><span data-toast-text></span><button class="toast-action" type="button" hidden></button>';
     toastText = toast.querySelector("[data-toast-text]");
 
     toastLive = document.createElement("div");
@@ -211,6 +211,7 @@
     toast.className = "toast toast--" + selected;
     toast.querySelector("[data-toast-icon]").setAttribute("data-lucide", settings.icon);
     toastText.textContent = message;
+    toast.querySelector(".toast-action").hidden = true;
     toast.hidden = false;
     renderIcons(toast);
 
@@ -223,6 +224,23 @@
     toastTimer = window.setTimeout(function () {
       toast.hidden = true;
     }, 2800);
+  }
+
+  function showUndoToast(message, undo, duration) {
+    ensureToast();
+    showToast(message, "success");
+    var action = toast.querySelector(".toast-action");
+    window.clearTimeout(toastTimer);
+    action.textContent = "Rückgängig";
+    action.hidden = false;
+    action.onclick = function () {
+      undo();
+      action.hidden = true;
+      showToast("Statusänderung wurde zurückgenommen.", "info");
+    };
+    toastTimer = window.setTimeout(function () {
+      toast.hidden = true;
+    }, duration || 10000);
   }
 
   function showPrototypeNotice(type, subject, name) {
@@ -876,6 +894,119 @@
     };
   }
 
+  function createEmbeddedList(options) {
+    var settings = options || {};
+    var root = settings.root || document;
+    var rows = elements(settings.rows, root);
+    var query = elements(settings.query, root)[0] || null;
+    var loadMore = elements(settings.loadMore, root)[0] || null;
+    var resetControls = elements(settings.resetControls, root);
+    var groups = settings.groups || [];
+    var loaded = Math.min(settings.initialLoad || rows.length, rows.length);
+    var step = settings.loadStep || rows.length;
+    var values = {};
+    var loadedRows = [];
+    var matchedRows = [];
+
+    function groupControls(group) { return elements(group.controls, root); }
+    function valueFor(group, control) { return group.attribute ? control.getAttribute(group.attribute) : control.value; }
+    function reflect(group) {
+      groupControls(group).forEach(function (control) {
+        control.setAttribute("aria-pressed", String(values[group.name] === valueFor(group, control)));
+      });
+    }
+    function refresh(reason) {
+      var normalizedQuery = normalizeText(query ? query.value.trim() : "");
+      loadedRows = rows.slice(0, loaded);
+      matchedRows = loadedRows.filter(function (row) {
+        var text = settings.searchText ? settings.searchText(row) : row.textContent;
+        var queryMatches = !normalizedQuery || normalizeText(text).indexOf(normalizedQuery) !== -1;
+        return queryMatches && (!settings.matches || settings.matches(row, values));
+      });
+      rows.forEach(function (row) { row.hidden = matchedRows.indexOf(row) === -1; });
+      if (loadMore) {
+        loadMore.hidden = loaded >= rows.length;
+        loadMore.textContent = Math.min(step, rows.length - loaded) + " weitere Teilnehmende anzeigen";
+      }
+      var view = { totalRows: rows.slice(), loadedRows: loadedRows.slice(), matchedRows: matchedRows.slice(), loaded: loaded, total: rows.length, query: query ? query.value.trim() : "", state: Object.assign({}, values), reason: reason || "refresh" };
+      if (settings.onChange) { settings.onChange(view); }
+      return view;
+    }
+    groups.forEach(function (group) {
+      values[group.name] = group.initial;
+      reflect(group);
+      groupControls(group).forEach(function (control) {
+        control.addEventListener("click", function () {
+          values[group.name] = valueFor(group, control);
+          reflect(group);
+          refresh("filter");
+        });
+      });
+    });
+    if (query) { query.addEventListener("input", function () { refresh("query"); }); }
+    if (loadMore) { loadMore.addEventListener("click", function () { loaded = Math.min(rows.length, loaded + step); refresh("load"); }); }
+    function reset() {
+      if (query) { query.value = ""; }
+      groups.forEach(function (group) { values[group.name] = group.initial; reflect(group); });
+      refresh("reset");
+    }
+    resetControls.forEach(function (control) {
+      control.addEventListener("click", reset);
+    });
+    refresh("initial");
+    return { refresh: refresh, reset: reset, getLoadedRows: function () { return loadedRows.slice(); }, getMatchedRows: function () { return matchedRows.slice(); }, getState: function () { return Object.assign({}, values); } };
+  }
+
+  function createRowStatusChange(options) {
+    var settings = options || {};
+    var root = settings.root || document;
+    var rows = elements(settings.rows, root);
+    var history = [];
+    var statusFor = settings.statusFor || function (row) { return row.dataset.status; };
+    var setStatus = settings.setStatus || function (row, status) { row.dataset.status = status; };
+
+    function latestChange() {
+      return history[history.length - 1] || null;
+    }
+
+    function announceUndo() {
+      var latest = latestChange();
+      if (settings.onUndoAvailable) {
+        settings.onUndoAvailable(latest ? latest.changes.length : 0);
+      }
+    }
+
+    function apply(targetRows, nextStatus, label) {
+      var changes = targetRows.filter(function (row) { return statusFor(row) !== nextStatus; }).map(function (row) { return { row: row, status: statusFor(row) }; });
+      if (!changes.length) { return; }
+      changes.forEach(function (change) { setStatus(change.row, nextStatus); });
+      var changeSet = { changes: changes, nextStatus: nextStatus };
+      history.push(changeSet);
+      if (settings.onChange) { settings.onChange(changes, nextStatus); }
+      var message = label || (changes.length === 1 ? "Teilnehmendenstatus wurde geändert." : "Status von " + changes.length + " Teilnehmenden wurde geändert.");
+      showUndoToast(message, function () { undo(changeSet); }, changes.length > 1 ? 10000 : 5000);
+      announceUndo();
+    }
+    function undo(changeSet) {
+      var latest = latestChange();
+      if (!latest || (changeSet && latest !== changeSet)) { return; }
+      latest.changes.forEach(function (change) { setStatus(change.row, change.status); });
+      history.pop();
+      if (settings.onChange) { settings.onChange([], "undo"); }
+      announceUndo();
+    }
+    root.addEventListener("click", function (event) {
+      var choice = event.target.closest("[data-status-choice]");
+      if (!choice || choice.disabled) { return; }
+      var row = choice.closest("tr");
+      if (!row) { return; }
+      apply([row], choice.getAttribute("data-status-choice"));
+      var menu = choice.closest("details");
+      if (menu) { menu.open = false; }
+    });
+    return { change: apply, undo: undo, hasUndo: function () { return Boolean(latestChange()); } };
+  }
+
   function createDialog(options) {
     var settings = options || {};
     var dialog = elements(settings.dialog)[0];
@@ -1104,7 +1235,7 @@
     dialog.className = "work-dialog";
     dialog.setAttribute("aria-labelledby", "assignment-dialog-title");
     dialog.innerHTML =
-      '<header class="work-dialog-head"><div><p class="eyebrow">Kontakte zuordnen</p><h2 id="assignment-dialog-title">Kontakte einem Verteiler hinzufügen</h2><p id="assignment-dialog-subtitle"></p></div><button class="btn btn--quiet btn--compact dialog-close" type="button" data-dialog-close aria-label="Zuordnung schließen"><i data-lucide="x" aria-hidden="true"></i>Schließen</button></header>' +
+      '<header class="work-dialog-head"><div><p class="eyebrow">Kontakte zuordnen</p><h2 id="assignment-dialog-title">Kontakte einem Verteiler hinzufügen</h2><p id="assignment-dialog-subtitle"></p><span class="status" id="assignment-dialog-kind" hidden></span></div><button class="btn btn--quiet btn--compact dialog-close" type="button" data-dialog-close aria-label="Zuordnung schließen"><i data-lucide="x" aria-hidden="true"></i>Schließen</button></header>' +
       '<div class="work-dialog-body"><section class="assignment-context" id="assignment-context"></section><div id="assignment-workspace"></div></div>' +
       '<footer class="work-dialog-foot"><div class="assignment-summary" id="assignment-summary" aria-live="polite"><strong>Auswahl erforderlich</strong><p>Wählen Sie die Zuordnung aus.</p></div><div class="button-row"><button class="btn" type="button" data-dialog-close>Abbrechen</button><button class="btn btn--primary" id="assignment-submit" type="button" disabled>Kontakte hinzufügen</button></div></footer>';
     document.body.appendChild(dialog);
@@ -1126,10 +1257,12 @@
       if (!selectedCount || !distribution) {
         title.textContent = "Auswahl erforderlich";
         copy.textContent = settings.mode === "choose-distribution" ? "Wählen Sie einen Verteiler aus." : "Wählen Sie mindestens einen Kontakt aus.";
+        copy.hidden = true;
         submit.disabled = true;
         submit.textContent = "Kontakte hinzufügen";
         return;
       }
+      copy.hidden = false;
       title.textContent = selectedCount + (selectedCount === 1 ? " ausgewählter Kontakt" : " ausgewählte Kontakte");
       copy.textContent = "Sie fügen " + selectedCount + (selectedCount === 1 ? " ausgewählten Kontakt" : " ausgewählte Kontakte") + " dem Verteiler „" + distribution.name + "“ hinzu. " + addedCount + " " + (addedCount === 1 ? "wird" : "werden") + " hinzugefügt; " + includedCount + " " + (includedCount === 1 ? "ist" : "sind") + " bereits enthalten und " + (includedCount === 1 ? "wird" : "werden") + " übersprungen.";
       submit.disabled = addedCount === 0;
@@ -1143,6 +1276,7 @@
       workspace.querySelector("p").textContent = message;
       summary.querySelector("strong").textContent = "Zuordnung abgeschlossen";
       summary.querySelector("p").textContent = message;
+      summary.querySelector("p").hidden = false;
       submit.hidden = true;
       showToast(message, "success");
       rendered(workspace);
@@ -1152,9 +1286,12 @@
       var chosenContacts = fixedContacts();
       var context = dialog.querySelector("#assignment-context");
       var list = document.createElement("ul");
+      context.hidden = false;
+      dialog.querySelector("#assignment-dialog-title").textContent = "Kontakte einem Verteiler hinzufügen";
       context.innerHTML = "<strong>Kontakte stehen fest</strong><p></p>";
       context.querySelector("p").textContent = chosenContacts.length + " ausgewählte " + contactNoun(chosenContacts.length) + ". Wählen Sie den Verteiler.";
       dialog.querySelector("#assignment-dialog-subtitle").textContent = "Kontakte stehen fest, der Verteiler wird gewählt.";
+      dialog.querySelector("#assignment-dialog-kind").hidden = true;
       workspace.innerHTML = '<section aria-labelledby="assignment-target-title"><h3 id="assignment-target-title">Verteiler wählen</h3></section>';
       list.className = "assignment-targets";
       (settings.distributions || []).forEach(function (distribution, index) {
@@ -1204,13 +1341,15 @@
       var context = dialog.querySelector("#assignment-context");
       var rows;
       var offices = ["Wirtschaftsförderung", "Kulturamt", "OB-Referat"];
-      context.innerHTML = "<strong>Verteiler steht fest</strong><p></p>";
-      context.querySelector("p").textContent = distribution.name + " · " + (distribution.managed ? "Managed-Verteiler; Mitgliedschaften bleiben bearbeitbar." : "Arbeitsverteiler");
-      dialog.querySelector("#assignment-dialog-subtitle").textContent = "Der Verteiler steht fest, Kontakte werden gesucht.";
+      context.hidden = true;
+      dialog.querySelector("#assignment-dialog-title").textContent = "Kontakte zu „" + distribution.name + "“ hinzufügen";
+      dialog.querySelector("#assignment-dialog-subtitle").textContent = "";
+      dialog.querySelector("#assignment-dialog-kind").textContent = distribution.managed ? "Managed-Verteiler" : "Arbeitsverteiler";
+      dialog.querySelector("#assignment-dialog-kind").hidden = false;
       workspace.innerHTML =
-        '<section class="card list-controls" aria-labelledby="assignment-filter-title"><h3 class="u-sr-only" id="assignment-filter-title">Kontakte suchen und filtern</h3><div class="list-controls-main"><div class="list-search"><i data-lucide="search" aria-hidden="true"></i><label class="u-sr-only" for="assignment-search">Nach Name, Organisation oder E-Mail suchen</label><input class="input" id="assignment-search" type="search" autocomplete="off" placeholder="Name, Organisation oder E-Mail" data-dialog-initial></div></div><div class="list-filter-groups"><div class="list-filter-row" role="group" aria-label="Nach Kontaktart filtern"><strong>Kontaktart</strong><button class="filter-chip" type="button" aria-pressed="true" data-assignment-kind="all">Alle</button><button class="filter-chip" type="button" aria-pressed="false" data-assignment-kind="person">Personen</button><button class="filter-chip" type="button" aria-pressed="false" data-assignment-kind="org">Organisationen</button></div><div class="list-filter-row" role="group" aria-label="Kontaktumfang einschränken"><strong>Umfang</strong><button class="filter-chip" type="button" aria-pressed="false" data-assignment-scope="mine">Meine Zuständigkeit</button><button class="filter-chip" type="button" aria-pressed="false" data-assignment-scope="needs">Rückmeldung offen</button></div><div class="list-filter-row"><strong>Zuständigkeit</strong><details class="menu"><summary class="filter-chip"><i data-lucide="landmark" aria-hidden="true"></i>Ämter: alle</summary><div class="menu-popover menu-popover--left filter-popover"><strong>Verantwortliches Amt</strong><label class="check"><input type="checkbox" name="assignment-office" value="Wirtschaftsförderung" checked><span>Wirtschaftsförderung</span></label><label class="check"><input type="checkbox" name="assignment-office" value="Kulturamt" checked><span>Kulturamt</span></label><label class="check"><input type="checkbox" name="assignment-office" value="OB-Referat" checked><span>OB-Referat</span></label></div></details><button class="btn btn--quiet btn--compact list-filter-reset" id="assignment-reset" type="button" hidden>Filter zurücksetzen</button></div></div></section>' +
+        '<section class="card list-controls" aria-labelledby="assignment-filter-title"><h3 class="u-sr-only" id="assignment-filter-title">Kontakte suchen und filtern</h3><div class="list-controls-main"><div class="list-search"><i data-lucide="search" aria-hidden="true"></i><label class="u-sr-only" for="assignment-search">Nach Name, Organisation oder E-Mail suchen</label><input class="input" id="assignment-search" type="search" autocomplete="off" placeholder="Name, Organisation oder E-Mail" data-dialog-initial></div><button class="btn btn--quiet btn--compact dialog-filter-toggle" id="assignment-filter-toggle" type="button" aria-expanded="false" aria-controls="assignment-filter-panel"><i data-lucide="sliders-horizontal" aria-hidden="true"></i>Filter<span id="assignment-filter-count"></span></button></div><div class="list-filter-groups" id="assignment-filter-panel" hidden><div class="list-filter-row" role="group" aria-label="Nach Kontaktart filtern"><strong>Kontaktart</strong><button class="filter-chip" type="button" aria-pressed="true" data-assignment-kind="all">Alle</button><button class="filter-chip" type="button" aria-pressed="false" data-assignment-kind="person">Personen</button><button class="filter-chip" type="button" aria-pressed="false" data-assignment-kind="org">Organisationen</button></div><div class="list-filter-row"><strong>Zuständigkeit</strong><details class="menu"><summary class="filter-chip"><i data-lucide="landmark" aria-hidden="true"></i>Ämter: alle</summary><div class="menu-popover menu-popover--left filter-popover"><strong>Verantwortliches Amt</strong><label class="check"><input type="checkbox" name="assignment-office" value="Wirtschaftsförderung" checked><span>Wirtschaftsförderung</span></label><label class="check"><input type="checkbox" name="assignment-office" value="Kulturamt" checked><span>Kulturamt</span></label><label class="check"><input type="checkbox" name="assignment-office" value="OB-Referat" checked><span>OB-Referat</span></label></div></details></div><div class="list-filter-row" role="group" aria-label="Nach Zuordnungsmöglichkeit filtern"><strong>Zuordnung</strong><button class="filter-chip" type="button" aria-pressed="false" data-assignment-availability="addable">Nur hinzufügbare</button><button class="btn btn--quiet btn--compact list-filter-reset" id="assignment-reset" type="button" hidden>Filter zurücksetzen</button></div></div></section>' +
         '<p class="selection-reset-notice" id="assignment-selection-reset" role="status" hidden></p>' +
-        '<section class="card assignment-result-card" aria-labelledby="assignment-result-title"><div class="assignment-result-meta"><h3 id="assignment-result-title" tabindex="-1">Kontakte</h3><p><span id="assignment-result-count" aria-live="polite"></span> · <span id="assignment-selected-count" aria-live="polite">0 ausgewählt</span></p></div><div class="selection-scope" id="assignment-selection-scope" hidden><p id="assignment-selection-message"></p><button class="btn btn--compact" id="assignment-select-matched" type="button" hidden></button><button class="btn btn--quiet btn--compact" id="assignment-restrict-page" type="button" hidden>Auswahl auf diese Seite beschränken</button></div><div class="table-wrap"><table class="data-table data-table--static"><thead><tr><th class="selection-col" scope="col"><input class="selection-check" id="assignment-select-page" type="checkbox"><label class="u-sr-only" id="assignment-select-page-label" for="assignment-select-page">Alle Kontakte auf dieser Seite auswählen</label></th><th scope="col">Kontakt</th><th scope="col">Organisation</th><th scope="col">E-Mail</th><th scope="col">Kontakterlaubnis und Mitgliedschaft</th></tr></thead><tbody id="assignment-contact-rows"></tbody></table></div><footer class="list-pagination" id="assignment-pagination"><p class="list-range" data-list-range aria-live="polite" aria-atomic="true"></p><nav class="pagination-nav" data-pagination-nav aria-label="Kontaktseiten"><button class="pagination-button" type="button" data-page-previous aria-label="Vorherige Kontaktseite"><i data-lucide="chevron-left" aria-hidden="true"></i></button><div class="pagination-pages" data-page-list></div><button class="pagination-button" type="button" data-page-next aria-label="Nächste Kontaktseite"><i data-lucide="chevron-right" aria-hidden="true"></i></button></nav></footer></section>';
+        '<section class="card assignment-result-card" aria-labelledby="assignment-result-title"><div class="assignment-result-meta"><h3 id="assignment-result-title" tabindex="-1">Kontakte</h3><p id="assignment-result-count" aria-live="polite"></p><span class="status" id="assignment-selected-count" aria-live="polite">0 ausgewählt</span></div><div class="selection-scope" id="assignment-selection-scope" hidden><p id="assignment-selection-message"></p><button class="btn btn--compact" id="assignment-select-matched" type="button" hidden></button><button class="btn btn--quiet btn--compact" id="assignment-restrict-page" type="button" hidden>Auswahl auf diese Seite beschränken</button></div><div class="table-wrap"><table class="data-table"><thead><tr><th class="selection-col" scope="col"><input class="selection-check" id="assignment-select-page" type="checkbox"><label class="u-sr-only" id="assignment-select-page-label" for="assignment-select-page">Alle Kontakte auf dieser Seite auswählen</label></th><th scope="col">Kontakt</th><th scope="col">Organisation</th><th scope="col">E-Mail</th><th scope="col">Kontakterlaubnis</th><th scope="col">Mitgliedschaft</th></tr></thead><tbody id="assignment-contact-rows"></tbody></table></div><footer class="list-pagination" id="assignment-pagination"><p class="list-range" data-list-range aria-live="polite" aria-atomic="true"></p><nav class="pagination-nav" data-pagination-nav aria-label="Kontaktseiten"><button class="pagination-button" type="button" data-page-previous aria-label="Vorherige Kontaktseite"><i data-lucide="chevron-left" aria-hidden="true"></i></button><div class="pagination-pages" data-page-list></div><button class="pagination-button" type="button" data-page-next aria-label="Nächste Kontaktseite"><i data-lucide="chevron-right" aria-hidden="true"></i></button></nav></footer></section>';
       var body = workspace.querySelector("#assignment-contact-rows");
       contacts.forEach(function (contact) {
         var row = document.createElement("tr");
@@ -1221,13 +1360,16 @@
         row.setAttribute("data-search", contact.name + " " + contact.organisation + " " + contact.email);
         row.setAttribute("data-contact-id", contact.id);
         row.setAttribute("data-already-included", String(included));
-        row.innerHTML = '<td class="selection-col"><input class="selection-check" type="checkbox"></td><td class="primary-cell"><strong></strong></td><td></td><td></td><td><span class="status"></span></td>';
+        row.innerHTML = '<td class="selection-col"><input class="selection-check" type="checkbox"></td><td class="primary-cell"><strong></strong></td><td></td><td class="assignment-email"><span></span></td><td><span class="status"></span></td><td><span class="status"></span></td>';
         row.querySelector("input").setAttribute("aria-label", contact.name + " auswählen" + (included ? "; bereits enthalten und wird übersprungen" : ""));
         row.querySelector("strong").textContent = contact.name;
         row.children[2].textContent = contact.organisation;
-        row.children[3].textContent = contact.email;
-        row.querySelector(".status").className = "status " + (included ? "status--info" : (contact.permission === "E-Mail erlaubt" ? "status--success" : "status--warning"));
-        row.querySelector(".status").textContent = included ? "Bereits enthalten · wird übersprungen" : contact.permission;
+        row.children[3].querySelector("span").textContent = contact.email;
+        row.children[3].querySelector("span").title = contact.email;
+        row.children[4].querySelector(".status").className = "status " + (contact.permission === "E-Mail erlaubt" ? "status--success" : "status--warning");
+        row.children[4].querySelector(".status").textContent = contact.permission;
+        row.children[5].querySelector(".status").className = "status " + (included ? "status--info" : "");
+        row.children[5].querySelector(".status").textContent = included ? "Bereits enthalten" : "Noch nicht enthalten";
         body.appendChild(row);
       });
       rows = Array.prototype.slice.call(body.querySelectorAll("tr"));
@@ -1244,7 +1386,7 @@
         itemSingular: "Kontakt",
         itemPlural: "Kontakte",
         onChange: function (selected, visible, state) {
-          workspace.querySelector("#assignment-selected-count").textContent = state.selectedCount + " ausgewählt · " + state.actionableCount + " hinzufügbar · " + state.alreadyIncludedCount + " bereits enthalten";
+          workspace.querySelector("#assignment-selected-count").textContent = state.selectedCount + " ausgewählt";
           setSummary(state.selectedCount, state.actionableCount, state.alreadyIncludedCount, distribution);
         }
       });
@@ -1259,20 +1401,27 @@
         itemName: "Treffern",
         groups: [
           { name: "kind", type: "exclusive", controls: "[data-assignment-kind]", attribute: "data-assignment-kind", initial: "all" },
-          { name: "scope", type: "toggle", controls: "[data-assignment-scope]", attribute: "data-assignment-scope", initial: [] },
-          { name: "office", type: "checkbox", controls: 'input[name="assignment-office"]', initial: offices }
+          { name: "office", type: "checkbox", controls: 'input[name="assignment-office"]', initial: offices },
+          { name: "availability", type: "toggle", controls: "[data-assignment-availability]", attribute: "data-assignment-availability", initial: [] }
         ],
         searchText: function (row) { return row.getAttribute("data-search"); },
         matches: function (row, state) {
-          var scopes = row.getAttribute("data-scope").split(" ").filter(Boolean);
-          return (state.kind === "all" || state.kind === row.getAttribute("data-kind")) && state.scope.every(function (scope) { return scopes.indexOf(scope) !== -1; }) && state.office.indexOf(row.getAttribute("data-office")) !== -1;
+          return (state.kind === "all" || state.kind === row.getAttribute("data-kind")) && state.office.indexOf(row.getAttribute("data-office")) !== -1 && (!state.availability.length || row.getAttribute("data-already-included") === "false");
         },
         onChange: function (view) {
           workspace.querySelector("#assignment-result-count").textContent = view.total + " Treffer";
           workspace.querySelector("#assignment-select-page-label").textContent = "Alle " + view.pageRows.length + " Kontakte auf dieser Seite auswählen";
+          var activeFilters = (view.state.kind === "all" ? 0 : 1) + (view.state.office.length === offices.length ? 0 : 1) + view.state.availability.length;
+          workspace.querySelector("#assignment-filter-count").textContent = activeFilters ? " (" + activeFilters + ")" : "";
           selectionController.syncCollection(view);
         }
       });
+      workspace.querySelector("#assignment-filter-toggle").addEventListener("click", function () {
+        var panel = workspace.querySelector("#assignment-filter-panel");
+        panel.hidden = !panel.hidden;
+        this.setAttribute("aria-expanded", String(!panel.hidden));
+      });
+      dialog.style.setProperty("--assignment-dialog-head-offset", dialog.querySelector(".work-dialog-head").offsetHeight + "px");
       submit.onclick = function () {
         var state = selectionController.getState();
         var selectedContacts = state.selectedRows.map(function (row) {
@@ -1370,10 +1519,13 @@
     renderIcons: renderIcons,
     rendered: rendered,
     showToast: showToast,
+    showUndoToast: showUndoToast,
     showPrototypeNotice: showPrototypeNotice,
     createListSelection: createListSelection,
     createListFilter: createListFilter,
     createListView: createListView,
+    createEmbeddedList: createEmbeddedList,
+    createRowStatusChange: createRowStatusChange,
     createDialog: createDialog,
     createUnsavedGuard: createUnsavedGuard,
     createDistributionAssignment: createDistributionAssignment,

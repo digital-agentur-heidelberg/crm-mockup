@@ -113,7 +113,17 @@ for screen in "${screen_files[@]}"; do
         status=1
       fi
     done
-  done < <(grep -nEo 'class="[^"]+"' "$screen" || true)
+  done < <(awk '
+    /<script[[:space:]>]/ { script = 1 }
+    !script {
+      line = $0
+      while (match(line, /class="[^"]+"/)) {
+        print NR ":" substr(line, RSTART, RLENGTH)
+        line = substr(line, RSTART + RLENGTH)
+      }
+    }
+    /<\/script>/ { script = 0 }
+  ' "$screen")
 done
 
 if [[ $status -eq 0 ]]; then

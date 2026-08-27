@@ -137,6 +137,22 @@ Prüfrunde nicht. Im Befund steht ausschließlich, was tatsächlich geprüft
 wurde, einschließlich Methode; fehlende manuelle Prüfschritte werden als
 ausstehend benannt.
 
+## Befundberichte
+
+Ein Befund entsteht nach der Prüfung und beschreibt ausschließlich beobachtetes
+Verhalten, nicht beabsichtigtes. Nicht geprüfte Aspekte stehen ausdrücklich als
+ausstehend im Befund. Ein verfehlter Zielwert wird als verfehlt dokumentiert;
+er wird weder als erreicht formuliert noch durch einen Sollwert ersetzt.
+
+## Abgeleitete Zähler
+
+Eine Zahl neben einer Liste wird aus dem vollständigen Datenbestand dieser
+Liste berechnet und nie unabhängig gepflegt. Gerade gerenderte, geladene,
+gefilterte oder paginierte Zeilen sind davon getrennte Darstellungsmengen und
+dürfen einen Gesamtzähler nicht verkürzen. Das gilt für Statussummen der
+Teilnehmenden, Mitgliederzahl eines Verteilers, Empfängerzahl eines Mailings
+und Belegung einer Veranstaltung.
+
 Befundnummern sind chronologisch nach ihrer tatsächlichen Erstellung; die
 Nummern geplanter Bauabschnitte aus `ABDECKUNG.md` können davon abweichen und
 werden im Text des jeweiligen Befunds genannt.
@@ -192,17 +208,24 @@ Vorhanden:
    für dieselbe Zuordnung aus zwei Richtungen: feste Kontakte mit
    Verteilerwahl oder fester Verteiler mit Kontaktsuche. Suche, Filter,
    Pagination, Auswahlmengen, bereits enthaltene Kontakte und beide
-   Ergebniszahlen bleiben gemeinsame Systemlogik. Der Dialog hat nur eine
-   vertikale Scrollfläche; Tabellen erzeugen darin keine zweite vertikale
-   Scrollzone.
+   Ergebniszahlen bleiben gemeinsame Systemlogik. Bei festem Verteiler stehen
+   Name und Art im Dialogkopf. Die Trefferzahl steht am Listenbereich, der
+   Auswahlzustand getrennt daneben; hinzufügbar und bereits enthalten bleiben
+   ausschließlich Teil der Ausführungszusammenfassung. Der Dialog hat nur
+   eine vertikale Scrollfläche; Tabellen erzeugen darin keine zweite
+   vertikale Scrollzone und ihr Kopf bleibt darin unter dem Dialogkopf
+   sichtbar.
  - **Filter** – `CrmShell.createListFilter(options)` verwaltet benannte,
    exklusive Kontrollgruppen, synchronisiert deren `aria-pressed`, blendet
    Zeilen über die vom Screen gelieferte Funktion `matches(row, state)` ein
    oder aus und übergibt sichtbare Zeilen an `onChange`. Textsuche und
    mehrwertige Checkboxfilter bleiben screenbezogen und stoßen nach ihrer
    Änderung `refresh()` an; der Vertrag schreibt keine bestimmte sichtbare
-   Filterkomponente vor. Dieser kleine Vertrag bleibt für Detailtabellen ohne
-   Pagination erhalten.
+   Filterkomponente vor. In Dialogen ist `.dialog-filter-toggle` der
+   gemeinsame Auslöser für einen zunächst geschlossenen Filterbereich; er
+   nennt gesetzte Filter als Zahl und bleibt auch für weitere Dialoge
+   verwendbar. Übersichtsseiten zeigen ihre Filter offen. Dieser kleine
+   Vertrag bleibt für Detailtabellen ohne Pagination erhalten.
  - **Listenansicht und Pagination** – `CrmShell.createListView(options)` hält
    Treffermenge und aktuelle Seite getrennt. Der Vertrag verbindet lokale
    Textsuche mit exklusiven, umschaltbaren und mehrwertigen Filtergruppen,
@@ -214,6 +237,21 @@ Vorhanden:
    Bedienhandlung den Fokus auf den Ergebnisanfang. Der Auswahlcontroller
    bleibt ein eigener Vertrag und wird nach jeder Listenänderung mit
    `refresh()` abgeglichen.
+- **Eingebettete Liste** – `CrmShell.createEmbeddedList(options)` hält für
+   einen Objektabschnitt die drei Mengen Gesamtbestand, geladene Zeilen und
+   gefilterte Treffer getrennt. Die Metadaten nennen sie ausdrücklich, zum
+   Beispiel „4 gefilterte Teilnehmende · 30 geladen · 53 gesamt“.
+   Sie bietet lokale Suche, exklusive Statusfilter, Mehrfachauswahl über den
+   bestehenden Auswahlvertrag und Nachladen in Schritten; Pagination,
+   Übersichtsseitenkopf und globale Suche gehören bewusst nicht dazu.
+   Fachlich leerer Bestand und ein leeres Such- oder Filterergebnis erhalten
+   verschiedene Zustände und Rücksetzwege.
+- **Unmittelbare Zeilenzustandsänderung** –
+   `CrmShell.createRowStatusChange(options)` ändert einen benannten Zustand
+   sofort für eine Menge von Zeilen; eine Einzeländerung ist eine Menge mit
+   einem Element. Der Vertrag führt alle Änderungen in einem gemeinsamen
+   Rückgängig-Stapel. Toast und dauerhafte Kontextaktion nehmen ausschließlich
+   den letzten Änderungsvorgang zurück.
  - **Zustandsumschaltung** – `CrmShell.createStateSwitch(options)` zeigt aus
    benannten Panels genau eines, synchronisiert optionale Auslöser über deren
    Attribut und stellt `set(name)` bereit. Zustandsnamen, zeitliche Übergänge,

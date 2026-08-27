@@ -182,6 +182,7 @@ summary {
   display: grid;
   gap: var(--space-layout-compact);
 }
+.u-stack > * { min-width: 0; }
 
 @media (prefers-reduced-motion: reduce) {
   *,

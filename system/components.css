@@ -368,7 +368,8 @@
 /*
  * STATUSMARKE (.status, .tag)
  * Zweck: kurzer, textlicher Zustand; Icon/Text verhindert Farbcodierung allein.
- * Nicht verwenden: als klickbarer Filter.
+ * Nicht verwenden: als klickbarer Filter. `.status-action` ergänzt die Marke
+ * ausschließlich, wenn genau dieser Zustand geändert wird.
  * Varianten: neutral, success, info, warning, danger.
  */
 .status,
@@ -389,6 +390,62 @@
 .status--info { background: var(--color-info-soft); color: var(--color-info); }
 .status--warning { background: var(--color-warning-soft); color: var(--color-warning-strong); }
 .status--danger { background: var(--color-danger-soft); color: var(--color-danger); }
+
+/*
+ * STATUSAKTION (.status-action)
+ * Zweck: eine Statusmarke als Auslöser für die Änderung genau dieses Status.
+ * Nicht verwenden: für allgemeine Zeilen- oder Kontextaktionen.
+ * Zustände: Ruhe, Hover, Fokus, geöffnet und gesperrt.
+ */
+.status-action {
+  border: var(--border-width-default) solid transparent;
+  cursor: pointer;
+  list-style: none;
+}
+.status-action::-webkit-details-marker { display: none; }
+.status-action:hover,
+.menu[open] > .status-action { border-color: currentColor; }
+.status-action:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.status-action[aria-disabled="true"] {
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+/*
+ * EINGEBETTETE LISTE (.embedded-list)
+ * Zweck: Suche, Filter, Treffermenge und Nachladen innerhalb eines Objekts.
+ * Nicht verwenden: für Listenübersichten mit Seitenkopf oder Pagination.
+ * Zustände: gefüllt, fachlich leer, kein Treffer, lädt und gesperrt.
+ */
+.embedded-list { display: grid; gap: var(--space-cluster); }
+.embedded-list-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-cluster);
+}
+.embedded-list-tools .list-search { flex: 1 1 var(--grid-local-search-min); }
+.embedded-list-tools .status-stats { flex: 1 1 100%; margin-top: 0; }
+.embedded-list-footer { display: flex; justify-content: space-between; align-items: center; gap: var(--space-cluster); }
+
+/*
+ * TOAST-AKTION (.toast-action)
+ * Zweck: eine zeitlich begrenzte Rücknahme innerhalb einer Rückmeldung.
+ * Nicht verwenden: als dauerhafte Korrekturhilfe; dafür bleibt die Kontextaktion.
+ * Zustände: Ruhe, Hover und Fokus.
+ */
+.toast-action {
+  margin-left: auto;
+  border: var(--border-width-default) solid currentColor;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+}
+.toast-action:hover { background: var(--color-surface-card); }
+.toast-action:focus-visible { outline: none; box-shadow: var(--focus-ring); }
 
 /*
  * FORMULARFELD (.field, .input, .select, .textarea, .check)
@@ -1151,6 +1208,8 @@
 }
 .work-dialog-head { top: 0; border-bottom: var(--border-width-default) solid var(--color-border); }
 .work-dialog-head p { margin: var(--space-status-gap) 0 0; color: var(--color-text-muted); }
+.work-dialog-head .eyebrow { display: inline-block; margin-right: var(--space-cluster-tight); }
+.work-dialog-head #assignment-dialog-kind { display: inline-flex; }
 .work-dialog-foot {
   bottom: 0;
   align-items: center;
@@ -1159,6 +1218,8 @@
 .work-dialog-body { padding: var(--space-card-inner); }
 .work-dialog-body > * + * { margin-top: var(--space-card-compact); }
 .dialog-close { flex: 0 0 auto; }
+.dialog-filter-toggle { flex: 0 0 auto; }
+.dialog-filter-toggle span { white-space: nowrap; }
 .assignment-context,
 .assignment-summary {
   padding: var(--space-card-compact);
@@ -1183,6 +1244,46 @@
 .assignment-metric span { display: block; }
 .assignment-metric strong { font-size: var(--font-size-title-card); }
 .assignment-metric span { color: var(--color-text-muted); font-size: var(--font-size-meta); }
+.assignment-result-card .table-wrap {
+  max-height: none;
+  overflow: visible;
+}
+.assignment-result-card .data-table th {
+  top: var(--assignment-dialog-head-offset, 0px);
+}
+.assignment-result-card .data-table { table-layout: fixed; }
+.assignment-result-card .data-table th:nth-child(1) { width: 5%; }
+.assignment-result-card .data-table th:nth-child(2) { width: 15%; }
+.assignment-result-card .data-table th:nth-child(3) { width: 24%; }
+.assignment-result-card .data-table th:nth-child(4) { width: 25%; }
+.assignment-result-card .data-table th:nth-child(5) { width: 16%; }
+.assignment-result-card .data-table th:nth-child(6) { width: 15%; }
+.assignment-result-card .data-table td:nth-child(2),
+.assignment-result-card .data-table td:nth-child(3) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.assignment-result-card .status { white-space: nowrap; }
+.assignment-email {
+  max-width: var(--size-filter-popover);
+}
+.assignment-email span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-height: 700px) and (min-width: 900px) {
+  .work-dialog-head,
+  .work-dialog-foot { padding: var(--space-cluster-tight) var(--space-card-compact); }
+  .work-dialog-body { padding: var(--space-card-compact); }
+  .work-dialog-body > * + * { margin-top: var(--space-cluster-tight); }
+  .work-dialog .list-controls { margin-bottom: 0; }
+  .work-dialog .list-controls-main { gap: var(--space-cluster-tight); }
+  .work-dialog .assignment-summary p { font-size: var(--font-size-label); }
+}
 .assignment-targets {
   display: grid;
   gap: var(--space-cluster-tight);
@@ -1205,8 +1306,15 @@
 }
 .assignment-target small { display: block; color: var(--color-text-muted); }
 .assignment-result-card { overflow: hidden; }
-.assignment-result-meta { padding: var(--space-cluster) var(--space-card-compact); }
+.assignment-result-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-cluster-tight);
+  padding: var(--space-cluster) var(--space-card-compact);
+}
+.assignment-result-meta h3,
 .assignment-result-meta p { margin: 0; }
+.assignment-result-meta .status { margin-left: auto; }
 .assignment-success { padding: var(--space-card-inner); }
 .assignment-success h3 { margin-top: var(--space-cluster); }
 
@@ -1894,7 +2002,9 @@
   gap: var(--space-layout-compact);
   align-items: start;
 }
+.detail-grid > * { min-width: 0; }
 .detail-col { display: grid; gap: var(--space-layout-compact); }
+.detail-col > * { min-width: 0; }
 .relation-card {
   position: relative;
   min-height: var(--size-relation-min);
@@ -2113,6 +2223,7 @@
   margin-bottom: var(--space-layout-compact);
 }
 .status-track h2 { margin-bottom: var(--space-control-block); }
+.status-track > small { display: block; margin-top: calc(-1 * var(--space-cluster)); margin-bottom: var(--space-control-block); color: var(--color-text-muted); }
 .status-bar {
   height: var(--space-control-inline);
   display: flex;
@@ -2126,7 +2237,7 @@
 .status-bar .is-cancelled { width: 7%; background: var(--color-text-disabled); }
 .status-stats {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: var(--space-control-block);
   margin-top: var(--space-control-inline);
 }
