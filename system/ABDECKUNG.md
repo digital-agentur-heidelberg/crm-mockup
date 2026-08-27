@@ -140,175 +140,152 @@ nicht, welche Fassung später umgesetzt wird.
   „Verteiler“; dies folgt der extrahierten gemeinsamen Hülle und ist eine
   Informationsarchitekturentscheidung, keine Aussage über spätere URLs.
 
-## 3. Vorschlag für die Bauabschnitte
+## 3. Neue Anforderungen nach den Fachantworten
 
-Die Nummerierung setzt die vorhandenen Befunde 01 bis 05 fort. Jeder Abschnitt
-ist auf eine konzentrierte Session begrenzt. „Klärung vor Start“ bedeutet, dass
-ohne die in Abschnitt 4 genannte Entscheidung fachliche Regeln erfunden werden
-müssten.
+- **A – Teilnehmendenstatus in der Liste bearbeitbar:** Der Status wird je
+  Zeile in der Teilnehmendenliste geändert, in der Regel durch das Fachamt, das
+  die Veranstaltung erstellt hat. Statuswechsel je Zeile, voraussichtlich auch
+  als Sammelaktion der vorhandenen Mehrfachauswahl, Rückmeldung und
+  Rechteprüfung bilden einen eigenen Systemvertrag und Bauabschnitt.
+- **B – Mailings am Verteiler:** Mailings hängen immer an einem Verteiler.
+  Einzelmailings und individuelle Gruppenmailings führen aus der Kontaktliste
+  in Richtung Outlook oder Mailprogramm, wie im Screen-Inventar beschrieben.
+  Die zugehörigen Mailings werden am jeweiligen Verteiler dargestellt; ihre
+  Form bleibt offen. Der geplante Mailing-Bauabschnitt beginnt damit im
+  Verteilerdetail statt in einer eigenständigen Übersicht.
+- **C – Zähler sind Ableitungen:** Eine Zahl neben einer Liste wird aus dieser
+  Liste berechnet und nie unabhängig gepflegt. Dies gilt für Statussummen der
+  Teilnehmenden, Mitgliederzahl eines Verteilers, Empfängerzahl eines Mailings
+  und Belegung einer Veranstaltung.
 
-### Bauabschnitt 06 – Kontaktanlage und Dublettenprüfung
+## 4. Reihenfolge der Bauabschnitte
 
-- **Abdeckung:** K05.1 bis K05.6: Namen erfassen, laufende Prüfung,
-  Prüfungsfehler, kein Treffer, mögliche Dublette und Kenntnisnahme.
-- **Voraussichtliche Systemlücke:** verzweigter Assistent mit asynchronem
-  Prüfzustand, Validierungszusammenfassung, abhängige Felder, unterbrochener
-  Vorgang und allgemeine Formular-/Rechtematrix. Formulare und Assistenten sind
-  die in Befund 01 erwarteten Schwachstellen.
-- **Warum zuerst:** Kontaktanlage ist eine Top-Aufgabe und schafft den
-  allgemeinen Formular- und Rechtevertrag, den Institutionen und spätere
-  Kontaktbearbeitung wiederverwenden müssen.
-- **Klärung vor Start:** konkrete Handlungen an einer möglichen Dublette,
-  Bedeutung der Kenntnisnahme und Anlageberechtigungen je Kontaktart.
+### Vor dem Testing
 
-### Bauabschnitt 07 – Verteilerzuordnung als Querschnitt
+Erledigt sind die Such- und Filterprüfung (Befunde 09 und 10), der
+Teilnehmendenstatus samt abgeleiteten Zählern (Befund 11) sowie die horizontalen
+Überläufe in `veranstaltungen.html` bei 1024 Pixeln und
+`kontakt-detail.html` bei 1280 Pixeln.
 
-- **Abdeckung:** fehlender Anteil von K01e/V04, also ausgewählte Kontakte einem
-  Verteiler hinzufügen; Abgleich mit dem bereits vorhandenen Hinzufügen und
-  Entfernen im Verteilerdetail.
-- **Voraussichtliche Systemlücke:** wiederverwendbare Zuordnung mit gewählten
-  Kontakten, Zielverteiler, Rechteprüfung, Kontakterlaubnis, Teilerfolg und
-  nachvollziehbarer Rückmeldung. Die Listen-Mehrfachauswahl existiert, der
-  fachliche Zuordnungsvertrag noch nicht.
-- **Warum hier:** Die Zuordnung muss feststehen, bevor Institutionen oder
-  Veranstaltungsabläufe mögliche weitere Einstiege erhalten; andernfalls
-  entstünden später getrennte Varianten derselben Handlung.
-- **Klärung vor Start:** ob Institution und Veranstaltung tatsächlich
-  Ausgangspunkte der Zuordnung sind, wer Mitglieder ämterübergreifend zuordnen
-  darf und wie fehlende Kontakterlaubnis beim Beitritt wirkt.
+Ausstehend ist die in Befund 07 genannte vollständige manuelle Browserrunde:
+Tastaturweg, ARIA, Kontrast und die Viewports über den gesamten Bestand.
 
-### Bauabschnitt 08 – Institutionen
+### Nach dem Testing
 
-- **Abdeckung:** K03 Übersicht, Stammdaten, Akte und Datenschutz für eine
-  Institution; Beziehungen zu Ansprechpersonen, Branche, Konzernstruktur und
-  Schlagworten gemäß Briefing.
-- **Voraussichtliche Systemlücke:** allgemeiner Objektkopf, mehrstufige
-  Beziehungen, wiederholbare Formulargruppen, Änderungsnachweis und gemischte
-  Feld-/Abschnittsrechte. Objektköpfe und Berechtigungen sind die in Befund 01
-  und 03 erwarteten Schwachstellen.
-- **Warum hier:** Der Abschnitt nutzt unmittelbar den Formular-/Rechtevertrag
-  aus 06 und den Zuordnungsvertrag aus 07, ohne die Kontaktanlage und den
-  deutlich dichteren Institutionenbestand in eine unbeherrschbare Session zu
-  pressen.
-- **Klärung vor Start:** sichtbare und bearbeitbare Institutionsteile je Amt,
-  Sichtbarkeit geschützter Beziehungen sowie bestätigte Einstiege in die
-  Verteilerzuordnung.
+Institutionen, Kontakt bearbeiten, Veranstaltung bearbeiten, Mailing am
+Verteiler. Institutionen hängen am Verbindungsmodell aus Frage 11; dessen
+Bezeichnungen werden im Test erhoben. Vorher zu bauen hieße, das Modell zu
+raten.
 
-**Antwort zur Bündelungsfrage:** Kontakt anlegen und Institutionen sind zwei
-Bauabschnitte. Sie teilen dieselben Formular- und Rechtefragen, aber die sechs
-Anlage-/Prüfzustände sind bereits ein vollständiger Assistent, während die vier
-Institutioneninhalte zusätzlich Objektkopf, Beziehungsmodell und dichte
-Mehrfachdaten erproben. Abschnitt 06 muss die gemeinsamen Verträge allgemein
-anlegen; Abschnitt 08 verwendet sie, statt sie neu zu bauen.
+## 5. Fachfragen nach dem Testing
 
-### Bauabschnitt 09 – Kontaktpflege, Kontakterlaubnis und Deaktivierte
+Die Fachfragen werden hier federführend geführt. `BEFUNDE-offen.md` verweist
+für fachliche Fragen auf diesen Abschnitt.
 
-- **Abdeckung:** K04, K06 und K07; Ergänzung der vorhandenen Personinhalte um
-  Bearbeitung, Kanalrechte, Deaktivierung und Reaktivierung.
-- **Voraussichtliche Systemlücke:** längeres Abschnittsformular, ungespeicherte
-  Änderungen, begründetes Deaktivieren, Änderungsnachweis und Rechte auf
-  Feldebene. Die bestehende 360°-Ansicht liefert den Objektkontext, aber keinen
-  Bearbeitungsvertrag.
-- **Warum hier:** Erst die Institution prüft, welche Teile des neuen
-  Objektkopfs und der Rechtekomponenten wirklich kontaktartenübergreifend sind;
-  danach kann die Personenpflege ohne vorschnelle Sonderkomponente folgen.
-- **Klärung vor Start:** Rechte je Kanal und Amt, fachliche Bedeutung von
-  „deaktiviert“, Reaktivierung sowie Zuschussjahre und Nachvollziehbarkeit.
+### Im Test zu erheben
 
-### Bauabschnitt 10 – Veranstaltungslebenszyklus
+- **1 · Veranstaltung / Absagen und Löschen:** Was geschieht beim Löschen oder
+   Absagen mit Teilnahmen, Anmeldelink und bereits versendeten Bestätigungen?
+- **2 · Veranstaltung / Warteliste und Platzangebot:** Gibt es ein Platzangebot
+   mit Rückmeldefrist, oder setzt das Amt den Status und informiert
+   anschließend?
+- **3 · Managed-Verteiler / ändernde Stelle:** Wird das Konzept benötigt, oder
+   erfolgt die Pflege im Backend? Der gebaute geschützte Zustand bleibt bis zur
+   Entscheidung unverändert, damit beobachtbar ist, ob jemand eine fremde
+   Definition ändern möchte.
+- **8b · Verteilerzuordnung / Sichtbarkeit fremder Verteiler:** Ist ein Verteiler
+   eines anderen Amts sichtbar und gesperrt oder gar nicht sichtbar?
+- **10 · Kontaktanlage / Pflichtangaben:** Welche Angaben sind je Kontaktart für
+   den Abschluss erforderlich?
+- **11 · Kontaktanlage / Kontaktarten und Verbindungen:** Personen können
+   Mitglieder einer oder mehrerer Institutionen sein; Institutionen umfassen
+   Firmen, Vereine, Parteien und weitere Formen. Rollen und Verbindungen
+   werden nicht am Schreibtisch modelliert. Die Ämter erheben im Test ihre
+   heutigen Bezeichnungen; der Bauabschnitt Institutionen hängt davon ab. Der
+   Entwurf erfindet keine dritte Kontaktart.
+- **13 · Kontaktanlage / Ergänzen eines Bestandskontakts:** Die Lösungsrichtung ist
+   eine Gegenüberstellung Alt gegen Neu, aus der ausgewählt wird; sie ist keine
+   beschlossene Regel. Die Bearbeitung von Bestandskontakten bleibt insgesamt
+   offen.
+- **14 · Kontaktanlage / Begründung der Neuanlage:** Auswahlhäufigkeit und
+   Freitext bei „Anderer Grund“ sind Messpunkte des Tests.
+- **Neu · Teilnehmendenstatus / Kapazität:** Was geschieht, wenn ein Statuswechsel
+   die Kapazität einer Veranstaltung überschreitet? Der Entwurf warnt dauerhaft
+   an der Belegung und sperrt nicht.
+- **Fortgeführt · Kontaktanlage / mögliche Dublette:** Welche Handlungen bei einer
+    möglichen Dublette erlaubt sind, bleibt offen. Der frühere Weg über den
+    Variantenvergleich ist geschlossen; die Frage wird stattdessen über die
+    Aufgabenstellung im Test adressiert.
+- **Fortgeführt · Teilnehmendenstatus:** Welches Statusvokabular gilt und welche
+   Übergänge sind erlaubt? Insbesondere offen bleibt die Einreihung einer neu
+   auf Warteliste gesetzten Anmeldung; der Entwurf zeigt nur die vorhandene
+   Eingangsreihenfolge.
+- **Fortgeführt · Veranstaltungsart:** Welche Arten gelten, wie entsteht ein
+    Vorschlag, wann darf die Art geändert werden und welche Folgen müssen davor
+    gezeigt werden?
+- **Fortgeführt · Geschützte Beziehungen:** Darf bereits die Existenz eines
+    geschützten Bezugs samt Amt und Datum sichtbar sein, wenn Titel,
+    Beteiligte und Inhalt geschützt sind?
 
-- **Abdeckung:** E02e und E04; Bearbeitung, Veranstaltung ohne Teilnehmende,
-  Wartelisten-/Platzangebot sowie die noch nicht gebauten Folgen von Absage und
-  Löschen. E05 wird dabei nur auf bestätigte Regeln zur Veranstaltungsart
-  abgeglichen.
-- **Voraussichtliche Systemlücke:** allgemeiner Objektkopf im
-  Bearbeitungszustand, abhängige Formularfelder, Folge-/Gefahrenbestätigung,
-  Berechtigungen und ein mehrstufiger Platzangebotsvorgang.
-- **Warum hier:** Die bestehende Übersicht und das Detail liefern die
-  Grundlagen; nach Abschnitt 07 ist außerdem geklärt, ob Teilnehmende als
-  Quelle einer Verteilerzuordnung vorkommen.
-- **Klärung vor Start:** Absage-/Löschfolgen, Wartelistenreihenfolge, Frist und
-  Nachricht, verbindliche Statuswerte und -zahlen sowie Regeln der
-  Veranstaltungsart.
+### Organisatorisch zu klären
 
-### Bauabschnitt 11 – Mailingübersicht und fehlende Grundlagenzustände
+- **5a · Mailing am Verteiler / Status und Sichtbarkeit:** Welche Statuswerte
+    gelten, welche Mailings zwischen Ämtern sichtbar sind und wer Mailings
+    anlegen darf.
+- **7 · Verteilerzuordnung / Kontakterlaubnis:** Der Entwurf bleibt wie gebaut:
+    Erlaubnis ist sichtbar, Zuordnung erlaubt, Ausschluss erst beim Versand.
+- **8a · Verteilerzuordnung / fremde Verteiler:** Nach aktuellem Stand ändert nur
+    das zuständige Fachamt seine Verteiler. Das amtsübergreifende Verwalten
+    bleibt organisatorisch und technisch offen.
+- **15 · Kontaktanlage / Rechte:** Was dürfen andere Fachämter, die Zugriff auf
+    einen Kontakt haben, aber nicht verantwortlich sind, an Notizen,
+    Verbindungen und Stammdaten ändern oder ergänzen? Wie erfolgt die Freigabe
+    für andere Ämter? Mögliche Lösungsrichtung, nicht entschieden:
+    Versionierung und Änderungsantrag für Stammdaten.
+- **Fortgeführt · Kontaktinhalte in Suche und Vorschau:** Welche Inhalte dürfen
+    Notizen, Schlagworte und geschützte Beziehungen anderer Ämter indizieren?
+- **Fortgeführt · Deaktivierte Kontakte:** Was bedeutet „deaktiviert“, wer darf
+    deaktivieren oder reaktivieren und welche Folgen hat der Zustand für Suche,
+    Verteiler, Veranstaltungen und Mailings?
+- **Fortgeführt · Zuschüsse:** Welche Zuschussjahre werden regulär gezeigt,
+    welche gelten als älter und welche Aufbewahrungs- oder
+    Sichtbarkeitsgrenzen gelten zwischen Ämtern?
+- **Fortgeführt · Veranstaltungsrechte:** Wer darf Veranstaltungen sehen,
+    anlegen, bearbeiten, absagen oder löschen, und wie werden teilweise oder
+    vollständig geschützte Veranstaltungen dargestellt?
+- **Fortgeführt · Mailingprozess:** Muss Test- oder Echtversand durch eine zweite
+    Person freigegeben werden, oder genügt der dokumentierte Nachweis der
+    versendenden Person?
 
-- **Abdeckung:** M01a vollständig, M01b und M01c sowie die im Inventar nicht
-  beschriebene Mailingübersicht mit gefüllt/lädt/leer/Fehler/kein Zugriff. Der
-  vorhandene Mailingprozess bleibt fachliche Detailansicht.
-- **Voraussichtliche Systemlücke:** voraussichtlich keine neue Listenanatomie;
-  Prüfstein sind Teil-/Vollschutz, Statusfilter und Berechtigungen. Erst bei
-  bestätigter Mehrfachhandlung käme die vorhandene Auswahlstruktur hinzu.
-- **Warum hier:** Befund 05 weist die technische Tragfähigkeit bereits nach;
-  nach den Kontakt- und Verteilerabschnitten sind Empfänger- und
-  Kontakterlaubnisregeln geklärt, bevor sie in der Übersicht verkürzt werden.
-- **Klärung vor Start:** Statusvokabular, Sichtbarkeit zwischen Ämtern,
-  Anlage- und Versandberechtigung, Bedarf einer Mehrfachhandlung sowie eine
-  mögliche Vier-Augen-Freigabe des Testversands.
+### Umsetzungsfrage
 
-### Bauabschnitt 12 – Verbleibender Arbeitsstart
+- **5b · Mailing am Verteiler / technische Seite:** Die technische Seite hängt an
+    einer noch nicht getroffenen Architekturentscheidung.
+- **12 · Kontaktanlage / Dublettenlogik:** Für den Design-Prototypen nicht
+    relevant.
+- **Fortgeführt · Persönliche Öffnungshistorie:** Speicherort,
+    Aufbewahrungsdauer und Löschung von „Zuletzt geöffnet“ liegen außerhalb
+    des CRM-Fachdatenmodells.
 
-- **Abdeckung:** Der persönliche Wiedereinstieg für Kontakte und Veranstaltungen
-  ist derzeit nicht Bestandteil der Fachscreens. R01 ist als
-  Prototyp-Hilfsmittel erledigt; F01–F17 entfallen ersatzlos als Screens.
-- **Voraussichtliche Systemlücke:** keine neue Listenanatomie. Vor einem späteren
-  persönlichen Einstieg müssen Umfang und Datenhaltung fachlich bestätigt
-  werden.
-- **Warum zuletzt:** Der unmittelbare Telefonweg bleibt über Suche und
-  Kontaktliste abgedeckt; ein zusätzlicher persönlicher Wiedereinstieg ist
-  gegenüber den zuvor aufgeführten fachlichen Lücken nachrangig.
-- **Klärung vor Start:** welche vorhandenen Veranstaltungsangaben in einem
-  persönlichen Öffnungsverlauf für die schnelle Wiederaufnahme erforderlich
-  sind.
+### Erledigt
 
-**Antwort zur Sammelaktion:** Ja, das Thema berührt mehrere offene Bereiche.
-Die zielseitige Zuordnung existiert bereits im Verteilerdetail, die
-kontaktseitige Sammelaktion ist in V04 gefordert. Institution und Veranstaltung
-sind als weitere Quellen in den gelesenen Unterlagen nicht belegt; genau das
-muss vor Abschnitt 07 entschieden werden. Die Komponente soll deshalb die
-fachliche Handlung „gewählte Kontakte einem Zielverteiler zuordnen“ allgemein
-tragen und sowohl einen bereits gewählten Zielverteiler als auch eine noch zu
-wählende Zielmenge zulassen. Konkrete Einstiege aus Institution oder
-Veranstaltung werden nur gebaut, wenn die Fachämter sie bestätigen.
-
-## 4. Zusammengeführte offene Fachfragen
-
-Die Kennzeichnung **Startblocker** bedeutet: Der genannte Bauabschnitt kann
-ohne Antwort nicht fachlich belastbar komponiert werden. „Vor Abschluss“ lässt
-eine strukturelle Arbeit zu, verlangt die Entscheidung aber vor der Abnahme.
-
-| Bauabschnitt | Fachfrage | Bedarf |
-|---|---|---|
-| 06 · Kontaktanlage | Welche Handlungen sind bei einer möglichen Dublette erlaubt: vorhandenen Kontakt öffnen, ergänzen, trotzdem neu anlegen oder nur Kenntnis nehmen; und was bestätigt K05.6 genau? | **Startblocker** |
-| 06, 08, 09 · Kontakte und Institutionen | Wer darf Personen und Institutionen anlegen, lesen, ändern, deaktivieren oder reaktivieren; welche Rechte gelten je Feld beziehungsweise Abschnitt, wie werden Grund und zuständige Stelle benannt? | **Startblocker** |
-| 07 · Verteilerzuordnung | Darf ein Kontakt ohne passende Kontakterlaubnis Mitglied eines Verteilers werden, wird nur der spätere Versand ausgeschlossen oder muss die Erlaubnis beim Beitritt geklärt werden? | **Startblocker** |
-| 07, 08, 10 · Verteilerzuordnung | Ist „Zu Verteiler hinzufügen“ außer aus der Kontaktliste und dem Verteilerdetail auch aus einer Institution oder einer Veranstaltung vorgesehen; falls ja, welche Personen bilden dort die Auswahlmenge? | **Startblocker** |
-| 07 · Verteilerzuordnung | Wer darf Mitglieder eines Arbeits- oder Managed-Verteilers ämterübergreifend hinzufügen und entfernen, und braucht es Bestätigung oder Änderungsnachweis? | **Startblocker** |
-| 07 · Managed-Verteiler | Wie lautet die verbindliche organisatorische Bezeichnung statt „Zentrale CRM-Administration“, und welcher Kontakt- oder Anfrageweg wird angezeigt? | Vor Abschluss |
-| 08 · Institutionen | Darf bereits die Existenz eines geschützten Bezugs samt Amt und Datum sichtbar sein, wenn Titel, Beteiligte und Inhalt geschützt sind? | **Startblocker** |
-| 08, 09 · Kontakte | Welche Kontaktinhalte dürfen Suche und Vorschau indizieren, insbesondere Notizen, Schlagworte und geschützte Beziehungen anderer Ämter? | **Startblocker** für Suche/Vorschau, sonst vor Abschluss |
-| 09 · Kontaktpflege | Was bedeutet „deaktiviert“ fachlich, wer darf deaktivieren oder reaktivieren und welche Folgen hat der Zustand für Suche, Verteiler, Veranstaltungen und Mailings? | **Startblocker** |
-| 09 · Zuschüsse | Welche Zuschussjahre werden regulär gezeigt, welche gelten als „älter“ und gibt es Aufbewahrungs- oder Sichtbarkeitsgrenzen zwischen Ämtern? | Vor Abschluss |
-| 10 · Veranstaltungen | Was geschieht beim Absagen oder Löschen mit Teilnahmen, Anmeldelink, Warteliste und bereits versendeten Einladungen beziehungsweise Bestätigungen? | **Startblocker** |
-| 10 · Warteliste | Nach welcher Regel wird gereiht oder nachgerückt, wer bietet einen Platz an, welche Frist gilt und welche Nachricht wird versendet? | **Startblocker** |
-| 10 · Teilnehmendenstatus | Welches Statusvokabular gilt verbindlich – insbesondere offen, bestätigt, Warteliste, abgelehnt und storniert – und welche Übergänge sind erlaubt? | **Startblocker** |
-| 10 · Teilnehmendenstatus | Welche Wartelistenzahl gilt: acht in der Statusstrecke oder zehn in der fest verdrahteten Tabelle? | **Startblocker** |
-| 10 · Veranstaltungsart | Welche Arten gelten verbindlich, wie entsteht ein Vorschlag, wann darf die Art geändert werden und welche Einladungs-/Anmeldefolgen müssen davor gezeigt werden? | **Startblocker** |
-| 10 · Veranstaltungen | Wer darf Veranstaltungen sehen, anlegen, bearbeiten, absagen oder löschen, und wie werden teilweise beziehungsweise vollständig geschützte Veranstaltungen dargestellt? | **Startblocker** |
-| 11 · Mailingübersicht | Welche Mailingstatus gelten verbindlich und welche Statusübergänge müssen in Übersicht und Detail erkennbar sein? | **Startblocker** |
-| 11 · Mailingrechte | Welche Mailings sind zwischen Ämtern sichtbar, wer darf anlegen, bearbeiten, testen und unwiderruflich versenden? | **Startblocker** |
-| 11 · Mailingprozess | Muss ein Testversand oder der Echtversand durch eine zweite Person freigegeben werden, oder genügt der dokumentierte Nachweis der versendenden Person? | **Startblocker** |
-| 11 · Mailingübersicht | Gibt es eine fachliche Mehrfachhandlung für mehrere Mailings; falls ja, welche? | **Startblocker** für die Listenstruktur |
-| 12 · Arbeitsstart | Welche vorhandenen Veranstaltungsangaben braucht der persönliche Einstieg „Zuletzt geöffnet“, damit eine Veranstaltung ohne zusätzliche Suche wiederaufgenommen werden kann? | Vor Abschluss |
+- **4 · Teilnehmendenliste / Statussummen — erledigt am 27.08.2026:** Die Liste
+    ist maßgeblich; Statussummen werden daraus abgeleitet und ändern sich mit
+    dem Teilnehmendenstatus. Die Statusstrecke zeigt zehn, passend zur Tabelle.
+- **6 · Mailingübersicht / Mehrfachauswahl — erledigt am 27.08.2026:** Die Frage
+    entfällt, weil Mailings immer an einem Verteiler hängen; sie wird durch die
+    Anforderung „Mailings am Verteiler“ in Abschnitt 3 ersetzt.
+- **9 · Verteilerzuordnung / Mengengrenze — erledigt am 27.08.2026:** Es gibt
+    keine Obergrenze. Der Entwurf beziffert die Menge vor der Ausführung und
+    bleibt sonst unverändert.
 
 ### Notizen aus dem Abgleich
 
 - Im aktuellen Ordner liegen zehn Fachscreens, das Prototyp-Hilfsmittel
   `index.html` und `_vorlage.html`. R01 zählt ausdrücklich nicht als
   Produktscreen; F01–F17 werden nicht als Dateien ergänzt.
-- Die vorhandene Statusstrecke nennt acht Wartelistenplätze, die Tabelle
-  enthält zehn Wartelistenzeilen. Dieser Bestandswiderspruch bleibt eine
-  Fachfrage und wurde nicht korrigiert.
+- Die Statusstrecke zeigt zehn Wartelistenplätze, passend zur Tabelle. Sie ist
+  aus der Liste abgeleitet; siehe Abschnitt 3 und Frage 17.
 - Die bereits dokumentierten horizontalen Bestandsüberläufe der
   Veranstaltungsübersicht bei 1024 Pixeln und des Kontakt-Details bei 1280
   Pixeln bleiben offen.

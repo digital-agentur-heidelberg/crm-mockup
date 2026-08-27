@@ -1,78 +1,26 @@
 # Offene Befunde aus der Klickprüfung
 
-Geprüft wurden die bisherigen Fachscreens, die drei Verteiler-Screens und eine
-frische Kopie von `screens/_vorlage.html`. Die gemeinsame Hülle sowie die zuvor
-gefundenen screenspezifischen Interaktionslücken sind umgesetzt. Offen bleiben
-fachliche Entscheidungen, zwei kleine Bestandsüberläufe und der bekannte
-Kontrastgrenzfall.
+Die gemeinsame Hülle sowie die zuvor gefundenen screenspezifischen
+Interaktionslücken sind umgesetzt. Für die im jüngsten Durchgang betroffenen
+Veranstaltungs- und Detailansichten sind die Überläufe behoben. Offen bleiben
+die vollständige manuelle Browserrunde und der bekannte Kontrastgrenzfall.
 
-## Offene Fachfragen
+## Fachfragen
 
-1. **Veranstaltung / Absagen und Löschen:** Offen ist, was beim Löschen oder
-   Absagen einer Veranstaltung mit Teilnahmen, Anmeldelink und bereits
-   versendeten Bestätigungen geschehen soll.
-2. **Veranstaltung / Warteliste und Platzangebot:** Die Schaltflächen benennen
-   die im Entwurf nicht ausgeführte Handlung. Regeln, Frist und Nachricht des
-   Platzangebots sind fachlich weiterhin nicht festgelegt.
-3. **Managed-Verteiler / ändernde Stelle:** Das Sperr-Muster muss benennen, wer
-   eine geschützte Definition ändern kann. Der Entwurf verwendet dafür die
-   neutrale Rollenbezeichnung „Zentrale CRM-Administration“. Die verbindliche
-   organisatorische Bezeichnung und der zugehörige Kontaktweg sind mit den
-   Fachämtern noch festzulegen.
-4. **Teilnehmendenliste / Statussummen:** Die Statusstrecke nennt acht Personen
-   auf der Warteliste, die fest verdrahtete Tabelle enthält zehn sichtbare
-   Wartelistenzeilen. Filter und Mehrfachauswahl bilden weiterhin den
-   tatsächlichen Tabellenbestand ab. Welche Zahl fachlich gelten soll, ist zu
-   klären; der Verteiler-Bauabschnitt ändert diese Bestandsdaten nicht.
-5. **Mailingübersicht / Status und Sichtbarkeit:** Der allgemeine Listenvertrag
-   trägt beliebige ausgeschriebene Statuswerte, Ämterfilter und geschützte
-   Zustände. Welche Statuswerte fachlich gelten, welche Mailings zwischen
-   Ämtern sichtbar sind und wer Mailings anlegen darf, ist vor einem
-   Übersichts-Screen festzulegen.
-6. **Mailingübersicht / Mehrfachauswahl:** Auswahlspalte, seitenweise
-   Sammelauswahl und seitenübergreifender Auswahlzähler sind systemisch
-   vorhanden. Ob eine Mailingübersicht eine fachliche Mehrfachhandlung braucht,
-   ist nicht belegt; deshalb wird die Auswahl dort nicht vorweggenommen.
-7. **Verteilerzuordnung / Kontakterlaubnis:** Offen ist, ob ein Kontakt ohne
-   E-Mail-Kontakterlaubnis einem Verteiler hinzugefügt werden darf. Der heutige
-   Entwurf zeigt die Kontakterlaubnis in der Trefferzeile, lässt die Zuordnung
-   aber zu; Ausschlüsse greifen wie bisher erst beim Versand. Eine fachliche
-   Sperre wird nicht vorweggenommen.
-8. **Verteilerzuordnung / fremde Verteiler:** Nicht festgelegt ist, wer
-   Mitgliedschaften in Verteilern anderer Ämter bearbeiten darf und welche
-   Stelle eine fehlende Berechtigung begründen müsste. Der Entwurf bildet nur
-   den zugänglichen Arbeitsfall ab und erfindet keine zusätzliche Rolle.
-9. **Verteilerzuordnung / Mengengrenze:** Eine Obergrenze oder ein besonderes
-   Bestätigungsverfahren für sehr große Zuordnungen ist fachlich nicht
-   festgelegt. Der Entwurf beziffert deshalb jede Menge unmittelbar vor der
-   Ausführung, setzt aber keine unbelegte Grenze.
-10. **Kontaktanlage / Pflichtangaben:** Verbindlich benannt sind weder die
-    Pflichtfelder für den Abschluss noch die Regeln je Kontaktart. Der Entwurf
-    verlangt für den Abschluss nur Name oder Bezeichnung und eine bestätigte
-    Kontaktart; ein unvollständiger Entwurf bleibt speicherbar.
-11. **Kontaktanlage / Kontaktarten:** Das Inventar verwendet Person und
-    Institution, das Briefing nennt zusätzlich Personen an Firmen. Ob dieser
-    Bezug eine Kontaktart, eine Beziehung oder eine weitere Anlageentscheidung
-    ist, muss mit den Fachämtern geklärt werden. Der Entwurf erfindet dafür
-    keine dritte Art.
-12. **Kontaktanlage / Dublettenlogik:** Schwellen, Gewichtung, Rangfolge und
-    Auslösezeitpunkt der Dublettenprüfung sind nicht festgelegt. Die
-    Testfassung verwendet deshalb ausschließlich fest verdrahtete, vorhandene
-    Kontakte und die Prototypzustände; sie behauptet keinen späteren
-    Algorithmus.
-13. **Kontaktanlage / Ergänzen eines Bestandskontakts:** Welche Felder bei
-    „Vorhandenen Kontakt um meine Angaben ergänzen“ übernommen, verworfen oder
-    zur Entscheidung gestellt werden, ist nicht beschrieben. Die Handlung
-    bleibt sichtbar, führt aber im Entwurf keine Zusammenführung aus.
-14. **Kontaktanlage / Begründung der Neuanlage:** Verbindliche Gründe für
-    „Trotzdem neu anlegen“ fehlen. Der Entwurf verwendet drei neutrale Gründe
-    sowie „Anderer Grund“ mit Pflichtfreitext. Auswahlhäufigkeit und Freitext
-    sind Messpunkte des Fachtests und keine vorweggenommene Fachregel.
-15. **Kontaktanlage / Rechte:** Wer welche Kontaktart oder einzelne Felder
-    ämterübergreifend anlegen beziehungsweise bearbeiten darf und wie Grund
-    und zuständige Stelle heißen, bleibt geparkt. Sichtbare Testannahme ist:
-    Die angemeldete Person darf Personen und Institutionen im eigenen Amt
-    anlegen.
+Die Fachfragen und ihre Umstufung werden federführend in
+[`ABDECKUNG.md`, Abschnitt 5](ABDECKUNG.md#5-fachfragen-nach-dem-testing)
+geführt. Der frühere Variantenvergleich für mögliche Dubletten ist mit dem
+Wegfall von Variante B nicht mehr verfügbar; die Frage bleibt dort offen und
+wird im Test über die Aufgabenstellung adressiert.
+
+- **Teilnehmendenstatus:** Das Vokabular, erlaubte Übergänge und die
+  Einreihung einer neu auf Warteliste gesetzten Anmeldung sind nicht
+  entschieden. Der Entwurf verwendet ausschließlich bestätigt, offen,
+  Warteliste und storniert; der vorhandene Eingang bestimmt nur die sichtbare
+  Testreihenfolge.
+- **Kapazitätsüberschreitung:** Der Entwurf warnt dauerhaft an der Belegung und
+  sperrt nicht. Ob das Fachamt darüber hinaus informiert, bestätigt oder eine
+  andere Regel benötigt, wird im Test erhoben.
 
 ## Offener Umsetzungsbefund
 
@@ -81,15 +29,6 @@ Kontrastgrenzfall.
   persönliche Historie deshalb außerhalb der fachlichen Datensätze
   bereitstellen; Speicherort, Aufbewahrungsdauer und Löschung sind noch
   festzulegen.
-
-## Offener Technikbefund
-
-- **Horizontale Bestandsüberläufe:** Im lokalen Firefox überschreitet die
-  Veranstaltungsübersicht bei einem 1024-Pixel-Fenster die innere Viewportbreite
-  um rund 22 Pixel; das Kontakt-Detail überschreitet sie bei 1280 Pixeln um rund
-  17 Pixel. Der pixelgenaue Vergleich der alten und neuen Klassenaliase ist bei
-  1024, 1280 und 1920 Pixeln identisch; die Konsolidierungsrunde hat diese
-  Geometrie daher nicht verursacht und ändert sie nicht nebenbei.
 
 ## Offener Barrierefreiheitsbefund
 
@@ -123,6 +62,11 @@ Kontrastgrenzfall.
   Platzangebot benennen die nicht ausgeführte Handlung. Nur der
   „Branchendialog Kreativwirtschaft“ besitzt eine Detailseite; andere Ziele
   bleiben sichtbar und melden den nicht hinterlegten Datensatz.
+- **Teilnehmendenstatus und Überläufe:** Die eingebettete Teilnehmendenliste
+  trennt gefiltert, geladen und gesamt. Statusstrecke, Belegung und Warteliste
+  leiten sich aus dem vollständigen Datenbestand ab. Einzel- und
+  Sammeländerungen teilen einen Rückgängig-Stapel; die Veranstaltungsübersicht
+  bei 1024 Pixeln und das Kontakt-Detail bei 1280 Pixeln überlaufen nicht mehr.
 - **Mailing:** Die Verteilerwahl berechnet eindeutige, ausgeschlossene und
   tatsächliche Empfänger neu und trägt die Werte bis zum Versandbeleg. Die
   Vorschau zeigt den tatsächlichen Beispielbestand „x von 5“; der Problemsprung
@@ -143,5 +87,6 @@ Kontrastgrenzfall.
   blockieren die Klick- und Tastaturprüfung nicht mehr. Auswahl, Vorschau und
   Detailziel werden aus der jeweils aktiven Zeile abgeleitet.
 
-Die vollständige erneute Klick-, Navigations- und Tastaturprüfung aller Screens
-bei 1024, 1280 und 1920 Pixeln wurde in der Konsolidierungsrunde durchgeführt.
+Tastaturweg und ARIA-Semantik der vollständigen manuellen Browserrunde sind
+ausstehend. Die im Befund 11 beschriebenen Firefox-Prüfungen bei 1024, 1280
+und 1920 Pixeln ersetzen diese Prüfung nicht.
