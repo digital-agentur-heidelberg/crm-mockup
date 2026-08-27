@@ -29,6 +29,14 @@ wird im Test über die Aufgabenstellung adressiert.
   persönliche Historie deshalb außerhalb der fachlichen Datensätze
   bereitstellen; Speicherort, Aufbewahrungsdauer und Löschung sind noch
   festzulegen.
+- **Mailings am Verteiler und gemeinsame Fixture:** Im Verteilerdetail ist nur
+  die Übergabe in den Mailing-Prozess vorhanden; eine Liste oder Historie der
+  zugehörigen Mailings fehlt. Außerdem werden Verteiler- und Empfängerzahlen
+  derzeit in Übersicht, Detail und Mailing getrennt gehalten und weichen ab.
+  Vor dem Bau wird eine gemeinsame Fixture benötigt. Fachliche Status,
+  Sichtbarkeit und Anlageberechtigung bleiben in
+  [`ABDECKUNG.md`, Abschnitt 5](ABDECKUNG.md#5-fachfragen-nach-dem-testing)
+  zu klären.
 
 ## Offener Barrierefreiheitsbefund
 

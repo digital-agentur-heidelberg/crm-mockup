@@ -90,6 +90,24 @@ hier arbeitet, baut innerhalb eines bestehenden Systems.
   Platzhalternamen. Listen mindestens 20 Einträge. Vorhandene Datensätze
   wiederverwenden statt neue zu erfinden.
 
+**Dokumentation und gemeinsame Fakten**
+- `input/` ist die unveränderte fachliche Ausgangsquelle. Der aktuelle
+  Umsetzungsstand, einschließlich nicht gebauter Anforderungen, steht allein
+  in `system/ABDECKUNG.md`.
+- `system/BEFUNDE-offen.md` hält nur offene Beobachtungen, technische Folgen
+  und Verweise auf die maßgebliche Fachfrage in `ABDECKUNG.md`. Es kopiert
+  keine vollständigen Anforderungen.
+- `system/BEFUND-*.md` sind chronologische Befundberichte. Sie werden nach
+  Abschluss eines Bauabschnitts ergänzt, aber nicht nachträglich zu einem
+  zweiten aktuellen Plan umgeschrieben.
+- Betrifft eine fachliche Aussage mehrere Dateien oder Screens, wird vor der
+  Änderung eine maßgebliche Stelle benannt und die anderen Stellen verweisen
+  darauf. Wiederholte Werte wie Namen, Mitglieder-, Empfänger- oder
+  Statuszahlen erhalten im Prototyp eine gemeinsame Fixture oder einen
+  dokumentierten Vertrag; sie werden nicht parallel gepflegt. Eine gefundene
+  Abweichung wird zuerst in `BEFUNDE-offen.md` und im aktuellen
+  Abdeckungsstand sichtbar gemacht.
+
 ---
 
 ## Arbeitsweise

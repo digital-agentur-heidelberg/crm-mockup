@@ -45,8 +45,8 @@ oder nur als knappe Screenbezeichnung beschreibt.
 | Verteiler · V01a | Ladezustand | Über die Prototypsteuerung benutzbar. | vorhanden |
 | Verteiler · V01b | Leere Übersicht | Leerer Filterbestand mit Rücksetzhandlung ist benutzbar. | vorhanden |
 | Verteiler · V01c | Fehlerzustand | Behebbarer Fehlerzustand mit erhaltenen Filtern ist benutzbar. | vorhanden |
-| Verteiler · V02 | Detail eines Arbeitsverteilers | Definition und Mitgliedschaften sind bearbeitbar; Übergabe an ein Mailing ist vorhanden. | vorhanden |
-| Verteiler · V03 | Detail eines Managed-Verteilers | Geschützte, lesbare Definition mit Begründung und weiterhin bearbeitbaren Mitgliedschaften ist vorhanden. | vorhanden |
+| Verteiler · V02 | Detail eines Arbeitsverteilers | Definition und Mitgliedschaften sind bearbeitbar; die Übergabe an ein Mailing ist vorhanden. Eine Anzeige der zugehörigen Mailings im Verteiler fehlt. | teilweise |
+| Verteiler · V03 | Detail eines Managed-Verteilers | Geschützte, lesbare Definition mit Begründung und weiterhin bearbeitbaren Mitgliedschaften ist vorhanden. Eine Anzeige der zugehörigen Mailings im Verteiler fehlt. | teilweise |
 | Verteiler · V05 | Arbeitsverteiler anlegen | Vierfeldformular mit Zusammenfassung und erfolgreichem Entwurfsabschluss ist benutzbar. | vorhanden |
 | Veranstaltungen · E01 | Gefüllte Veranstaltungsübersicht | Die Übersicht enthält 60 Termine, Suche, Zeitraum- und Ämterfilter, Registrierungsstatus, Belegung und Pagination. | vorhanden |
 | Veranstaltungen · E01a | Ladezustand | Über die Prototypsteuerung benutzbar. | vorhanden |
@@ -56,7 +56,7 @@ oder nur als knappe Screenbezeichnung beschreibt.
 | Veranstaltungen · E02e | Veranstaltungsdetail ohne Teilnehmende | Ein fachlich leerer Teilnehmendenzustand fehlt. | offen |
 | Veranstaltungen · E04 | Veranstaltung bearbeiten | Kein Bearbeitungszustand vorhanden. | offen |
 | Veranstaltungen · E05 | Fachlich blockierter Anlegeentwurf ohne Erfolgspfad | Grunddaten, nachgelagerter Artvorschlag, Entwurfsspeicherung und blockierende Veröffentlichungsprüfung sind benutzbar; eine echte Veröffentlichung findet nicht statt. | vorhanden |
-| Mailing · M01 | Vorlage und Empfängerkreis | Beides ist vorhanden, im Entwurf jedoch auf die Stufen „Vorlage“ und „Empfängerkreis“ verteilt. Ein Verteiler kann aus dem Verteilerdetail übernommen werden. | vorhanden |
+| Mailing · M01 | Vorlage und Empfängerkreis | Beides ist vorhanden, im Entwurf jedoch auf die Stufen „Vorlage“ und „Empfängerkreis“ verteilt. Ein Verteiler kann aus dem Verteilerdetail übernommen werden; die feste Zuordnung eines Mailings zu genau einem Verteiler ist noch nicht durchgängig modelliert. | teilweise |
 | Mailing · M01a | Grundlagen laden | Nur das Neuladen der personalisierten Vorschau wird gezeigt; ein Ladezustand für Vorlagen und Empfängerkreis fehlt. | teilweise |
 | Mailing · M01b | Keine Vorlagen | Nicht gebaut. | offen |
 | Mailing · M01c | Fehler beim Laden der Grundlagen | Nicht gebaut. | offen |
@@ -151,8 +151,10 @@ nicht, welche Fassung später umgesetzt wird.
   Einzelmailings und individuelle Gruppenmailings führen aus der Kontaktliste
   in Richtung Outlook oder Mailprogramm, wie im Screen-Inventar beschrieben.
   Die zugehörigen Mailings werden am jeweiligen Verteiler dargestellt; ihre
-  Form bleibt offen. Der geplante Mailing-Bauabschnitt beginnt damit im
-  Verteilerdetail statt in einer eigenständigen Übersicht.
+  Form bleibt offen. Der aktuelle Entwurf besitzt nur die Übergabe in den
+  Mailing-Prozess; eine Liste oder Historie am Verteilerdetail ist nicht
+  gebaut. Der geplante Mailing-Bauabschnitt beginnt damit im Verteilerdetail
+  statt in einer eigenständigen Übersicht.
 - **C – Zähler sind Ableitungen:** Eine Zahl neben einer Liste wird aus dieser
   Liste berechnet und nie unabhängig gepflegt. Dies gilt für Statussummen der
   Teilnehmenden, Mitgliederzahl eines Verteilers, Empfängerzahl eines Mailings
@@ -259,8 +261,12 @@ für fachliche Fragen auf diesen Abschnitt.
 
 ### Umsetzungsfrage
 
-- **5b · Mailing am Verteiler / technische Seite:** Die technische Seite hängt an
-    einer noch nicht getroffenen Architekturentscheidung.
+- **5b · Mailing am Verteiler / technische Seite:** Vor der Umsetzung braucht
+    der Prototyp eine gemeinsame Fixture für Verteiler, Mitglieder,
+    Empfängerwerte und zugehörige Mailings. Derzeit liegen Mengen mehrfach vor
+    und weichen zwischen Übersicht, Detail und Mailing ab. Die technische
+    Seite hängt außerdem an einer noch nicht getroffenen
+    Architekturentscheidung.
 - **12 · Kontaktanlage / Dublettenlogik:** Für den Design-Prototypen nicht
     relevant.
 - **Fortgeführt · Persönliche Öffnungshistorie:** Speicherort,
