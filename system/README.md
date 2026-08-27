@@ -11,8 +11,8 @@ Die verbindliche visuelle Referenz ist [styleguide.html](styleguide.html).
 1. **Rollenprüfung vor dem Bauen:** Bevor der Screen komponiert wird, alle
    voraussichtlich wiederverwendeten Klassen darauf prüfen, ob ihr Name eine
    Darstellungsrolle oder nur den Inhalt ihres Ursprungsscreens beschreibt.
-   Kandidaten vor der Verwendung umbenennen und den bisherigen Namen als Alias
-   erhalten, nicht erst nach dem Markup.
+   Kandidaten vor der Verwendung umbenennen, bevor sie im Markup eingesetzt
+   werden. Klassenaliase sind nicht erlaubt.
 2. **Zustands- und Rechtematrix vor dem Markup:** Vorab für den Screen festlegen:
    Inhalt vorhanden, lädt, fachlich leer, technisch fehlgeschlagen, teilweise
    geschützt, vollständig geschützt und deaktiviert. Für jeden geschützten Teil
@@ -120,6 +120,27 @@ Rundungen, Schatten, Linien, Bewegungsdauern, Sticky-Offsets, Ebenen oder
 Umbruchpunkte. Ein lokaler Sonderfall ist ein fehlender Systembaustein, keine
 Erlaubnis für Screen-CSS.
 
+## Statische Vorprüfung
+
+`./system/pruefung.sh` läuft ohne Netz und ohne Projektabhängigkeiten. Es
+meldet Fundstellen mit Datei und Zeile und liefert bei mindestens einem Fund
+einen Rückgabewert ungleich null. Mechanisch geprüft werden lokale Styles in
+Screens, externe `href`-/`src`-Adressen, `data-screen` und Shell-Einbindung,
+existierende interne Dateiziele, rohe Implementierungsfarbwerte außerhalb von
+`tokens.css` sowie die Definition statisch verwendeter Screenklassen in
+`components.css` oder `base.css`.
+
+Das Skript prüft ausdrücklich keine Kontrastwerte, keine ARIA-Semantik, keinen
+horizontalen Überlauf, keinen Tastaturweg und keine fachlichen Regeln. Ein
+grüner Lauf ist kein Barrierefreiheitsnachweis und ersetzt die manuelle
+Prüfrunde nicht. Im Befund steht ausschließlich, was tatsächlich geprüft
+wurde, einschließlich Methode; fehlende manuelle Prüfschritte werden als
+ausstehend benannt.
+
+Befundnummern sind chronologisch nach ihrer tatsächlichen Erstellung; die
+Nummern geplanter Bauabschnitte aus `ABDECKUNG.md` können davon abweichen und
+werden im Text des jeweiligen Befunds genannt.
+
 ## Gemeinsame Interaktionsverträge
 
 Wiederkehrende Interaktionsmuster werden nicht je Screen neu verdrahtet.
@@ -202,7 +223,38 @@ Vorhanden:
    Hülle, `.prototype-bar` mit Schaltflächen über `data-prototype-state`
    einzusetzen. Ein Screen bindet diese Schaltflächen mit
    `createStateSwitch`; die Leiste ist kein fachlicher Filter und wird nie in
-   Ergebnismetadaten oder Tabellenköpfe gesetzt.
+   Ergebnismetadaten oder Tabellenköpfe gesetzt. Abweichende sichtbare
+   Beschriftungen werden positionsgleich über
+   `data-prototype-state-labels` mit `|` getrennt angegeben.
+ - **Prototyp-Testvarianten** – `data-prototype-variants="a b"` erzeugt mit
+   den vorhandenen Prototypkomponenten eine zweite, klar gekennzeichnete
+   Umschaltung und setzt `data-variant` am `<body>`. Die Beschriftungen können
+   positionsgleich über `data-prototype-variant-labels` mit `|` getrennt
+   angegeben werden. Das Fragment `#variant-a` beziehungsweise `#variant-b`
+   wählt die Fassung bereits beim Öffnen und unterdrückt ausschließlich die
+   Variantenleiste; die Zustandsleiste bleibt sichtbar. Die Hülle ergänzt das
+   Fragment an interne HTML-Verweise, damit die festgelegte Fassung während
+   einer Navigation erhalten bleibt. Varianteninhalte verwenden
+   `data-prototype-variant="a"` beziehungsweise `"b"`.
+ - **Ungespeicherte Änderungen** –
+   `CrmShell.createUnsavedGuard(options)` beobachtet den angegebenen
+   Formularkontext, komponiert die Nachfrage auf `createDialog`, hält die
+   aktuelle Eingabe bei „Zur Eingabe zurück“ und verlässt sie erst nach
+   Bestätigung. `markSaved()` und `setDirty(value)` bilden Speichern und
+   fachlich ausgelöste Änderungen ab. Fokusfang, Escape und Fokusrückgabe
+   werden nicht erneut implementiert.
+ - **Formularanatomie** – `.form-section`, `.field-required`, `.field-help`,
+   `.field-error`, `.validation-summary` und `.validation-summary-list`
+   verbinden Abschnitte, Pflichtangaben, Hilfen, Feldfehler und eine
+   fokussierbare Abschlussübersicht mit Sprüngen zum Feld.
+ - **Vorschlag mit Bestätigung** – `.proposal-box` folgt auf bereits bekannte
+   Angaben und verlangt die fachliche Typentscheidung erst für den Abschluss.
+ - **Asynchrone Prüfung** – `.async-check` verwendet
+   `data-async-state="running error empty results"`. `--stage` unterbricht als
+   eigene Fläche, `--inline` begleitet den weiterhin bearbeitbaren Kontext;
+   Eingaben und Wiederholungsweg bleiben in beiden Geometrien erhalten.
+ - **Verhaltensanker** – Klassen beschreiben ausschließlich Darstellung.
+   JavaScript bindet Verhalten über `data-*`-Attribute, nicht über Klassen.
 
 ## Entscheidungen bei uneinheitlichen Mustern
 

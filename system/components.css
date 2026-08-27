@@ -468,6 +468,69 @@
   font-weight: var(--font-weight-semibold);
 }
 
+/*
+ * FORMULARANATOMIE
+ * (.form-section, .field-help, .field-required,
+ *  .validation-summary, .validation-summary-list)
+ * Zweck: lange Formulare semantisch gliedern, Pflicht und Hilfe am Feld
+ * benennen und Abschlussfehler am Kopf mit Sprüngen zu den Feldern bündeln.
+ * Nicht verwenden: für technische Ladefehler oder fachliche Statusmeldungen.
+ * Zustände: regulär, Pflichtangabe, Feldfehler, Zusammenfassung mit Fokus.
+ */
+.form-section {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.form-section + .form-section {
+  margin-top: var(--space-card-inner);
+  padding-top: var(--space-card-inner);
+  border-top: var(--border-width-default) solid var(--color-border);
+}
+
+.form-section > legend,
+.form-section > h2 {
+  margin-bottom: var(--space-stack-small);
+  font-size: var(--font-size-title-section);
+  font-weight: var(--font-weight-bold);
+}
+
+.field-help {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-meta);
+}
+
+.field-required {
+  color: var(--color-danger);
+  font-size: var(--font-size-meta);
+  font-weight: var(--font-weight-semibold);
+}
+
+.validation-summary {
+  margin-bottom: var(--space-card-inner);
+  padding: var(--space-card-compact);
+  border: var(--border-width-emphasis) solid var(--color-danger-border);
+  border-radius: var(--radius-control);
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+}
+
+.validation-summary:focus {
+  outline: var(--border-width-focus) solid var(--color-warning);
+  outline-offset: var(--border-width-focus);
+}
+
+.validation-summary h2 { margin-bottom: var(--space-control-gap); }
+.validation-summary p { margin-bottom: var(--space-cluster-tight); }
+.validation-summary-list {
+  margin: 0;
+  padding-left: var(--space-card-section);
+}
+.validation-summary-list a { color: var(--color-danger); font-weight: var(--font-weight-action); }
+
 .field-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -489,6 +552,79 @@
 }
 
 .check input:disabled + span { color: var(--color-text-disabled); }
+
+/*
+ * ASYNCHRONE PRÜFUNG (.async-check)
+ * Zweck: einen erhaltenen Arbeitskontext mit den Zuständen läuft,
+ * fehlgeschlagen, ohne Ergebnis und mit Ergebnis verbinden.
+ * Nicht verwenden: für das Laden einer ganzen Liste oder Inline-Feldfehler.
+ * Varianten: .async-check--stage unterbricht als eigene Fläche;
+ * .async-check--inline begleitet den weiterhin bearbeitbaren Kontext.
+ */
+.async-check {
+  padding: var(--space-card-inner);
+  border: var(--border-width-emphasis) solid var(--color-info-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-card);
+}
+
+.async-check[data-async-state="error"] {
+  border-color: var(--color-danger-border);
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+}
+
+.async-check[data-async-state="empty"] {
+  border-color: var(--color-success-border);
+  background: var(--color-success-soft);
+  color: var(--color-success-strong);
+}
+
+.async-check[data-async-state="results"] {
+  border-color: var(--color-warning-border);
+  background: var(--color-warning-soft);
+  color: var(--color-warning-strong);
+}
+
+.async-check--stage[data-async-state="running"],
+.async-check--stage[data-async-state="error"],
+.async-check--stage[data-async-state="empty"] {
+  min-height: var(--size-loading-min);
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.async-check--stage > div { max-width: var(--size-page-copy-max); }
+.async-check--inline {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-cluster);
+  padding: var(--space-cluster);
+}
+.async-check--inline .spinner {
+  width: var(--size-process-index);
+  height: var(--size-process-index);
+  flex: 0 0 auto;
+  margin: 0;
+}
+.async-check p:last-child { margin-bottom: 0; }
+
+/*
+ * DATENSATZKANDIDATEN (.candidate-list)
+ * Zweck: einen oder mehrere mögliche Datensätze mit unterscheidenden Fakten
+ * und mehreren Handlungen als Liste zeigen.
+ * Nicht verwenden: für dichte Ergebnisbestände; dafür die Datentabelle nutzen.
+ * Zustände der Einträge entstehen aus Karte, Status, Zusammenfassung und Knopf.
+ */
+.candidate-list {
+  display: grid;
+  gap: var(--space-card-compact);
+  margin: var(--space-card-compact) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.candidate-list > .card { color: var(--color-text); }
 
 /*
  * HINWEISLEISTE (.notice)
@@ -713,10 +849,9 @@
  * Zweck: Hauptarbeitsfläche mit ergänzender Objektinformation in einer Seitenzone.
  * Nicht verwenden: für Kontakt-Master-Detail; dort ändert sich bei 1129 px auch
  * das Interaktionsmodell. Dieses Raster stapelt wie event/form/mail bei 1099 px.
- * Rolle: allgemeines Haupt-/Seitenraster; .event-grid bleibt Bestandsalias.
+ * Rolle: allgemeines Haupt-/Seitenraster.
  */
-.object-work-grid,
-.event-grid {
+.object-work-grid {
   display: grid;
   grid-template-columns: minmax(var(--grid-event-main-min), 1fr) var(--grid-event-side);
   gap: var(--space-layout-compact);
@@ -1074,6 +1209,29 @@
 .assignment-result-meta p { margin: 0; }
 .assignment-success { padding: var(--space-card-inner); }
 .assignment-success h3 { margin-top: var(--space-cluster); }
+
+/*
+ * BESTÄTIGUNGSDIALOG (.confirm-dialog)
+ * Zweck: eine kurze Nachfrage vor dem Verwerfen ungespeicherter Änderungen.
+ * Nicht verwenden: für umfangreiche Auswahl- oder Bearbeitungsflächen.
+ * Die Mechanik kommt ausschließlich aus CrmShell.createDialog.
+ * Zustände: geschlossen, geöffnet, Rückkehr und bestätigtes Verlassen.
+ */
+.confirm-dialog {
+  width: min(var(--size-relation-min), calc(100vw - (var(--space-layout-wide) * 2)));
+  padding: 0;
+  border: var(--border-width-default) solid var(--color-border-control);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-card);
+  color: var(--color-text);
+  box-shadow: var(--shadow-raised);
+}
+.confirm-dialog::backdrop { background: var(--color-overlay); }
+.confirm-dialog h2 { margin-bottom: var(--space-control-gap); }
+.confirm-dialog .button-row {
+  justify-content: flex-end;
+  margin-top: var(--space-card-inner);
+}
 
 .filter-bar {
   display: flex;
@@ -1991,14 +2149,12 @@
 .status-stat strong { font-size: 1.08rem; }
 .status-stat span { color: var(--color-text-muted); font-size: var(--font-size-meta); }
 /*
- * AUSWAHLTABELLENKARTE (.selection-table-card; Alias .participant-card)
+ * AUSWAHLTABELLENKARTE (.selection-table-card)
  * Rolle: Kartenhülle für eine Tabelle mit sichtbarer Mehrfachauswahl.
  * Nicht verwenden: für Tabellen ohne Zeilenauswahl.
  */
-.selection-table-card,
-.participant-card { overflow: hidden; }
-.selection-table-card tbody tr.is-checked,
-.participant-card tbody tr.is-checked { background: var(--color-brand-soft); }
+.selection-table-card { overflow: hidden; }
+.selection-table-card tbody tr.is-checked { background: var(--color-brand-soft); }
 .capacity-overview { padding: var(--space-layout-compact) var(--space-card-asymmetric) var(--space-form-grid); }
 .capacity-numbers {
   display: grid;
@@ -2124,9 +2280,8 @@
   font-size: 0.84rem;
   font-weight: var(--font-weight-semibold);
 }
-/* Rolle: eingerückte Beschreibungs- oder Referenzliste; .event-reference bleibt Bestandsalias. */
-.description-list--inset,
-.event-reference { padding: var(--space-control-gap) var(--space-stack-small) var(--space-cluster); }
+/* Rolle: eingerückte Beschreibungs- oder Referenzliste. */
+.description-list--inset { padding: var(--space-control-gap) var(--space-stack-small) var(--space-cluster); }
 .wait-summary { padding: var(--space-card-compact) var(--space-card-asymmetric); }
 .wait-summary > p { margin-bottom: var(--space-control-inline); }
 .wait-details summary { color: var(--color-brand-strong); font-weight: var(--font-weight-bold); }
@@ -2153,8 +2308,8 @@
 .wait-person small { display: block; }
 
 /*
- * VERANSTALTUNGSFORMULAR UND VORSCHLAGSKASTEN
- * Zweck: editierbarer Entwurf plus erklärter Systemvorschlag.
+ * FORMULARLAYOUT UND VORSCHLAGSKASTEN
+ * Zweck: editierbarer Entwurf plus erklärter, nachgelagerter Systemvorschlag.
  * Nicht verwenden: als modaler Bestätigungsdialog.
  * Zustände Vorschlag: offen, bestätigt, prüfpflichtig (Statusmarke dazu).
  */
@@ -2165,15 +2320,15 @@
   align-items: start;
 }
 .form-card { padding: var(--space-card-inner); }
-.type-box {
+.proposal-box {
   margin-top: var(--space-control-gap);
   padding: var(--space-card-compact);
   border: var(--border-width-default) solid var(--color-info-border);
   border-radius: var(--radius-popover);
   background: var(--color-info-soft);
 }
-.type-box h3 { margin-bottom: var(--radius-inline-token); }
-.type-box p {
+.proposal-box h3 { margin-bottom: var(--radius-inline-token); }
+.proposal-box p {
   margin-bottom: var(--space-cluster);
   color: var(--color-text-muted);
   font-size: 0.82rem;
@@ -2675,7 +2830,6 @@
 
 @media (max-width: 1099px) {
   .work-grid,
-  .event-grid,
   .form-grid,
   .mail-grid,
   .object-work-grid { grid-template-columns: 1fr; }

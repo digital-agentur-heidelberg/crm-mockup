@@ -122,5 +122,9 @@ hier arbeitet, baut innerhalb eines bestehenden Systems.
 ## Was hier nicht gilt
 
 Keine STOPP-REGEL, kein Freigabe-Gate, kein `gate.sh`, keine Tests, keine
-Linter, keine CI, keine ADRs. Es bleibt ein Entwurf – nur einer, der
-zusammenhält.
+Linter, keine CI, keine ADRs. Als einzige eng begrenzte Ausnahme ist
+`system/pruefung.sh` erlaubt: ein abhängigkeitsfreies Shell-Skript, das
+ausschließlich statische Konventionen des Bestands vorprüft. Es ist weder
+Testrahmen noch CI, Bau- oder Paketverwaltungsschritt und kein Abnahmetor;
+der Abschlussnachweis bleibt die manuelle Prüfrunde mit Befund. Es bleibt ein
+Entwurf – nur einer, der zusammenhält.

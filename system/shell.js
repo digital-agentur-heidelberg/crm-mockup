@@ -182,6 +182,28 @@
     (root || document).dispatchEvent(new CustomEvent("crm:rendered", { bubbles: true }));
   }
 
+  function propagateVariantFragment(root) {
+    var match = window.location.hash.match(/^#variant-([a-z0-9-]+)$/i);
+    if (!match) {
+      return;
+    }
+    elements("a[href]", root || document).forEach(function (link) {
+      var href = link.getAttribute("href") || "";
+      var target = href.split("#")[0];
+      if (!/\.html$/i.test(target)) {
+        return;
+      }
+      link.setAttribute("href", target + "#variant-" + match[1]);
+    });
+  }
+
+  document.addEventListener("crm:rendered", function (event) {
+    propagateVariantFragment(event.target);
+  });
+  document.addEventListener("click", function () {
+    propagateVariantFragment(document);
+  });
+
   function ensureToast() {
     if (toast) {
       return;
@@ -277,7 +299,7 @@
     }
 
     function checkboxFor(row) {
-      return row.querySelector(settings.checkbox || ".row-check");
+      return row.querySelector(settings.checkbox || ".selection-check");
     }
 
     function selectedRows() {
@@ -958,6 +980,83 @@
     return { dialog: dialog, open: open, close: close };
   }
 
+  function createUnsavedGuard(options) {
+    var settings = options || {};
+    var form = elements(settings.form)[0];
+    var dirty = false;
+    var pendingHref = "";
+    var dialog = document.createElement("dialog");
+    var dialogController;
+
+    if (!form) {
+      return null;
+    }
+
+    dialog.className = "confirm-dialog";
+    dialog.setAttribute("aria-labelledby", "unsaved-dialog-title");
+    dialog.innerHTML =
+      '<div class="card-body"><h2 id="unsaved-dialog-title">Eingaben verwerfen?</h2>' +
+      '<p>Ihre noch nicht gespeicherten Angaben gehen verloren.</p>' +
+      '<div class="button-row"><button class="btn" type="button" data-dialog-close data-dialog-initial>Zur Eingabe zurück</button>' +
+      '<button class="btn btn--primary" type="button" data-unsaved-leave>Ohne Speichern verlassen</button></div></div>';
+    document.body.appendChild(dialog);
+    dialogController = createDialog({ dialog: dialog, initialFocus: "[data-dialog-initial]" });
+
+    function setDirty(next) {
+      dirty = Boolean(next);
+      return dirty;
+    }
+
+    function markDirty() {
+      setDirty(true);
+    }
+
+    form.addEventListener("input", markDirty);
+    form.addEventListener("change", markDirty);
+
+    elements(settings.saveControls).forEach(function (control) {
+      control.addEventListener("click", function () { setDirty(false); });
+    });
+
+    document.addEventListener("click", function (event) {
+      var explicitLeave = event.target.closest("[data-leave-with-unsaved-check]");
+      var link = event.target.closest("a[href]");
+      var href = link ? link.getAttribute("href") : "";
+      var sameDocumentFragment = href && href.charAt(0) === "#";
+      if (!dirty || (!explicitLeave && (!link || sameDocumentFragment))) {
+        return;
+      }
+      event.preventDefault();
+      pendingHref = explicitLeave ? explicitLeave.getAttribute("data-leave-with-unsaved-check") : href;
+      dialogController.open(explicitLeave || link);
+    });
+
+    dialog.querySelector("[data-unsaved-leave]").addEventListener("click", function () {
+      var destination = pendingHref;
+      setDirty(false);
+      dialogController.close("leave");
+      if (destination) {
+        window.location.href = destination;
+      }
+    });
+
+    window.addEventListener("beforeunload", function (event) {
+      if (!dirty) {
+        return;
+      }
+      event.preventDefault();
+      event.returnValue = "";
+    });
+
+    rendered(dialog);
+    return {
+      dialog: dialog,
+      isDirty: function () { return dirty; },
+      setDirty: setDirty,
+      markSaved: function () { return setDirty(false); }
+    };
+  }
+
   function contactCatalog() {
     var givenNames = ["Anna", "Benjamin", "Carolin", "Daniel", "Elena", "Florian", "Hanna", "Jonas", "Katrin", "Lukas", "Maja", "Nadine", "Oliver", "Ravi", "Sophie"];
     var familyNames = ["Aksoy", "Beck", "Brenner", "Ebert", "Fuchs", "Graf", "Hartmann", "Kohl", "Nguyen", "Petrova", "Schilling", "Weber"];
@@ -1144,7 +1243,7 @@
         row.setAttribute("data-search", contact.name + " " + contact.organisation + " " + contact.email);
         row.setAttribute("data-contact-id", contact.id);
         row.setAttribute("data-already-included", String(included));
-        row.innerHTML = '<td class="selection-col"><input class="selection-check row-check" type="checkbox"></td><td class="primary-cell"><strong></strong></td><td></td><td></td><td><span class="status"></span></td>';
+        row.innerHTML = '<td class="selection-col"><input class="selection-check" type="checkbox"></td><td class="primary-cell"><strong></strong></td><td></td><td></td><td><span class="status"></span></td>';
         row.querySelector("input").setAttribute("aria-label", contact.name + " auswählen" + (included ? "; bereits enthalten und wird übersprungen" : ""));
         row.querySelector("strong").textContent = contact.name;
         row.children[2].textContent = contact.organisation;
@@ -1298,6 +1397,7 @@
     createListFilter: createListFilter,
     createListView: createListView,
     createDialog: createDialog,
+    createUnsavedGuard: createUnsavedGuard,
     createDistributionAssignment: createDistributionAssignment,
     getAssignmentContacts: contactCatalog,
     createStateSwitch: createStateSwitch
@@ -1367,6 +1467,50 @@
   appMain.appendChild(topbar);
   appMain.appendChild(main);
 
+  var prototypeVariantNames = (document.body.getAttribute("data-prototype-variants") || "").trim().split(/\s+/).filter(Boolean);
+  if (prototypeVariantNames.length) {
+    var variantHash = window.location.hash.match(/^#variant-([a-z0-9-]+)$/i);
+    var fixedVariant = variantHash && prototypeVariantNames.indexOf(variantHash[1]) !== -1 ? variantHash[1] : "";
+    var prototypeVariant = fixedVariant || document.body.getAttribute("data-variant") || prototypeVariantNames[0];
+    var prototypeVariantLabels = (document.body.getAttribute("data-prototype-variant-labels") || "").split("|");
+    var variantControls = [];
+
+    function setPrototypeVariant(next) {
+      if (prototypeVariantNames.indexOf(next) === -1) {
+        return;
+      }
+      prototypeVariant = next;
+      document.body.setAttribute("data-variant", next);
+      document.querySelectorAll("[data-prototype-variant]").forEach(function (panel) {
+        panel.hidden = panel.getAttribute("data-prototype-variant") !== next;
+      });
+      variantControls.forEach(function (control) {
+        control.setAttribute("aria-pressed", String(control.getAttribute("data-prototype-variant-choice") === next));
+      });
+      document.dispatchEvent(new CustomEvent("crm:prototype-variant", { detail: { variant: next } }));
+    }
+
+    if (!fixedVariant) {
+      var variantBar = document.createElement("section");
+      variantBar.className = "prototype-bar";
+      variantBar.setAttribute("aria-label", "Testvariante im Prototyp wechseln");
+      variantBar.innerHTML = '<span class="prototype-label"><i data-lucide="split" aria-hidden="true"></i>Testvariante</span><div class="prototype-controls"></div>';
+      var variantControlGroup = variantBar.querySelector(".prototype-controls");
+      prototypeVariantNames.forEach(function (variant, index) {
+        var control = document.createElement("button");
+        control.className = "prototype-state";
+        control.type = "button";
+        control.setAttribute("data-prototype-variant-choice", variant);
+        control.textContent = prototypeVariantLabels[index] || ("Variante " + variant.toUpperCase());
+        control.addEventListener("click", function () { setPrototypeVariant(variant); });
+        variantControls.push(control);
+        variantControlGroup.appendChild(control);
+      });
+      main.insertBefore(variantBar, main.firstChild);
+    }
+    setPrototypeVariant(prototypeVariant);
+  }
+
   var prototypeStateNames = (document.body.getAttribute("data-prototype-states") || "").trim().split(/\s+/).filter(Boolean);
   if (prototypeStateNames.length) {
     var prototypeLabels = {
@@ -1377,19 +1521,20 @@
       error: "Fehler",
       protected: "Kein Zugriff"
     };
+    var configuredPrototypeLabels = (document.body.getAttribute("data-prototype-state-labels") || "").split("|");
     var prototypeInitial = document.body.getAttribute("data-prototype-initial") || prototypeStateNames[0];
     var prototypeBar = document.createElement("section");
     prototypeBar.className = "prototype-bar";
     prototypeBar.setAttribute("aria-label", "Ansichtszustand im Prototyp wechseln");
     prototypeBar.innerHTML = '<span class="prototype-label"><i data-lucide="circle-dashed" aria-hidden="true"></i>Prototyp-Zustand</span><div class="prototype-controls"></div>';
     var prototypeControls = prototypeBar.querySelector(".prototype-controls");
-    prototypeStateNames.forEach(function (state) {
+    prototypeStateNames.forEach(function (state, index) {
       var button = document.createElement("button");
       button.className = "prototype-state";
       button.type = "button";
       button.setAttribute("data-prototype-state", state);
       button.setAttribute("aria-pressed", String(state === prototypeInitial));
-      button.textContent = prototypeLabels[state] || state;
+      button.textContent = configuredPrototypeLabels[index] || prototypeLabels[state] || state;
       prototypeControls.appendChild(button);
     });
     main.insertBefore(prototypeBar, main.firstChild);
@@ -1602,5 +1747,6 @@
   sideNav.querySelector("[data-shell-help]").addEventListener("click", function () {
     showToast("Die Hilfe öffnet sich passend zu Ihrem aktuellen Bereich.", "info");
   });
+  propagateVariantFragment(document);
   renderIcons(document);
 }());
