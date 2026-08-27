@@ -814,8 +814,13 @@
   sideNav.innerHTML =
     '<a class="brand" href="arbeitsbereich.html"><span class="brand-mark" aria-hidden="true"></span><span><strong>Heidelberg CRM</strong><small>Gemeinsam im Bild</small></span></a>' +
     '<nav><ul class="nav-list"></ul></nav><div class="nav-spacer"></div>' +
+    '<a class="nav-link" href="index.html" data-shell-prototype-index><i data-lucide="circle-dashed" aria-hidden="true"></i>Prototyp-Übersicht</a>' +
     '<button class="nav-link" type="button" data-shell-help><i data-lucide="circle-help" aria-hidden="true"></i>Hilfe</button>' +
     '<div class="profile"><span class="avatar" aria-hidden="true">JK</span><span><strong>Julia König</strong><small>Wirtschaftsförderung</small></span></div>';
+
+  if (activeScreen === "prototyp-index") {
+    sideNav.querySelector("[data-shell-prototype-index]").setAttribute("aria-current", "page");
+  }
 
   var navList = sideNav.querySelector(".nav-list");
   navigation.forEach(function (item) {
@@ -858,6 +863,7 @@
   var prototypeStateNames = (document.body.getAttribute("data-prototype-states") || "").trim().split(/\s+/).filter(Boolean);
   if (prototypeStateNames.length) {
     var prototypeLabels = {
+      recent: "Zuletzt geöffnet",
       filled: "Gefüllt",
       overview: "Übersicht",
       loading: "Lädt",

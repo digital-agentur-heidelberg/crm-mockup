@@ -34,6 +34,14 @@ Kontrastgrenzfall.
    vorhanden. Ob eine Mailingübersicht eine fachliche Mehrfachhandlung braucht,
    ist nicht belegt; deshalb wird die Auswahl dort nicht vorweggenommen.
 
+## Offener Umsetzungsbefund
+
+- **Persönliche Öffnungshistorie:** „Zuletzt geöffnet“ ist nutzerbezogen und
+  gehört nicht zum CRM-Fachdatenmodell. Eine spätere Umsetzung muss diese
+  persönliche Historie deshalb außerhalb der fachlichen Datensätze
+  bereitstellen; Speicherort, Aufbewahrungsdauer und Löschung sind noch
+  festzulegen.
+
 ## Offener Technikbefund
 
 - **Horizontale Bestandsüberläufe:** Im lokalen Firefox überschreitet die

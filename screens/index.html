@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prototyp-Übersicht – Heidelberg CRM</title>
+  <link rel="stylesheet" href="../system/tokens.css">
+  <link rel="stylesheet" href="../system/base.css">
+  <link rel="stylesheet" href="../system/components.css">
+  <script src="../system/vendor/lucide.js" defer></script>
+  <script src="../system/shell.js" defer></script>
+</head>
+<body data-screen="prototyp-index">
+  <main class="screen" id="main">
+    <section class="prototype-bar" aria-label="Einordnung dieser Seite als Prototyp-Hilfsmittel">
+      <span class="prototype-label"><i data-lucide="circle-dashed" aria-hidden="true"></i>Prototyp-Hilfsmittel</span>
+      <p class="prototype-note">Diese Übersicht ist kein Screen der späteren Fachanwendung.</p>
+    </section>
+
+    <header class="page-head">
+      <div>
+        <p class="eyebrow">Klickbarer Entwurf · Einstieg</p>
+        <h1>Prototyp-Übersicht</h1>
+        <p>Dieser Entwurf macht Fachscreens und Wege für die Abstimmung erlebbar. Er verwendet keine echten Daten und führt keine Handlungen tatsächlich aus.</p>
+      </div>
+    </header>
+
+    <div class="destination-grid">
+      <section class="card card-body" aria-labelledby="index-work-title">
+        <h2 id="index-work-title">Arbeitsbereich</h2>
+        <ul class="destination-list">
+          <li><a class="destination-link" href="arbeitsbereich.html"><strong>Arbeitsbereich</strong><span>Persönlicher Einstieg mit Direktsuche, anstehenden Aufgaben, heutigen Zeitpunkten und relevanten Änderungen.</span></a></li>
+        </ul>
+      </section>
+
+      <section class="card card-body" aria-labelledby="index-contacts-title">
+        <h2 id="index-contacts-title">Kontakte</h2>
+        <ul class="destination-list">
+          <li><a class="destination-link" href="kontakte.html"><strong>Kontakte finden</strong><span>Persönlich zuletzt geöffnete Kontakte, Suche, Filter, Trefferliste und Kontaktvorschau.</span></a></li>
+          <li><a class="destination-link" href="kontakt-detail.html"><strong>Kontakt: Sabine Keller</strong><span>360°-Ansicht mit Erreichbarkeit, Verbindungen, Verlauf, Aufgaben, Zuständigkeit und Zuschüssen.</span></a></li>
+        </ul>
+      </section>
+
+      <section class="card card-body" aria-labelledby="index-events-title">
+        <h2 id="index-events-title">Veranstaltungen</h2>
+        <ul class="destination-list">
+          <li><a class="destination-link" href="veranstaltungen.html"><strong>Veranstaltungen</strong><span>Übersicht mit Suche, Zeitraum, Zuständigkeit, Anmeldestatus, Belegung und Pagination.</span></a></li>
+          <li><a class="destination-link" href="veranstaltung.html"><strong>Branchendialog Kreativwirtschaft</strong><span>Veranstaltungsdetail mit Anmeldestatus, Teilnehmenden, Kapazität und Warteliste.</span></a></li>
+          <li><a class="destination-link" href="veranstaltung-anlegen.html"><strong>Veranstaltung anlegen</strong><span>Grunddaten erfassen, Artvorschlag prüfen und einen fachlich blockierten Entwurf speichern.</span></a></li>
+        </ul>
+      </section>
+
+      <section class="card card-body" aria-labelledby="index-distributions-title">
+        <h2 id="index-distributions-title">Verteiler</h2>
+        <ul class="destination-list">
+          <li><a class="destination-link" href="verteiler.html"><strong>Verteiler</strong><span>Übersicht der Arbeits- und Managed-Verteiler mit Suche, Art, Zuständigkeit und Pagination.</span></a></li>
+          <li><a class="destination-link" href="verteiler-detail.html"><strong>Verteilerdetail</strong><span>Definition und Mitgliedschaften eines Arbeits- oder Managed-Verteilers bearbeiten.</span></a></li>
+          <li><a class="destination-link" href="verteiler-anlegen.html"><strong>Arbeitsverteiler anlegen</strong><span>Neuen Arbeitsverteiler mit Name, Zweck, Zuständigkeit und Sichtbarkeit vorbereiten.</span></a></li>
+        </ul>
+      </section>
+
+      <section class="card card-body" aria-labelledby="index-mailings-title">
+        <h2 id="index-mailings-title">Mailings</h2>
+        <ul class="destination-list">
+          <li><a class="destination-link" href="mailing.html"><strong>Einladung zum Branchendialog</strong><span>Mailing von Vorlage und Empfängerkreis über Prüfung und Test bis zum simulierten Versandbeleg.</span></a></li>
+        </ul>
+      </section>
+    </div>
+  </main>
+
+  <!-- Design-Rationale: Die abgenommene Hülle und Kartenstruktur ordnen alle vorhandenen Fachscreens; die gestrichelte Prototyp-Leiste trennt das Hilfsmittel sichtbar von der Fachanwendung. -->
+</body>
+</html>

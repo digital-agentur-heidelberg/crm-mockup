@@ -34,9 +34,14 @@ Die verbindliche visuelle Referenz ist [styleguide.html](styleguide.html).
 
 5. Am `<body>` mit `data-screen` genau einen Navigationsbereich angeben:
    `arbeitsbereich`, `kontakte`, `veranstaltungen`, `verteiler` oder `mailings`.
+   Das Prototyp-Hilfsmittel `screens/index.html` verwendet als einzige Ausnahme
+   `prototyp-index`; dieser Wert aktiviert keinen regulären Navigationsbereich.
    Listenübersichten ergänzen `data-prototype-states="filled loading empty
    error"`. `shell.js` setzt daraus vor dem Seitenkopf die gemeinsame,
    ausdrücklich als Prototypsteuerung bezeichnete Zustandsleiste ein.
+   Die Kontaktsuche setzt davor `recent` und verwendet diesen Zustand als
+   persönlichen Einstieg „Zuletzt geöffnet“; Suche oder Filter wechseln in
+   die regulären Listenstände.
 6. Ausschließlich den Screeninhalt als `<main class="screen" id="main">`
    liefern. `shell.js` erzeugt Skip-Link, Seitennavigation, Kopfleiste und den
    umgebenden App-Rahmen.

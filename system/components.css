@@ -973,8 +973,9 @@
 }
 
 /*
- * PROTOTYP-LEISTE (.prototype-bar, .prototype-state)
+ * PROTOTYP-LEISTE (.prototype-bar, .prototype-state, .prototype-note)
  * Zweck: Zustände eines klickbaren Entwurfs an gleichbleibender Stelle zeigen.
+ * Die nicht-interaktive Notiz kennzeichnet außerdem reine Prototyp-Hilfsmittel.
  * Nicht verwenden: für fachliche Filter, Navigation oder Prozessschritte.
  * Zustände: Ruhe, hover, focus, aktiv und deaktiviert.
  */
@@ -998,6 +999,10 @@
   font-weight: var(--font-weight-bold);
 }
 .prototype-label svg { width: var(--size-sticky-air); }
+.prototype-note {
+  margin: 0;
+  color: var(--color-text-muted);
+}
 .prototype-controls {
   display: flex;
   align-items: center;
@@ -1034,6 +1039,64 @@
   color: var(--color-text-disabled);
   cursor: not-allowed;
 }
+
+/*
+ * BESCHREIBENDE ZIELKARTE (.destination-grid, .destination-list, .destination-link)
+ * Zweck: mehrere benannte Ziele mit kurzer Einordnung als Übersicht anbieten.
+ * Nicht verwenden: für priorisierte Aufgaben, Datensätze oder Prozessschritte.
+ * Zustände: Ruhe, hover, focus, active und deaktiviert.
+ */
+.destination-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-card-inner);
+  align-items: start;
+}
+.destination-list {
+  display: grid;
+  gap: var(--space-cluster-tight);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.destination-link {
+  display: grid;
+  gap: var(--space-hairline);
+  padding: var(--space-cluster) var(--space-stack-small);
+  border: var(--border-width-default) solid var(--color-border);
+  border-radius: var(--radius-control);
+  background: var(--color-surface-card);
+  color: var(--color-text);
+  text-decoration: none;
+  transition: border-color var(--duration-interaction) var(--easing-standard), background var(--duration-interaction) var(--easing-standard), transform var(--duration-interaction) var(--easing-standard);
+}
+.destination-link span {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-compact);
+}
+.destination-link:hover,
+.destination-link[data-demo-state="hover"] {
+  border-color: var(--color-brand);
+  background: var(--color-brand-soft);
+  transform: translateY(-1px);
+}
+.destination-link[data-demo-state="focus"] {
+  outline: var(--border-width-focus) solid var(--color-warning);
+  outline-offset: var(--border-width-focus);
+}
+.destination-link:active,
+.destination-link[data-demo-state="active"] {
+  border-color: var(--color-brand-strong);
+  transform: translateY(0);
+}
+.destination-link[aria-disabled="true"] {
+  border-color: var(--color-border);
+  background: var(--color-surface-page);
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.destination-link[aria-disabled="true"] span { color: var(--color-text-disabled); }
 
 /*
  * AUFGABEN-KACHEL (.task-card)
@@ -2511,7 +2574,8 @@
   .process-steps li:last-child .process-step { border-bottom: 0; }
   .field-grid,
   .token-rule-groups,
-  .receipt-grid { grid-template-columns: 1fr; }
+  .receipt-grid,
+  .destination-grid { grid-template-columns: 1fr; }
   .styleguide-main { padding-inline: var(--space-layout-wide); }
   .styleguide-nav { padding-inline: var(--space-layout-wide); }
 }
