@@ -34,11 +34,11 @@ oder nur als knappe Screenbezeichnung beschreibt.
 | Kontakte · K03 | Institution: Datenschutz | Nicht gebaut. | offen |
 | Kontakte · K04 | Kontakt bearbeiten | Kein Bearbeitungsformular vorhanden. | offen |
 | Kontakte · K05.1 | Kontaktanlage: Name erfassen | Bekannte Angaben werden ohne vorgelagerte Typentscheidung erfasst; ein unvollständiger Entwurf ist speicherbar. | vorhanden |
-| Kontakte · K05.2 | Kontaktanlage: Dublettenprüfung läuft | Als unterbrechender Vollflächenzustand und als begleitender Hinweis am Namensfeld über die Testvarianten benutzbar. | vorhanden |
+| Kontakte · K05.2 | Kontaktanlage: Dublettenprüfung läuft | Als unterbrechender Zustand mit sichtbaren, gesperrten Eingaben benutzbar. | vorhanden |
 | Kontakte · K05.3 | Kontaktanlage: Prüfungsfehler | Technischer Fehler mit erhaltenem Vorgang, erhaltenen Eingaben und Wiederholungsweg ist benutzbar. | vorhanden |
 | Kontakte · K05.4 | Kontaktanlage: keine Dubletten | Ergebnis ohne Treffer und anschließende, vollständig validierte Neuanlage ist benutzbar. | vorhanden |
 | Kontakte · K05.5 | Kontaktanlage: mögliche Dublette | Zwei tatsächlich in der Kontaktliste vorhandene Personen werden mit unterscheidenden Angaben und allen drei Folgehandlungen gezeigt. | vorhanden |
-| Kontakte · K05.6 | Kontaktanlage: Kenntnisnahme | Variante A verlangt eine begründete Entscheidung einschließlich offenem Freitext; Variante B eine unmittelbare Bestätigung vor dem Abschluss. | vorhanden |
+| Kontakte · K05.6 | Kontaktanlage: Kenntnisnahme | Eine begründete Entscheidung einschließlich offenem Freitext ist vor dem Abschluss erforderlich. | vorhanden |
 | Kontakte · K06 | Kontakterlaubnis bearbeiten | Erlaubte Kanäle werden im Detail nur gelesen; eine Bearbeitung fehlt. | offen |
 | Kontakte · K07 | Deaktivierte Kontakte | Kein eigener Bestand und keine Reaktivierung vorhanden. | offen |
 | Verteiler · V01 | Gefüllte Verteilerübersicht | 25 Arbeits- und Managed-Verteiler mit Suche, Art- und Ämterfilter sind benutzbar. | vorhanden |
@@ -94,12 +94,10 @@ nicht, welche Fassung später umgesetzt wird.
   Datenschutz für Person und Institution auf vier Register; der Entwurf bündelt
   diese Inhalte für eine Person in einer 360°-Ansicht, weil laut Briefing der
   Stand eines Kontakts in einem Blick erfassbar sein soll.
-- **Kontaktanlage:** Zwei Fassungen variieren ausschließlich den Umgang mit
-  einer möglichen Dublette. Variante A unterbricht Prüfung und Entscheidung;
-  Variante B begleitet die Eingabe und lässt die Anlage Hauptaktion bleiben.
-  Feldfolge, Kontaktartvorschlag, Trefferdaten und Abschlussprüfung sind
-  identisch. Die Testfassung kann vorab über das Fragment gewählt werden, ohne
-  der Testperson die Variantenumschaltung zu zeigen.
+- **Kontaktanlage:** Die Dublettenprüfung unterbricht Prüfung und Entscheidung,
+  lässt die eigenen Angaben aber sichtbar und sperrt sie nur bis zur
+  Entscheidung. Feldfolge, Kontaktartvorschlag, Trefferdaten und
+  Abschlussprüfung bleiben dabei identisch.
 - **Teilweiser Schutz:** Der Prototyp simuliert Rollen und Versandberechtigung
   über Bedienelemente; der Entwurf zeigt Schutz direkt am Beziehungsknoten oder
   an einer lesbaren Managed-Definition und lässt die übrige Objektarbeit aktiv,

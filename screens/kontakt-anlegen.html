@@ -10,7 +10,7 @@
   <script src="../system/vendor/lucide.js" defer></script>
   <script src="../system/shell.js" defer></script>
 </head>
-<body data-screen="kontakte" data-prototype-states="start checking check-error no-duplicates duplicate acknowledged" data-prototype-state-labels="K05.1 · Erfassung|K05.2 · Prüfung läuft|K05.3 · Prüfungsfehler|K05.4 · Kein Treffer|K05.5 · Mögliche Dublette|K05.6 · Kenntnisnahme" data-prototype-initial="start" data-prototype-variants="a b" data-prototype-variant-labels="Variante A · unterbrechend|Variante B · begleitend" data-variant="a">
+<body data-screen="kontakte" data-prototype-states="start checking check-error no-duplicates duplicate acknowledged" data-prototype-state-labels="K05.1 · Erfassung|K05.2 · Prüfung läuft|K05.3 · Prüfungsfehler|K05.4 · Kein Treffer|K05.5 · Mögliche Dublette|K05.6 · Kenntnisnahme" data-prototype-initial="start">
   <main class="screen" id="main">
     <header class="page-head">
       <div>
@@ -44,10 +44,6 @@
             <input class="input" id="contact-name" name="name" value="Sabine Keler" aria-describedby="contact-name-help contact-name-error" autocomplete="name">
             <p class="field-help" id="contact-name-help">Tragen Sie den Namen einer Person oder die Bezeichnung einer Institution ein.</p>
             <p class="field-error" id="contact-name-error" hidden>Geben Sie einen Namen oder eine Bezeichnung ein.</p>
-            <div class="async-check async-check--inline" id="inline-checking" data-async-state="running" data-prototype-variant="b" role="status" aria-live="polite" hidden>
-              <div class="spinner" aria-hidden="true"></div>
-              <div><strong>Dublettenprüfung läuft</strong><p>Sie können die bekannten Angaben weiter erfassen.</p></div>
-            </div>
           </div>
           <div class="field">
             <label for="contact-organisation">Organisation oder beruflicher Bezug</label>
@@ -113,15 +109,10 @@
       </section>
 
       <section class="async-check async-check--stage" id="state-checking" data-async-state="running" role="status" aria-live="polite" hidden>
-        <div data-prototype-variant="a">
+        <div>
           <div class="spinner" aria-hidden="true"></div>
           <h2>Angaben werden auf mögliche Dubletten geprüft</h2>
-          <p>Name, Organisation, Anschrift und Erreichbarkeit werden verglichen. Ihre Eingaben bleiben erhalten.</p>
-        </div>
-        <div data-prototype-variant="b" hidden>
-          <span class="status status--info">K05.2 · Prüfung läuft</span>
-          <h2>Prüfung begleitet die Eingabe</h2>
-          <p>Der Prüfhinweis steht direkt am Namensfeld. Sie können weiterarbeiten.</p>
+          <p>Name, Organisation, Anschrift und Erreichbarkeit werden verglichen. Ihre Eingaben bleiben sichtbar und erhalten.</p>
         </div>
       </section>
 
@@ -154,12 +145,8 @@
               <div><dt>E-Mail</dt><dd>s.keller@greentech-hd.de</dd></div>
               <div><dt>Zuständigkeit</dt><dd>Wirtschaftsförderung · Julia König</dd></div>
             </dl>
-            <div class="button-row" data-prototype-variant="a">
+            <div class="button-row">
               <a class="btn btn--primary" href="kontakt-detail.html">Vorhandenen Kontakt öffnen</a>
-              <button class="btn" type="button" data-prototype-action="Vorhandenen Kontakt Sabine Keller um die erfassten Angaben ergänzen">Um meine Angaben ergänzen</button>
-            </div>
-            <div class="button-row" data-prototype-variant="b" hidden>
-              <a class="btn" href="kontakt-detail.html">Vorhandenen Kontakt öffnen</a>
               <button class="btn" type="button" data-prototype-action="Vorhandenen Kontakt Sabine Keller um die erfassten Angaben ergänzen">Um meine Angaben ergänzen</button>
             </div>
           </li>
@@ -171,7 +158,7 @@
 
       <section class="card card-body" id="state-acknowledged" aria-label="Kenntnisnahme des Prüfergebnisses" hidden>
         <span class="status status--warning">K05.6 · Kenntnisnahme</span>
-        <div data-prototype-variant="a">
+        <div>
           <h2>Neuanlage begründen</h2>
           <p>Sie haben mögliche Dubletten geprüft. Wählen Sie aus, warum trotzdem ein neuer Kontakt entstehen soll.</p>
           <fieldset class="form-section" id="duplicate-reasons">
@@ -188,12 +175,6 @@
           </fieldset>
           <button class="btn btn--primary" id="create-after-reason" type="button" disabled>Kontakt neu anlegen</button>
         </div>
-        <div data-prototype-variant="b" hidden>
-          <h2>Prüfergebnis bestätigen</h2>
-          <p>Die Anlage bleibt Ihre Hauptaktion. Bestätigen Sie unmittelbar davor, dass Sie die möglichen Dubletten geprüft haben.</p>
-          <label class="check"><input id="acknowledge-duplicate" type="checkbox"><span>Ich habe die möglichen Dubletten geprüft und möchte einen neuen Kontakt anlegen.</span></label>
-          <button class="btn btn--primary" id="create-after-acknowledgement" type="button" disabled>Kontakt neu anlegen</button>
-        </div>
         <div id="creation-success" tabindex="-1" hidden></div>
       </section>
     </div>
@@ -207,23 +188,15 @@
       var validationList = document.getElementById('contact-validation-list');
       var nameField = document.getElementById('contact-name');
       var kindField = document.getElementById('contact-kind');
-      var inlineChecking = document.getElementById('inline-checking');
-      var currentState = 'start';
       var states;
       var guard = window.CrmShell.createUnsavedGuard({ form: workGrid, saveControls: '#save-draft' });
 
-      function variant() {
-        return document.body.getAttribute('data-variant') || 'a';
-      }
-
       function renderLayout(state) {
-        currentState = state;
-        var interrupted = variant() === 'a' && ['checking', 'duplicate', 'acknowledged'].indexOf(state) !== -1;
+        var interrupted = ['checking', 'duplicate', 'acknowledged'].indexOf(state) !== -1;
         form.querySelectorAll('input, select, textarea, button').forEach(function (control) {
           control.disabled = interrupted;
         });
         form.setAttribute('aria-disabled', String(interrupted));
-        inlineChecking.hidden = !(variant() === 'b' && state === 'checking');
         if (state === 'duplicate') {
           var normalizedName = nameField.value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('de');
           document.getElementById('sabine-match-reason').textContent = normalizedName.indexOf('sabine kel') !== -1 ? 'Ähnliche Schreibweise · gleiche Kontaktdaten' : 'Ähnliche Kontaktdaten';
@@ -309,7 +282,6 @@
         onChange: renderLayout
       });
 
-      document.addEventListener('crm:prototype-variant', function () { renderLayout(currentState); });
       document.getElementById('start-check').addEventListener('click', function () { setState('checking'); });
       document.getElementById('retry-check').addEventListener('click', function () { setState('checking'); });
       document.getElementById('continue-new').addEventListener('click', function () { setState('acknowledged'); });
@@ -342,15 +314,9 @@
         completeCreation(document.getElementById('creation-success'));
       });
 
-      document.getElementById('acknowledge-duplicate').addEventListener('change', function (event) {
-        document.getElementById('create-after-acknowledgement').disabled = !event.currentTarget.checked;
-      });
-      document.getElementById('create-after-acknowledgement').addEventListener('click', function () {
-        completeCreation(document.getElementById('creation-success'));
-      });
       renderLayout('start');
     });
   </script>
-  <!-- Design-Rationale: Das allgemeine Formularraster und der nachgelagerte Vorschlagskasten bleiben in beiden Testvarianten identisch. Die einzige Testvariable ist, ob die Dublettenprüfung den Vorgang unterbricht oder begleitet. -->
+  <!-- Design-Rationale: Das allgemeine Formularraster und der nachgelagerte Vorschlagskasten bleiben beim unterbrechenden Vergleich sichtbar. So liegen eigene Angaben und möglicher Bestand direkt nebeneinander. -->
 </body>
 </html>

@@ -65,7 +65,7 @@ Kontrastgrenzfall.
     zur Entscheidung gestellt werden, ist nicht beschrieben. Die Handlung
     bleibt sichtbar, führt aber im Entwurf keine Zusammenführung aus.
 14. **Kontaktanlage / Begründung der Neuanlage:** Verbindliche Gründe für
-    „Trotzdem neu anlegen“ fehlen. Variante A verwendet drei neutrale Gründe
+    „Trotzdem neu anlegen“ fehlen. Der Entwurf verwendet drei neutrale Gründe
     sowie „Anderer Grund“ mit Pflichtfreitext. Auswahlhäufigkeit und Freitext
     sind Messpunkte des Fachtests und keine vorweggenommene Fachregel.
 15. **Kontaktanlage / Rechte:** Wer welche Kontaktart oder einzelne Felder

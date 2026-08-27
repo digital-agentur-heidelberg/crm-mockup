@@ -182,28 +182,6 @@
     (root || document).dispatchEvent(new CustomEvent("crm:rendered", { bubbles: true }));
   }
 
-  function propagateVariantFragment(root) {
-    var match = window.location.hash.match(/^#variant-([a-z0-9-]+)$/i);
-    if (!match) {
-      return;
-    }
-    elements("a[href]", root || document).forEach(function (link) {
-      var href = link.getAttribute("href") || "";
-      var target = href.split("#")[0];
-      if (!/\.html$/i.test(target)) {
-        return;
-      }
-      link.setAttribute("href", target + "#variant-" + match[1]);
-    });
-  }
-
-  document.addEventListener("crm:rendered", function (event) {
-    propagateVariantFragment(event.target);
-  });
-  document.addEventListener("click", function () {
-    propagateVariantFragment(document);
-  });
-
   function ensureToast() {
     if (toast) {
       return;
@@ -1467,50 +1445,6 @@
   appMain.appendChild(topbar);
   appMain.appendChild(main);
 
-  var prototypeVariantNames = (document.body.getAttribute("data-prototype-variants") || "").trim().split(/\s+/).filter(Boolean);
-  if (prototypeVariantNames.length) {
-    var variantHash = window.location.hash.match(/^#variant-([a-z0-9-]+)$/i);
-    var fixedVariant = variantHash && prototypeVariantNames.indexOf(variantHash[1]) !== -1 ? variantHash[1] : "";
-    var prototypeVariant = fixedVariant || document.body.getAttribute("data-variant") || prototypeVariantNames[0];
-    var prototypeVariantLabels = (document.body.getAttribute("data-prototype-variant-labels") || "").split("|");
-    var variantControls = [];
-
-    function setPrototypeVariant(next) {
-      if (prototypeVariantNames.indexOf(next) === -1) {
-        return;
-      }
-      prototypeVariant = next;
-      document.body.setAttribute("data-variant", next);
-      document.querySelectorAll("[data-prototype-variant]").forEach(function (panel) {
-        panel.hidden = panel.getAttribute("data-prototype-variant") !== next;
-      });
-      variantControls.forEach(function (control) {
-        control.setAttribute("aria-pressed", String(control.getAttribute("data-prototype-variant-choice") === next));
-      });
-      document.dispatchEvent(new CustomEvent("crm:prototype-variant", { detail: { variant: next } }));
-    }
-
-    if (!fixedVariant) {
-      var variantBar = document.createElement("section");
-      variantBar.className = "prototype-bar";
-      variantBar.setAttribute("aria-label", "Testvariante im Prototyp wechseln");
-      variantBar.innerHTML = '<span class="prototype-label"><i data-lucide="split" aria-hidden="true"></i>Testvariante</span><div class="prototype-controls"></div>';
-      var variantControlGroup = variantBar.querySelector(".prototype-controls");
-      prototypeVariantNames.forEach(function (variant, index) {
-        var control = document.createElement("button");
-        control.className = "prototype-state";
-        control.type = "button";
-        control.setAttribute("data-prototype-variant-choice", variant);
-        control.textContent = prototypeVariantLabels[index] || ("Variante " + variant.toUpperCase());
-        control.addEventListener("click", function () { setPrototypeVariant(variant); });
-        variantControls.push(control);
-        variantControlGroup.appendChild(control);
-      });
-      main.insertBefore(variantBar, main.firstChild);
-    }
-    setPrototypeVariant(prototypeVariant);
-  }
-
   var prototypeStateNames = (document.body.getAttribute("data-prototype-states") || "").trim().split(/\s+/).filter(Boolean);
   if (prototypeStateNames.length) {
     var prototypeLabels = {
@@ -1747,6 +1681,5 @@
   sideNav.querySelector("[data-shell-help]").addEventListener("click", function () {
     showToast("Die Hilfe öffnet sich passend zu Ihrem aktuellen Bereich.", "info");
   });
-  propagateVariantFragment(document);
   renderIcons(document);
 }());

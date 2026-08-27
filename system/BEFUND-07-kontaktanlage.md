@@ -6,21 +6,12 @@ Stand: 27. August 2026. Dieser chronologisch siebte Befund dokumentiert den in
 ## Umfang und Testentscheidung
 
 `kontakt-anlegen.html` ist über die Primäraktion der Kontaktliste erreichbar.
-Alle sechs Zustände sind in einer Datei durchklickbar. Die fachlich offene
-Frage wird als einzige Testvariable in zwei Fassungen gezeigt:
-
-- Variante A unterbricht die Arbeit für Prüfung, Trefferentscheidung und eine
-  begründete Neuanlage.
-- Variante B begleitet die Eingabe, zeigt Treffer neben dem Formular und
-  verlangt unmittelbar vor der weiterhin primären Anlage nur eine
-  Bestätigung.
-
-Ohne Fragment ist die Variantenleiste für die interne Abnahme sichtbar. Mit
-`#variant-a` oder `#variant-b` wird die Fassung vor der Sitzung festgelegt und
-nur diese Leiste verborgen; die K05-Zustandsleiste bleibt für die Vorbereitung
-erhalten. Der fachliche Erfolg beschreibt wie im späteren Produkt, welcher
-Kontakt entstanden ist und wo er liegt. Erst ein Klick auf den noch nicht
-hinterlegten neuen Datensatz meldet die Entwurfsgrenze per Toast.
+Alle sechs Zustände sind in einer Datei durchklickbar. Die Dublettenprüfung
+unterbricht Prüfung, Trefferentscheidung und begründete Neuanlage. Eigene
+Angaben und Typvorschlag bleiben dabei sichtbar, sind bis zur Entscheidung
+jedoch nicht bearbeitbar. Der fachliche Erfolg beschreibt wie im späteren
+Produkt, welcher Kontakt entstanden ist und wo er liegt. Erst ein Klick auf den
+noch nicht hinterlegten neuen Datensatz meldet die Entwurfsgrenze per Toast.
 
 ## Aus dem Bestand übernommen
 
@@ -91,15 +82,9 @@ setzt den Zustand über `markSaved()` zurück. Die Implementierung komponiert
 `CrmShell.createDialog`; dessen Fokusfang, Escape-Verhalten und Fokusrückgabe
 waren vollständig ausreichend und wurden nicht dupliziert.
 
-Die Variantensteuerung gehört ebenfalls in die Hülle, weil weitere
-vergleichende User-Tests denselben vorab verbergbaren Mechanismus benötigen.
-`data-prototype-variants`, die positionsgleichen Beschriftungen und die
-Fragmente setzen `data-variant`, schalten allgemeine Varianteninhalte und
-senden `crm:prototype-variant`. Das festgelegte Variantenfragment wird an
-interne HTML-Verweise angehängt, damit die Sitzung über Detail- und
-Listenansichten hinweg in derselben Fassung bleibt. Die Zustandssteuerung
-erhielt lediglich frei benennbare sichtbare Beschriftungen, damit K05.1 bis
-K05.6 in der Leiste stehen, ohne die neutralen Zustandsnamen zu verlieren.
+Die Zustandssteuerung erhielt frei benennbare sichtbare Beschriftungen, damit
+K05.1 bis K05.6 in der Leiste stehen, ohne die neutralen Zustandsnamen zu
+verlieren.
 
 Navigation, aktiver Eintrag, Suche, Toasts und Icon-Nachrendern bleiben
 unverändert allein in der Hülle. Screenbezogen bleiben nur Zustandsfolgen,
@@ -114,8 +99,8 @@ beschreibt Kontakt, Dublette oder einen einzelnen Screen.
 
 | Prüffall | Darstellung und Handlung |
 |---|---|
-| Inhalt vorhanden | Erfasste Angaben, Typvorschlag und Treffer bleiben lesbar; in B sind sie bearbeitbar. |
-| Lädt | A sperrt die sichtbaren Eingaben und legt den Fokus auf die Entscheidung; B zeigt den Status am Namensfeld und lässt die Eingabe offen. |
+| Inhalt vorhanden | Erfasste Angaben, Typvorschlag und Treffer bleiben lesbar. |
+| Lädt | Die sichtbaren Eingaben sind gesperrt; der Fokus liegt auf der Entscheidung. |
 | Fachlich leer | „Keine mögliche Dublette gefunden“ führt zur validierten Anlage. |
 | Technisch fehlgeschlagen | Eingaben und Vorgang bleiben erhalten; „Erneut prüfen“ ist verfügbar. |
 | Teilweise geschützt | Nicht simuliert, weil Feld- und Kontaktartrechte geparkt sind. |
@@ -139,7 +124,7 @@ vorgegebene zuständige Stelle für eine Rechtefreigabe.
   nicht festgelegt. Die Prototypsteuerung macht die Zustände deterministisch.
 - „Um meine Angaben ergänzen“ zeigt mangels Feldkonflikt- und Rechtevertrag die
   Entwurfsgrenze per Toast und verändert keinen Bestandskontakt.
-- Die drei neutralen Gründe in Variante A sind Testmaterial, keine
+- Die drei neutralen Gründe sind Testmaterial, keine
   beschlossene Fachregel. „Anderer Grund“ mit Pflichtfreitext ist der
   eigentliche Messpunkt: Auswahlhäufigkeit und Inhalt zeigen, wo die Liste die
   Fachpraxis nicht trifft.

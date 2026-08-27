@@ -226,16 +226,6 @@ Vorhanden:
    Ergebnismetadaten oder Tabellenköpfe gesetzt. Abweichende sichtbare
    Beschriftungen werden positionsgleich über
    `data-prototype-state-labels` mit `|` getrennt angegeben.
- - **Prototyp-Testvarianten** – `data-prototype-variants="a b"` erzeugt mit
-   den vorhandenen Prototypkomponenten eine zweite, klar gekennzeichnete
-   Umschaltung und setzt `data-variant` am `<body>`. Die Beschriftungen können
-   positionsgleich über `data-prototype-variant-labels` mit `|` getrennt
-   angegeben werden. Das Fragment `#variant-a` beziehungsweise `#variant-b`
-   wählt die Fassung bereits beim Öffnen und unterdrückt ausschließlich die
-   Variantenleiste; die Zustandsleiste bleibt sichtbar. Die Hülle ergänzt das
-   Fragment an interne HTML-Verweise, damit die festgelegte Fassung während
-   einer Navigation erhalten bleibt. Varianteninhalte verwenden
-   `data-prototype-variant="a"` beziehungsweise `"b"`.
  - **Ungespeicherte Änderungen** –
    `CrmShell.createUnsavedGuard(options)` beobachtet den angegebenen
    Formularkontext, komponiert die Nachfrage auf `createDialog`, hält die
