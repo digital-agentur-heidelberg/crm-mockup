@@ -232,7 +232,8 @@ Vorhanden:
    setzt bei einer Einschränkung auf Seite eins zurück, rendert höchstens 25
    Treffer pro Seite und liefert `matchedRows` sowie `pageRows` getrennt an
    `onChange`. `reset()` setzt Suche und Filter zurück, `setPage()` wechselt
-   programmatisch und `setBusy()` sperrt angegebene Listenaktionen sowie die
+   programmatisch, `refreshRows()` übernimmt nach Hinzufügen oder Entfernen
+   den aktuellen Zeilenbestand und `setBusy()` sperrt angegebene Listenaktionen sowie die
    Pagination während des Ladens. Die Seitennavigation setzt nach einer
    Bedienhandlung den Fokus auf den Ergebnisanfang. Der Auswahlcontroller
    bleibt ein eigener Vertrag und wird nach jeder Listenänderung mit

@@ -10,24 +10,24 @@
   <script src="../system/vendor/lucide.js" defer></script>
   <script src="../system/shell.js" defer></script>
 </head>
-<body data-screen="verteiler">
+<body data-screen="verteiler" data-prototype-states="work managed" data-prototype-state-labels="Arbeitsverteiler|Managed-Verteiler">
   <main class="screen" id="main">
     <a class="btn btn--quiet back-link" href="verteiler.html"><i data-lucide="arrow-left" aria-hidden="true"></i>Zur Verteilerübersicht</a>
     <header class="page-head">
       <div><p class="eyebrow">Verteiler · Definition und Mitglieder</p><h1>Verteiler verwalten</h1><p id="distribution-mode-note" aria-live="polite">Arbeitsverteiler: Definition und Mitgliedschaften sind bearbeitbar.</p></div>
-      <div class="filter-bar" aria-label="Ausprägung des Verteilers wechseln"><button class="filter-chip" type="button" aria-pressed="true" aria-controls="work-distribution" data-distribution-mode="work">Arbeitsverteiler</button><button class="filter-chip" type="button" aria-pressed="false" aria-controls="managed-distribution" data-distribution-mode="managed">Managed-Verteiler</button></div>
     </header>
 
     <div class="object-work-grid">
-      <section class="card selection-table-card" aria-labelledby="member-title">
+      <section class="card selection-table-card embedded-list" aria-labelledby="member-title">
         <div class="card-head card-head--compact">
           <div><h2 id="member-title">Mitglieder</h2><small><span id="member-count">25 Mitglieder</span> · <span id="member-selected-count" aria-live="polite">0 ausgewählt</span></small></div>
           <div class="head-actions">
+            <a class="btn btn--primary btn--compact" id="mailing-handoff" href="mailing.html?verteiler=umweltwirtschaft"><i data-lucide="send" aria-hidden="true"></i>Als Empfängerkreis an Mailing übergeben</a>
             <button class="btn btn--compact" id="open-add-members" type="button"><i data-lucide="user-plus" aria-hidden="true"></i>Mitglieder hinzufügen</button>
             <div class="bulk-action"><div class="bulk-action-main"><span class="status bulk-action-count" id="member-bulk-count">0</span><button class="btn btn--compact" id="member-bulk-disabled" type="button" disabled aria-label="Sammelaktion deaktiviert: Auswahl erforderlich">Sammelaktion</button><details class="menu" id="member-bulk-menu" hidden><summary class="btn btn--compact">Sammelaktion<i data-lucide="chevron-down" aria-hidden="true"></i></summary><div class="menu-popover menu-popover--right"><button class="menu-choice" id="remove-members" type="button"><span>Auswahl entfernen</span><strong id="remove-members-count">0</strong></button></div></details></div></div>
           </div>
         </div>
-        <div class="table-wrap"><table class="data-table"><thead><tr><th class="selection-col" scope="col"><input class="selection-check" id="select-visible-members" type="checkbox"><label class="u-sr-only" for="select-visible-members">Alle sichtbaren Mitglieder auswählen</label></th><th scope="col">Kontakt</th><th scope="col">Organisation</th><th scope="col">Erreichbarkeit</th><th scope="col">Hinzugefügt</th></tr></thead><tbody id="member-rows">
+        <div class="table-wrap"><table class="data-table"><thead><tr><th class="selection-col" scope="col"><input class="selection-check" id="select-visible-members" type="checkbox"><label class="u-sr-only" id="select-visible-members-label" for="select-visible-members">Alle 25 Mitglieder auf dieser Seite auswählen</label></th><th scope="col">Kontakt</th><th scope="col">Organisation</th><th scope="col">Erreichbarkeit</th><th scope="col">Hinzugefügt</th></tr></thead><tbody id="member-rows">
           <tr><td class="selection-col"><input class="selection-check" type="checkbox" aria-label="Marion Aksoy auswählen"></td><td><strong>Marion Aksoy</strong></td><td>Aksoy Medienhaus</td><td><span class="status status--success">E-Mail erlaubt</span></td><td>24.08.2026</td></tr>
           <tr><td class="selection-col"><input class="selection-check" type="checkbox" aria-label="Nora Ebert auswählen"></td><td><strong>Nora Ebert</strong></td><td>Heidelberg iT Management GmbH</td><td><span class="status status--success">E-Mail erlaubt</span></td><td>22.08.2026</td></tr>
           <tr><td class="selection-col"><input class="selection-check" type="checkbox" aria-label="Leonie Hartmann auswählen"></td><td><strong>Leonie Hartmann</strong></td><td>UnterwegsTheater Heidelberg</td><td><span class="status status--success">E-Mail erlaubt</span></td><td>21.08.2026</td></tr>
@@ -54,7 +54,6 @@
           <tr><td class="selection-col"><input class="selection-check" type="checkbox" aria-label="Cem Arslan auswählen"></td><td><strong>Cem Arslan</strong></td><td>Arslan Elektrotechnik GmbH</td><td><span class="status status--success">E-Mail erlaubt</span></td><td>04.08.2026</td></tr>
           <tr><td class="selection-col"><input class="selection-check" type="checkbox" aria-label="Meike Walter auswählen"></td><td><strong>Meike Walter</strong></td><td>Heidelberger Frühling gGmbH</td><td><span class="status status--success">E-Mail erlaubt</span></td><td>20.07.2026</td></tr>
         </tbody></table></div>
-        <div class="card-body--compact"><a class="btn btn--primary" id="mailing-handoff" href="mailing.html?verteiler=umweltwirtschaft"><i data-lucide="send" aria-hidden="true"></i>Als Empfängerkreis an Mailing übergeben</a></div>
       </section>
 
       <aside class="detail-col">
@@ -73,12 +72,62 @@
   <script>
     window.addEventListener('load',()=>{
       const memberBody=document.getElementById('member-rows');
+      const tableCard=document.querySelector('.embedded-list');
+      const cardHead=tableCard.querySelector('.card-head');
+      const tableWrap=tableCard.querySelector('.table-wrap');
+      const fixtureMembers=[
+        ['Anna Aksoy','GreenTech Solutions GmbH','E-Mail erlaubt','19.07.2026'],['Benjamin Beck','BioRN Network e. V.','E-Mail erlaubt','18.07.2026'],['Carolin Brenner','Heidelberg iT Management GmbH','E-Mail erlaubt','17.07.2026'],['Daniel Ebert','UnterwegsTheater Heidelberg','E-Mail erlaubt','16.07.2026'],['Elena Fuchs','C. Josef Lamy GmbH','E-Mail erlaubt','15.07.2026'],['Florian Graf','SNP Schneider-Neureither & Partner SE','E-Mail erlaubt','14.07.2026'],['Hanna Hartmann','Medienforum Heidelberg e. V.','E-Mail erlaubt','13.07.2026'],['Jonas Kohl','Heidelberger Kunstverein','E-Mail erlaubt','12.07.2026'],['Katrin Nguyen','EMBL Heidelberg','E-Mail erlaubt','11.07.2026'],['Lukas Petrova','Musik- und Singschule Heidelberg','Nur Post erlaubt','10.07.2026'],['Maja Schilling','Stadtwerke Heidelberg Netze GmbH','E-Mail erlaubt','09.07.2026'],['Nadine Weber','Karlstorbahnhof Heidelberg','E-Mail erlaubt','08.07.2026'],['Oliver Aksoy','InnovationLab GmbH','E-Mail erlaubt','07.07.2026'],['Ravi Beck','halle02','E-Mail erlaubt','06.07.2026'],['Sophie Brenner','Kulturfenster Heidelberg e. V.','E-Mail erlaubt','05.07.2026'],['Anna Ebert','Universität Heidelberg','E-Mail erlaubt','04.07.2026'],['Benjamin Fuchs','Ameria GmbH','E-Mail erlaubt','03.07.2026'],['Carolin Graf','Deutsch-Amerikanisches Institut','E-Mail erlaubt','02.07.2026'],['Daniel Hartmann','ProMinent GmbH','E-Mail erlaubt','01.07.2026'],['Elena Kohl','Theater und Orchester Heidelberg','E-Mail erlaubt','30.06.2026'],['Florian Nguyen','Heidelberger Dienste gGmbH','E-Mail nicht erlaubt','29.06.2026'],['Hanna Petrova','Heidelberg Materials AG','E-Mail erlaubt','28.06.2026'],['Jonas Weber','Metropolink Festival','E-Mail erlaubt','27.06.2026'],['Julia König','Wirtschaftsförderung Heidelberg','E-Mail erlaubt','26.06.2026'],['Jan-Paul Kessler','breidenbach studios','E-Mail erlaubt','25.06.2026'],['Daniela Vogt','Heidelberger Dienste gGmbH','E-Mail erlaubt','24.06.2026'],['Dr. Aylin Yılmaz','BioRN Network e. V.','E-Mail erlaubt','23.06.2026'],['Deutsches Krebsforschungszentrum','DKFZ Heidelberg','E-Mail erlaubt','22.06.2026']
+      ];
       let distributionMode='work';
+      let listView;
+
+      function addMember(name, organisation, permission, added, position) {
+        const row=document.createElement('tr');
+        row.innerHTML='<td class="selection-col"><input class="selection-check" type="checkbox"></td><td><strong></strong></td><td></td><td><span class="status"></span></td><td></td>';
+        row.querySelector('input').setAttribute('aria-label',name+' auswählen');
+        row.querySelector('strong').textContent=name;
+        row.children[2].textContent=organisation;
+        row.querySelector('.status').className='status '+(permission==='E-Mail erlaubt'?'status--success':'status--warning');
+        row.querySelector('.status').textContent=permission;
+        row.lastElementChild.textContent=added;
+        if(position==='start'){memberBody.prepend(row)}else{memberBody.appendChild(row)}
+      }
+
+      fixtureMembers.forEach(member=>addMember(member[0],member[1],member[2],member[3]));
+      const search=document.createElement('div');
+      search.className='embedded-list-tools';
+      search.innerHTML='<div class="list-search"><i data-lucide="search" aria-hidden="true"></i><label class="u-sr-only" for="member-search">Mitglieder durchsuchen</label><input class="input" id="member-search" type="search" autocomplete="off" placeholder="Kontakt oder Organisation durchsuchen"></div>';
+      cardHead.after(search);
+      const emptyState=document.createElement('div');
+      emptyState.className='empty-state';
+      emptyState.hidden=true;
+      emptyState.innerHTML='<div><span class="empty-state-icon"><i data-lucide="search-x" aria-hidden="true"></i></span><strong></strong><p></p><button class="btn" type="button" hidden>Suche zurücksetzen</button></div>';
+      tableWrap.before(emptyState);
+      const footer=document.createElement('div');
+      footer.className='embedded-list-footer';
+      footer.innerHTML='<footer class="list-pagination" id="member-pagination"><p class="list-range" data-list-range aria-live="polite" aria-atomic="true">1–25 von 53 Mitgliedern</p><nav class="pagination-nav" data-pagination-nav aria-label="Mitgliedsseiten"><button class="pagination-button" type="button" data-page-previous aria-label="Vorherige Mitgliedsseite"><i data-lucide="chevron-left" aria-hidden="true"></i></button><div class="pagination-pages" data-page-list></div><button class="pagination-button" type="button" data-page-next aria-label="Nächste Mitgliedsseite"><i data-lucide="chevron-right" aria-hidden="true"></i></button></nav></footer>';
+      tableCard.appendChild(footer);
+
+      function renderEmpty(view) {
+        const noData=memberBody.querySelectorAll('tr').length===0;
+        const noResults=!noData&&view.total===0;
+        const button=emptyState.querySelector('button');
+        emptyState.hidden=!(noData||noResults);
+        tableWrap.hidden=noData||noResults;
+        if(!noData&&!noResults){return}
+        emptyState.querySelector('strong').textContent=noData?'Noch keine Mitglieder':'Keine passenden Mitglieder';
+        emptyState.querySelector('p').textContent=noData?'Für diesen Verteiler sind noch keine Kontakte hinterlegt.':'Ändern Sie die Suche, um Mitglieder wieder anzuzeigen.';
+        button.hidden=noData;
+      }
+
       const selection=window.CrmShell.createListSelection({rows:'#member-rows tr',selectAll:'#select-visible-members',actions:'#remove-members',itemSingular:'Mitglied',itemPlural:'Mitglieder',onChange:selected=>{document.getElementById('member-selected-count').textContent=selected.length+' ausgewählt';document.getElementById('member-count').textContent=memberBody.querySelectorAll('tr').length+' Mitglieder';document.getElementById('member-bulk-count').textContent=selected.length;document.getElementById('remove-members-count').textContent=selected.length;document.getElementById('member-bulk-disabled').hidden=selected.length>0;document.getElementById('member-bulk-menu').hidden=selected.length===0}});
-      window.CrmShell.createStateSwitch({controls:'[data-distribution-mode]',attribute:'data-distribution-mode',initial:window.location.hash==='#managed'?'managed':'work',panels:{work:document.getElementById('work-distribution'),managed:document.getElementById('managed-distribution')},onChange:mode=>{distributionMode=mode;document.getElementById('distribution-mode-note').textContent=mode==='work'?'Arbeitsverteiler: Definition und Mitgliedschaften sind bearbeitbar.':'Managed-Verteiler: Die Definition ist zentral geschützt; Mitgliedschaften bleiben bearbeitbar.';document.getElementById('mailing-handoff').href=mode==='work'?'mailing.html?verteiler=umweltwirtschaft':'mailing.html?verteiler=unternehmen-aktiv'}});
+      listView=window.CrmShell.createListView({rows:'#member-rows tr',query:'#member-search',pagination:'#member-pagination',resultFocus:'#member-title',pageSize:25,itemName:total=>total===1?'Mitglied':'Mitgliedern',onChange:view=>{document.getElementById('select-visible-members-label').textContent='Alle '+view.pageRows.length+' Mitglieder auf dieser Seite auswählen';selection.syncCollection(view);renderEmpty(view)}});
+      window.CrmShell.createStateSwitch({controls:'[data-prototype-state]',attribute:'data-prototype-state',initial:window.location.hash==='#managed'?'managed':'work',panels:{work:document.getElementById('work-distribution'),managed:document.getElementById('managed-distribution')},onChange:mode=>{distributionMode=mode;document.getElementById('distribution-mode-note').textContent=mode==='work'?'Arbeitsverteiler: Definition und Mitgliedschaften sind bearbeitbar.':'Managed-Verteiler: Die Definition ist zentral geschützt; Mitgliedschaften bleiben bearbeitbar.';document.getElementById('mailing-handoff').href=mode==='work'?'mailing.html?verteiler=umweltwirtschaft':'mailing.html?verteiler=unternehmen-aktiv'}});
       document.getElementById('save-work-definition').addEventListener('click',()=>window.CrmShell.showToast('Definition des Arbeitsverteilers wurde gespeichert.','success'));
-      document.getElementById('remove-members').addEventListener('click',()=>{const selected=selection.getSelectedRows();selected.forEach(row=>row.remove());selection.refreshRows();window.CrmShell.showToast(selected.length+' '+(selected.length===1?'Mitglied wurde':'Mitglieder wurden')+' entfernt.','success')});
-      window.CrmShell.createDistributionAssignment({mode:'choose-contacts',openers:'#open-add-members',getDistribution:()=>distributionMode==='managed'?{id:'unternehmen-aktiv',name:'Heidelberger Unternehmen · aktiv',managed:true}:{id:'umweltwirtschaft',name:'Verteiler Umweltwirtschaft',managed:false},onComplete:result=>{result.addedContacts.forEach(contact=>{const row=document.createElement('tr');row.innerHTML='<td class="selection-col"><input class="selection-check" type="checkbox"></td><td><strong></strong></td><td></td><td><span class="status"></span></td><td>Heute</td>';row.querySelector('input').setAttribute('aria-label',contact.name+' auswählen');row.querySelector('strong').textContent=contact.name;row.children[2].textContent=contact.organisation;row.querySelector('.status').className='status '+(contact.permission==='E-Mail erlaubt'?'status--success':'status--warning');row.querySelector('.status').textContent=contact.permission;memberBody.prepend(row)});selection.refreshRows()}});
+      document.getElementById('remove-members').addEventListener('click',()=>{const selected=selection.getSelectedRows();selected.forEach(row=>row.remove());selection.refreshRows();listView.refreshRows();window.CrmShell.showToast(selected.length+' '+(selected.length===1?'Mitglied wurde':'Mitglieder wurden')+' entfernt.','success')});
+      emptyState.querySelector('button').addEventListener('click',()=>listView.reset());
+      window.CrmShell.createDistributionAssignment({mode:'choose-contacts',openers:'#open-add-members',getDistribution:()=>distributionMode==='managed'?{id:'unternehmen-aktiv',name:'Heidelberger Unternehmen · aktiv',managed:true}:{id:'umweltwirtschaft',name:'Verteiler Umweltwirtschaft',managed:false},onComplete:result=>{result.addedContacts.forEach(contact=>addMember(contact.name,contact.organisation,contact.permission,'Heute','start'));selection.refreshRows();listView.refreshRows()}});
+      window.CrmShell.rendered(tableCard);
     });
   </script>
   <!-- Design-Rationale: Das allgemeine 1099-px-Objektraster trennt Mitgliederarbeit und Definition. Signature-Element ist der sichtbar lesbare, aber vor jeder Aktion begründete Schutz der Managed-Definition; bewusst riskant ist die direkte Umschaltung zweier Objektarten auf derselben Detailseite. -->

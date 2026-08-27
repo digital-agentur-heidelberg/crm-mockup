@@ -764,6 +764,11 @@
       return view;
     }
 
+    function refreshRows(reason) {
+      rows = elements(settings.rows, root);
+      return refresh(reason || "collection");
+    }
+
     function reset() {
       if (query) {
         query.value = "";
@@ -888,6 +893,7 @@
       getPageRows: function () { return pageRows.slice(); },
       getPage: function () { return currentPage; },
       refresh: refresh,
+      refreshRows: refreshRows,
       reset: reset,
       setBusy: setBusy,
       setPage: function (page) { setPage(page, false); }
