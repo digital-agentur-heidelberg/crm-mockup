@@ -1179,11 +1179,14 @@
 
 /*
  * MODALER ARBEITSDIALOG UND ZUORDNUNG
- * (.work-dialog, .assignment-context, .assignment-summary)
+ * (.work-dialog, .assignment-context, .assignment-summary,
+ *  .assignment-target)
  * Zweck: umfangreiche, kontexterhaltende Auswahl mit genau einer vertikalen
  * Scrollfläche, festem Arbeitskontext und Ausführungszusammenfassung.
  * Nicht verwenden: für einfache Bestätigungen oder reine Meldungen.
- * Zustände: bereit, lädt, leer, Fehler, deaktiviert, Erfolg.
+ * Zustände: bereit, hover/focus, ausgewählt, gesperrt, lädt, leer, Fehler,
+ * Erfolg. Ein Zuordnungsziel darf auch außerhalb des Dialogs einen festen
+ * fachlichen Bezug wählen; die Dialogmechanik wird dadurch nicht übernommen.
  */
 .work-dialog {
   width: min(calc(var(--size-page-copy-max) + var(--size-search-suggestion-min)), calc(100vw - (var(--space-layout-wide) * 2)));
@@ -1301,10 +1304,21 @@
   border: var(--border-width-default) solid var(--color-border);
   border-radius: var(--radius-control);
   background: var(--color-surface-card);
+  cursor: pointer;
+}
+.assignment-target:hover:not(:has(input:disabled)) { border-color: var(--color-brand); }
+.assignment-target:focus-within {
+  outline: var(--border-width-focus) solid var(--color-warning);
+  outline-offset: var(--border-width-emphasis);
 }
 .assignment-target:has(input:checked) {
   border-color: var(--color-brand);
   background: var(--color-brand-soft);
+}
+.assignment-target:has(input:disabled) {
+  border-style: dashed;
+  background: var(--color-surface-page);
+  cursor: not-allowed;
 }
 .assignment-target small { display: block; color: var(--color-text-muted); }
 .assignment-result-card { overflow: hidden; }

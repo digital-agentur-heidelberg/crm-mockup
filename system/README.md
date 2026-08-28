@@ -157,6 +157,31 @@ Befundnummern sind chronologisch nach ihrer tatsächlichen Erstellung; die
 Nummern geplanter Bauabschnitte aus `ABDECKUNG.md` können davon abweichen und
 werden im Text des jeweiligen Befunds genannt.
 
+## Mailing-Testfixture und Einstiege
+
+`CrmShell.getMailingFixture()` liefert eine Kopie der gemeinsamen, fest
+verdrahteten Testdaten für Mailingübersicht, Bearbeitungsprozess und
+Leseansicht. Der Vertrag ist bewusst nur mailingbezogen: Er gleicht die noch
+abweichenden Mitgliederzahlen in Verteilerübersicht und Verteilerdetail nicht
+an. Die Abweichungen und die später zusammenzuführenden Werte stehen
+federführend in `ABDECKUNG.md`.
+
+Ein Mailing besitzt genau einen Verteiler. `mailings.html` ist der Ort des
+Navigationsbereichs. Von dort beginnt „Mailing anlegen“ bei Schritt 1; ein
+begonnenes Mailing öffnet seinen gespeicherten Schritt und ein abgeschlossenes
+Mailing dieselbe Fachdatei als reine Leseansicht ohne Prozessleiste. Der
+Einstieg aus `verteiler-detail.html` übergibt den Verteiler mit
+`mailing.html?verteiler={id}`. Schritt 2 bleibt dann lesbar und anspringbar,
+wird in der linearen Weiter-Navigation aber als bereits festgelegt
+übersprungen.
+
+Fremde sichtbare Verteiler werden in der Testannahme als lesbare, gesperrte
+`.assignment-target`-Ziele gezeigt. Ihre Mailings sind ebenfalls lesbar und
+gesperrt; eine eigene Mailing-Rechtedimension wird nicht angelegt. Der
+optionale Testversand blockiert den Echtversandschritt nicht. Test- und
+Echtversand enden beide an der prototypischen Handlungsgrenze und erzeugen
+weder Nachweis noch Versandbeleg.
+
 ## Gemeinsame Interaktionsverträge
 
 Wiederkehrende Interaktionsmuster werden nicht je Screen neu verdrahtet.

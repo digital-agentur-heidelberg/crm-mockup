@@ -6,7 +6,7 @@
     { screen: "kontakte", label: "Kontakte", href: "kontakte.html", icon: "contact-round" },
     { screen: "veranstaltungen", label: "Veranstaltungen", href: "veranstaltungen.html", icon: "calendar-days" },
     { screen: "verteiler", label: "Verteiler", href: "verteiler.html", icon: "mails" },
-    { screen: "mailings", label: "Mailings", href: "mailing.html", icon: "send" }
+    { screen: "mailings", label: "Mailings", href: "mailings.html", icon: "send" }
   ];
 
   var searchRecords = [
@@ -131,10 +131,10 @@
       kind: "Verteiler",
       title: "Kreativwirtschaft Heidelberg",
       meta: "68 aktive Mitglieder",
-      href: "mailing.html",
+      href: "verteiler.html",
       icon: "mails",
-      status: "Im Mailing gewählt",
-      statusClass: "status--success",
+      status: "Verteiler aktiv",
+      statusClass: "status--info",
       description: "Empfängerkreis für den Branchendialog Kreativwirtschaft",
       facts: [
         { icon: "landmark", text: "Kulturamt · Wirtschaftsförderung" },
@@ -147,18 +147,147 @@
       kind: "Verteiler",
       title: "Branchentreffen Kultur",
       meta: "41 aktive Mitglieder",
-      href: "mailing.html",
+      href: "verteiler.html",
       icon: "mails",
-      status: "Im Mailing gewählt",
-      statusClass: "status--success",
+      status: "Verteiler aktiv",
+      statusClass: "status--info",
       description: "Kulturinstitutionen und freie Kulturschaffende in Heidelberg",
       facts: [
         { icon: "landmark", text: "Kulturamt" },
         { icon: "mail-check", text: "41 aktive Mitglieder" }
       ],
       keywords: "verteiler mailing kultur empfaenger"
+    },
+    {
+      group: "Mailings",
+      kind: "Mailing",
+      title: "Einladung zum Branchendialog",
+      meta: "Kreativwirtschaft Heidelberg · Schritt 4 von 5",
+      href: "mailing.html?id=branchendialog",
+      icon: "send",
+      status: "In Bearbeitung",
+      statusClass: "status--warning",
+      description: "Einladung zum Branchendialog Kreativwirtschaft",
+      facts: [
+        { icon: "landmark", text: "Wirtschaftsförderung" },
+        { icon: "users", text: "64 tatsächliche Empfänger" }
+      ],
+      keywords: "mailing einladung branchendialog entwurf testversand",
+      available: true
     }
   ];
+
+  var mailingFixture = {
+    template: {
+      id: "branchendialog",
+      name: "Einladung zum Branchendialog",
+      scope: "Derzeit für alle Ämter verwendet"
+    },
+    distributions: {
+      creative: {
+        id: "creative",
+        name: "Kreativwirtschaft Heidelberg",
+        office: "Wirtschaftsförderung",
+        kind: "Arbeitsverteiler",
+        members: 68,
+        excluded: 4,
+        actual: 64,
+        editable: true,
+        exclusions: [
+          { name: "Katrin Fuchs", reason: "Nur Post erlaubt", treatment: "ausgeschlossen" },
+          { name: "Maja Nguyen", reason: "E-Mail nicht erlaubt", treatment: "ausgeschlossen" },
+          { name: "Nora Ebert", reason: "Doppelte E-Mail-Adresse im Verteiler", treatment: "als Dublette ausgeschlossen" },
+          { name: "Hanna Özdemir", reason: "Datenschutzhinweis fehlt", treatment: "ausgeschlossen" }
+        ]
+      },
+      environment: {
+        id: "environment",
+        name: "Verteiler Umweltwirtschaft",
+        office: "Wirtschaftsförderung",
+        kind: "Arbeitsverteiler",
+        members: 25,
+        excluded: 2,
+        actual: 23,
+        editable: true,
+        exclusions: [
+          { name: "Katrin Fuchs", reason: "Nur Post erlaubt", treatment: "ausgeschlossen" },
+          { name: "Maja Nguyen", reason: "E-Mail nicht erlaubt", treatment: "ausgeschlossen" }
+        ]
+      },
+      companies: {
+        id: "companies",
+        name: "Heidelberger Unternehmen · aktiv",
+        office: "Wirtschaftsförderung",
+        kind: "Managed-Verteiler",
+        members: 25,
+        excluded: 2,
+        actual: 23,
+        editable: true,
+        exclusions: [
+          { name: "Katrin Fuchs", reason: "Nur Post erlaubt", treatment: "ausgeschlossen" },
+          { name: "Maja Nguyen", reason: "E-Mail nicht erlaubt", treatment: "ausgeschlossen" }
+        ]
+      },
+      culture: {
+        id: "culture",
+        name: "Branchentreffen Kultur",
+        office: "Kulturamt",
+        kind: "Arbeitsverteiler",
+        members: 41,
+        excluded: 2,
+        actual: 39,
+        editable: false,
+        exclusions: [
+          { name: "Katrin Fuchs", reason: "Nur Post erlaubt", treatment: "ausgeschlossen" },
+          { name: "Hanna Özdemir", reason: "Datenschutzhinweis fehlt", treatment: "ausgeschlossen" }
+        ]
+      }
+    },
+    crossOfficeRecipient: {
+      name: "Ravi Menon",
+      organisation: "EMBL Heidelberg",
+      distributions: ["environment", "culture"],
+      explanation: "Auch in „Branchentreffen Kultur“ des Kulturamts. Eine spätere Ansprache über die Amtsgrenze wird hier nicht automatisch unterdrückt."
+    },
+    previewRecipients: [
+      { name: "Petra Mildenberger", organisation: "Kultur- und Kreativwirtschaft Heidelberg", salutation: "Guten Tag Frau Mildenberger," },
+      { name: "Ravi Menon", organisation: "EMBL Heidelberg", salutation: "Guten Tag Herr Menon,", empty: "Anmeldelink" },
+      { name: "Hanna Özdemir", organisation: "", salutation: "Guten Tag Frau Özdemir,", empty: "Organisation" },
+      { name: "Jan-Paul Kessler", organisation: "breidenbach studios", salutation: "Guten Tag Herr Kessler,", empty: "Nachname" },
+      { name: "Leonie Hartmann", organisation: "UnterwegsTheater Heidelberg", salutation: "Guten Tag Frau Hartmann,", empty: "Anmeldelink" }
+    ],
+    records: [
+      { id: "branchendialog", title: "Einladung zum Branchendialog", subject: "Ihre Einladung: Branchendialog Kreativwirtschaft am 18. September", distribution: "creative", stage: 4, completed: false, changed: "Heute, 09:18", responsible: "Julia König" },
+      { id: "nachhaltige-gewerbegebiete", title: "Einladung zum Dialog nachhaltige Gewerbegebiete", subject: "Dialog nachhaltige Gewerbegebiete am 12. November", distribution: "environment", stage: 2, completed: false, changed: "Gestern, 16:42", responsible: "Julia König" },
+      { id: "kulturkonferenz", title: "Einladung zur Kulturkonferenz 2024", subject: "Kulturkonferenz 2024", distribution: "culture", stage: 5, completed: true, changed: "13.06.2024", sentAt: "13. Juni 2024, 10:12 Uhr", responsible: "Dr. Eva Riedel", testProof: "12.06.2024, 15:08 Uhr · ER", receipt: "KA-2024-06-0318" },
+      { id: "jahresforum", title: "Einladung zum Jahresforum Heidelberger Unternehmen", subject: "Jahresforum Heidelberger Unternehmen", distribution: "creative", stage: 5, completed: true, changed: "04.12.2025", sentAt: "4. Dezember 2025, 08:24 Uhr", responsible: "Julia König", testProof: "03.12.2025, 14:31 Uhr · JK", receipt: "WF-2025-12-0942" },
+      { id: "fachdialog-kreislaufwirtschaft", title: "Einladung zum Fachdialog Kreislaufwirtschaft", subject: "Fachdialog Kreislaufwirtschaft", distribution: "environment", stage: 3, completed: false, changed: "27.08.2026", responsible: "Julia König" },
+      { id: "werkstatt-darstellende-kunst", title: "Einladung zur Werkstatt Darstellende Kunst", subject: "Werkstatt Darstellende Kunst", distribution: "culture", stage: 5, completed: true, changed: "21.05.2026", sentAt: "21. Mai 2026, 09:05 Uhr", responsible: "Dr. Eva Riedel", testProof: "20.05.2026, 16:18 Uhr · ER", receipt: "KA-2026-05-0217" },
+      { id: "branchentreffen-altstadt", title: "Einladung zum Branchentreffen Einzelhandel Altstadt", subject: "Branchentreffen Einzelhandel Altstadt", distribution: "creative", stage: 5, completed: true, changed: "18.06.2026", sentAt: "18. Juni 2026, 07:45 Uhr", responsible: "Julia König", receipt: "WF-2026-06-0731" },
+      { id: "informationsabend-kulturfoerderung", title: "Einladung zum Informationsabend Kulturförderung", subject: "Informationsabend Kulturförderung", distribution: "culture", stage: 5, completed: true, changed: "30.07.2026", sentAt: "30. Juli 2026, 11:16 Uhr", responsible: "Dr. Eva Riedel", receipt: "KA-2026-07-0528" },
+      { id: "standortforum-phv", title: "Einladung zum Standortforum Patrick-Henry-Village", subject: "Standortforum Patrick-Henry-Village", distribution: "environment", stage: 5, completed: true, changed: "16.07.2026", sentAt: "16. Juli 2026, 08:52 Uhr", responsible: "Julia König", receipt: "WF-2026-07-0441" },
+      { id: "sommerempfang", title: "Einladung zum Sommerempfang der Kulturschaffenden", subject: "Sommerempfang der Kulturschaffenden", distribution: "culture", stage: 5, completed: true, changed: "18.08.2026", sentAt: "18. August 2026, 09:20 Uhr", responsible: "Dr. Eva Riedel", receipt: "KA-2026-08-0614" },
+      { id: "biotechnologie", title: "Einladung zum Netzwerktreffen Biotechnologie", subject: "Netzwerktreffen Biotechnologie im Neuenheimer Feld", distribution: "creative", stage: 5, completed: true, changed: "24.08.2026", sentAt: "24. August 2026, 08:10 Uhr", responsible: "Julia König", receipt: "WF-2026-08-0811" },
+      { id: "datenfruehstueck", title: "Einladung zum Datenfrühstück Mittelstand", subject: "Datenfrühstück Mittelstand", distribution: "creative", stage: 3, completed: false, changed: "24.08.2026", responsible: "Julia König" },
+      { id: "kult-karte", title: "Einladung zum Informationsnachmittag Kult:Karte", subject: "Informationsnachmittag Kult:Karte", distribution: "culture", stage: 5, completed: true, changed: "19.02.2026", sentAt: "19. Februar 2026, 10:08 Uhr", responsible: "Dr. Eva Riedel", receipt: "KA-2026-02-0096" },
+      { id: "umweltwirtschaft-2024", title: "Einladung zum Branchendialog Umweltwirtschaft 2024", subject: "Branchendialog Umweltwirtschaft 2024", distribution: "environment", stage: 5, completed: true, changed: "19.09.2024", sentAt: "19. September 2024, 07:54 Uhr", responsible: "Julia König", receipt: "WF-2024-09-0765" },
+      { id: "foerderdialog-musikstadt", title: "Einladung zum Förderdialog Musikstadt Heidelberg", subject: "Förderdialog Musikstadt Heidelberg", distribution: "culture", stage: 5, completed: true, changed: "20.03.2025", sentAt: "20. März 2025, 11:35 Uhr", responsible: "Dr. Eva Riedel", receipt: "KA-2025-03-0147" },
+      { id: "unternehmensfruehstueck", title: "Einladung zum Unternehmensfrühstück Rohrbach-Süd", subject: "Unternehmensfrühstück Rohrbach-Süd", distribution: "creative", stage: 5, completed: true, changed: "26.06.2025", sentAt: "26. Juni 2025, 07:02 Uhr", responsible: "Julia König", receipt: "WF-2025-06-0513" },
+      { id: "runder-tisch-festivals", title: "Einladung zum Runden Tisch Heidelberger Festivals", subject: "Runder Tisch Heidelberger Festivals", distribution: "culture", stage: 5, completed: true, changed: "13.11.2025", sentAt: "13. November 2025, 10:22 Uhr", responsible: "Dr. Eva Riedel", receipt: "KA-2025-11-0834" },
+      { id: "netzwerkfruehstueck", title: "Einladung zum Netzwerkfrühstück Klimaschutz", subject: "Netzwerkfrühstück Klimaschutz", distribution: "environment", stage: 5, completed: true, changed: "17.06.2026", sentAt: "17. Juni 2026, 08:14 Uhr", responsible: "Julia König", receipt: "WF-2026-06-0682" },
+      { id: "innenstadtwirtschaft", title: "Einladung zum Runden Tisch Innenstadtwirtschaft", subject: "Runder Tisch Innenstadtwirtschaft", distribution: "creative", stage: 4, completed: false, changed: "22.08.2026", responsible: "Julia König" },
+      { id: "kulturkarte-werkstatt", title: "Einladung zur Werkstatt Kult:Karte 2027", subject: "Werkstatt Kult:Karte 2027", distribution: "culture", stage: 3, completed: false, changed: "20.08.2026", responsible: "Dr. Eva Riedel" },
+      { id: "circular-economy", title: "Einladung zum Auftakt Circular Economy", subject: "Auftakt Circular Economy", distribution: "environment", stage: 2, completed: false, changed: "18.08.2026", responsible: "Julia König" },
+      { id: "kreativwirtschaft-werkstatt", title: "Einladung zur Werkstatt Kreativwirtschaft", subject: "Werkstatt Kreativwirtschaft", distribution: "creative", stage: 3, completed: false, changed: "14.08.2026", responsible: "Julia König" },
+      { id: "kulturfoerderung-2027", title: "Information zur Kulturförderung 2027", subject: "Kulturförderung 2027", distribution: "culture", stage: 2, completed: false, changed: "12.08.2026", responsible: "Dr. Eva Riedel" },
+      { id: "energieforum", title: "Einladung zum Energieforum Gewerbegebiete", subject: "Energieforum Gewerbegebiete", distribution: "environment", stage: 3, completed: false, changed: "10.08.2026", responsible: "Julia König" },
+      { id: "branchendialog-archiv", title: "Einladung zum Branchendialog Kreativwirtschaft 2025", subject: "Branchendialog Kreativwirtschaft 2025", distribution: "creative", stage: 5, completed: true, changed: "18.09.2025", sentAt: "18. September 2025, 08:02 Uhr", responsible: "Julia König", receipt: "WF-2025-09-0724" }
+    ]
+  };
+
+  function getMailingFixture() {
+    return JSON.parse(JSON.stringify(mailingFixture));
+  }
 
   var toastVariants = {
     success: { icon: "circle-check", role: "status", live: "polite" },
@@ -1536,6 +1665,7 @@
     createUnsavedGuard: createUnsavedGuard,
     createDistributionAssignment: createDistributionAssignment,
     getAssignmentContacts: contactCatalog,
+    getMailingFixture: getMailingFixture,
     createStateSwitch: createStateSwitch
   };
 
