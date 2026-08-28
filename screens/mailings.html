@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mailings – Heidelberg CRM</title>
+  <link rel="stylesheet" href="../system/tokens.css">
+  <link rel="stylesheet" href="../system/base.css">
+  <link rel="stylesheet" href="../system/components.css">
+  <script src="../system/vendor/lucide.js" defer></script>
+  <script src="../system/shell.js" defer></script>
+</head>
+<body data-screen="mailings" data-prototype-states="filled loading empty error">
+  <main class="screen" id="main">
+    <header class="page-head">
+      <div>
+        <p class="eyebrow">Mailings · gemeinsame Übersicht</p>
+        <h1>Mailings</h1>
+        <p>Sehen Sie Mailings aus allen sichtbaren Verteilern und erkennen Sie, welche Sie bearbeiten oder nur nachschlagen können.</p>
+      </div>
+    </header>
+
+    <div class="u-stack">
+      <section class="card list-controls" aria-labelledby="mailing-controls-title">
+        <h2 class="u-sr-only" id="mailing-controls-title">Mailings suchen und filtern</h2>
+        <div class="list-controls-main">
+          <div class="list-search">
+            <i data-lucide="search" aria-hidden="true"></i>
+            <label class="u-sr-only" for="mailing-search">Mailings durchsuchen</label>
+            <input class="input" id="mailing-search" type="search" autocomplete="off" placeholder="Titel, Betreff oder Verteiler">
+          </div>
+          <div class="list-actions"><a class="btn btn--primary" href="mailing.html?neu=1"><i data-lucide="send" aria-hidden="true"></i>Mailing anlegen</a></div>
+        </div>
+        <div class="list-filter-groups">
+          <div class="list-filter-row" role="group" aria-label="Nach Prozessstand filtern">
+            <strong>Prozessstand</strong>
+            <button class="filter-chip" type="button" aria-pressed="true" data-mailing-progress="all">Alle</button>
+            <button class="filter-chip" type="button" aria-pressed="false" data-mailing-progress="open">In Bearbeitung</button>
+            <button class="filter-chip" type="button" aria-pressed="false" data-mailing-progress="completed">Abgeschlossen</button>
+          </div>
+          <div class="list-filter-row">
+            <label for="mailing-office"><strong>Zuständiges Amt</strong></label>
+            <select class="select" id="mailing-office">
+              <option value="all">Alle Ämter</option>
+              <option value="Wirtschaftsförderung">Wirtschaftsförderung</option>
+              <option value="Kulturamt">Kulturamt</option>
+            </select>
+            <button class="btn btn--quiet btn--compact list-filter-reset" id="reset-mailing-filters" type="button" hidden>Filter zurücksetzen</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card list-card" aria-labelledby="mailing-results-title">
+        <div class="result-meta"><span class="result-counts" id="mailing-count" aria-live="polite">25 Mailings</span><span>zuletzt bearbeitet zuerst</span></div>
+        <div id="mailing-filled">
+          <h2 class="u-sr-only" id="mailing-results-title">Gefilterte Mailingübersicht</h2>
+          <div class="table-wrap"><table class="data-table"><thead><tr><th scope="col">Mailing</th><th scope="col">Verteiler</th><th scope="col">Zuständiges Amt</th><th scope="col">Prozessstand</th><th scope="col">Empfänger</th><th scope="col">Zugriff</th></tr></thead><tbody id="mailing-rows"></tbody></table></div>
+          <footer class="list-pagination" id="mailing-pagination"><p class="list-range" data-list-range aria-live="polite" aria-atomic="true">1–25 von 25 Mailings</p><nav class="pagination-nav" data-pagination-nav aria-label="Mailingseiten"><button class="pagination-button" type="button" data-page-previous aria-label="Vorherige Mailingseite"><i data-lucide="chevron-left" aria-hidden="true"></i></button><div class="pagination-pages" data-page-list></div><button class="pagination-button" type="button" data-page-next aria-label="Nächste Mailingseite"><i data-lucide="chevron-right" aria-hidden="true"></i></button></nav></footer>
+        </div>
+        <div class="loading-state" id="mailing-loading" role="status" aria-live="polite" hidden><div><div class="spinner" aria-hidden="true"></div><strong>Mailings werden geladen</strong><p class="u-muted">Prozessstand und Zuständigkeit werden berücksichtigt.</p></div></div>
+        <div class="empty-state" id="mailing-empty" hidden><div><span class="empty-state-icon"><i data-lucide="mail-x" aria-hidden="true"></i></span><h2>Keine Mailings in dieser Auswahl</h2><p>Ändern Sie Prozessstand oder zuständiges Amt.</p><button class="btn" id="reset-mailings" type="button">Alle Mailings zeigen</button></div></div>
+        <div class="error-state" id="mailing-error" role="alert" hidden><div><span class="error-state-icon"><i data-lucide="cloud-alert" aria-hidden="true"></i></span><h2>Mailings konnten nicht geladen werden</h2><p>Ihre gewählten Filter bleiben erhalten. Versuchen Sie es erneut.</p><button class="btn" id="retry-mailings" type="button">Erneut laden</button></div></div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    window.addEventListener('load',()=>{
+      const fixture=window.CrmShell.getMailingFixture(),body=document.getElementById('mailing-rows'),office=document.getElementById('mailing-office');
+      fixture.records.forEach(record=>{
+        const distribution=fixture.distributions[record.distribution],row=document.createElement('tr'),progress=record.completed?'completed':'open',access=distribution.editable?'Bearbeitbar':'Lesbar, gesperrt';
+        row.dataset.progress=progress;row.dataset.office=distribution.office;
+        row.innerHTML='<td class="primary-cell"><strong><a></a></strong><small></small></td><td></td><td></td><td><span class="status"></span></td><td></td><td><span class="status"></span></td>';
+        const link=row.querySelector('a');link.href='mailing.html?id='+encodeURIComponent(record.id);link.textContent=record.title;
+        row.querySelector('.primary-cell small').textContent='Geändert '+record.changed;
+        row.children[1].textContent=distribution.name;row.children[2].textContent=distribution.office;
+        const progressStatus=row.children[3].querySelector('.status');progressStatus.className='status '+(record.completed?'status--success':'status--warning');progressStatus.textContent=record.completed?'Abgeschlossen':'Schritt '+record.stage+' von 5';
+        row.children[4].textContent=distribution.actual;
+        const accessStatus=row.children[5].querySelector('.status');accessStatus.className='status '+(distribution.editable?'status--success':'status--info');accessStatus.innerHTML='<i data-lucide="'+(distribution.editable?'pencil':'lock-keyhole')+'" aria-hidden="true"></i>'+access;
+        body.appendChild(row);
+      });
+      const rows=[...body.querySelectorAll('tr')];let listView;
+      const states=window.CrmShell.createStateSwitch({controls:'[data-prototype-state]',attribute:'data-prototype-state',initial:'filled',panels:{filled:document.getElementById('mailing-filled'),loading:document.getElementById('mailing-loading'),empty:document.getElementById('mailing-empty'),error:document.getElementById('mailing-error')},onChange:state=>{if(listView)listView.setBusy(state==='loading')}});
+      function update(view){document.getElementById('mailing-count').textContent=view.total+(view.total===1?' Mailing':' Mailings');document.getElementById('reset-mailing-filters').hidden=!view.query&&view.state.progress==='all'&&office.value==='all';if(view.reason!=='initial')states.set(view.total===0?'empty':'filled')}
+      listView=window.CrmShell.createListView({rows:rows,query:'#mailing-search',pagination:'#mailing-pagination',resultFocus:'#mailing-results-title',pageSize:25,itemName:total=>total===1?'Mailing':'Mailings',groups:[{name:'progress',controls:'[data-mailing-progress]',attribute:'data-mailing-progress',initial:'all'}],matches:(row,state)=>(state.progress==='all'||row.dataset.progress===state.progress)&&(office.value==='all'||row.dataset.office===office.value),onChange:update});
+      office.addEventListener('change',()=>listView.refresh('office'));
+      function reset(){office.value='all';listView.reset()}
+      document.getElementById('reset-mailing-filters').addEventListener('click',reset);
+      document.getElementById('reset-mailings').addEventListener('click',reset);
+      document.getElementById('retry-mailings').addEventListener('click',()=>{states.set('loading');setTimeout(()=>{states.set('filled');listView.refresh('retry')},650)});
+      window.CrmShell.rendered(document.querySelector('.list-card'));
+    });
+  </script>
+  <!-- Design-Rationale: Die unveränderte Listenanatomie macht Mailings zu einem nachschlagbaren Ort. Signature-Element ist der gleichwertig sichtbare, aber ausgeschriebene gesperrte Zugriff auf Mailings fremder Ämter; bewusst offen bleibt das fachliche Statusvokabular. -->
+</body>
+</html>

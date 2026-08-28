@@ -31,12 +31,21 @@ wird im Test über die Aufgabenstellung adressiert.
   festzulegen.
 - **Mailings am Verteiler und gemeinsame Fixture:** Im Verteilerdetail ist nur
   die Übergabe in den Mailing-Prozess vorhanden; eine Liste oder Historie der
-  zugehörigen Mailings fehlt. Außerdem werden Verteiler- und Empfängerzahlen
-  derzeit in Übersicht, Detail und Mailing getrennt gehalten und weichen ab.
-  Vor dem Bau wird eine gemeinsame Fixture benötigt. Fachliche Status,
-  Sichtbarkeit und Anlageberechtigung bleiben in
+  zugehörigen Mailings fehlt. Übersicht, Prozess, Leseansicht und Suche teilen
+  eine Mailing-Fixture. Verteilerübersicht und Verteilerdetail verwenden sie
+  noch nicht; ihre Mitglieder- und Empfängerzahlen weichen deshalb weiterhin
+  ab und müssen im Konsolidierungsdurchgang zusammengeführt werden. Fachliche
+  Status, Sichtbarkeit und Anlageberechtigung bleiben in
   [`ABDECKUNG.md`, Abschnitt 5](ABDECKUNG.md#5-fachfragen-nach-dem-testing)
   zu klären.
+- **Mailing-Sichtbarkeit und ämterübergreifende Wiederholung:** Für den ersten
+  Test gilt sichtbar und gesperrt als Annahme für fremde Verteiler und deren
+  Mailings. Ravi Menon wird in je einem Verteiler der Wirtschaftsförderung und
+  des Kulturamts geführt. Ob und auf welcher Rechtsgrundlage ein späteres
+  System eine doppelte Ansprache über diese Amtsgrenze hinweg erkennen oder
+  verhindern darf, bleibt nach
+  [`ABDECKUNG.md`, Abschnitt 5](ABDECKUNG.md#5-fachfragen-nach-dem-testing)
+  offen.
 
 ## Offener Barrierefreiheitsbefund
 
@@ -76,11 +85,12 @@ wird im Test über die Aufgabenstellung adressiert.
   leiten sich aus dem vollständigen Datenbestand ab. Einzel- und
   Sammeländerungen teilen einen Rückgängig-Stapel; die Veranstaltungsübersicht
   bei 1024 Pixeln und das Kontakt-Detail bei 1280 Pixeln überlaufen nicht mehr.
-- **Mailing:** Die Verteilerwahl berechnet eindeutige, ausgeschlossene und
-  tatsächliche Empfänger neu und trägt die Werte bis zum Versandbeleg. Die
-  Vorschau zeigt den tatsächlichen Beispielbestand „x von 5“; der Problemsprung
-  durchläuft zyklisch alle vier betroffenen Beispiele. Versandbeleg und
-  persönliche Anmeldung benennen die nicht ausgeführte Handlung.
+- **Mailing:** Die Übersicht erschließt 25 Mailings. Offene Mailings setzen den
+  gespeicherten Fünf-Schritt-Prozess fort, abgeschlossene öffnen eine reine
+  Leseansicht. Vorlage, genau ein Verteiler, Inhalt, namentliche Ausschlüsse,
+  tatsächliche Empfänger und Vorschau verwenden eine gemeinsame Fixture.
+  Test- und Echtversand benennen die Entwurfsgrenze; ein vorhandener Beleg wird
+  nur bei abgeschlossenen Fixture-Mailings gelesen und nicht neu erzeugt.
 - **Globale Suche:** Nur hinterlegte Datensätze navigieren. Nicht ausgebaute
   Suchtreffer bleiben aktiv und melden Art und Name des fehlenden Datensatzes.
 - **Belegung:** Klasse, sichtbare Textangabe und native `meter`-Semantik sind

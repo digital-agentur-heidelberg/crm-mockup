@@ -1,6 +1,6 @@
 # Abdeckungsabgleich – Entwurf gegen Screen-Inventar
 
-Stand: 27. August 2026. Verglichen wurden die Inhalte und darstellbaren
+Stand: 28. August 2026. Verglichen wurden die Inhalte und darstellbaren
 Zustände, nicht die Routen oder die Informationsarchitektur. Als „Entwurf“
 gelten nur die unter `screens/` tatsächlich vorhandenen, benutzbaren Inhalte;
 Systembausteine und in Berichten beschriebene Absichten allein gelten nicht als
@@ -48,6 +48,7 @@ oder nur als knappe Screenbezeichnung beschreibt.
 | Verteiler · V02 | Detail eines Arbeitsverteilers | Definition und Mitgliedschaften sind bearbeitbar; die Übergabe an ein Mailing ist vorhanden. Eine Anzeige der zugehörigen Mailings im Verteiler fehlt. | teilweise |
 | Verteiler · V03 | Detail eines Managed-Verteilers | Geschützte, lesbare Definition mit Begründung und weiterhin bearbeitbaren Mitgliedschaften ist vorhanden. Eine Anzeige der zugehörigen Mailings im Verteiler fehlt. | teilweise |
 | Verteiler · V05 | Arbeitsverteiler anlegen | Vierfeldformular mit Zusammenfassung und erfolgreichem Entwurfsabschluss ist benutzbar. | vorhanden |
+| Mailing · Übersicht | Mailings über alle sichtbaren Verteiler hinweg | 25 Mailings mit Suche, Prozessstand-Chips und Ämterauswahl sind ohne Mehrfachauswahl benutzbar. Abgeschlossene Mailings führen in eine Leseansicht, offene in ihren gespeicherten Prozessschritt. | vorhanden |
 | Veranstaltungen · E01 | Gefüllte Veranstaltungsübersicht | Die Übersicht enthält 60 Termine, Suche, Zeitraum- und Ämterfilter, Registrierungsstatus, Belegung und Pagination. | vorhanden |
 | Veranstaltungen · E01a | Ladezustand | Über die Prototypsteuerung benutzbar. | vorhanden |
 | Veranstaltungen · E01b | Leere Übersicht | Leerer Bestand beziehungsweise keine Treffer mit Rücksetzhandlung ist benutzbar. | vorhanden |
@@ -56,15 +57,15 @@ oder nur als knappe Screenbezeichnung beschreibt.
 | Veranstaltungen · E02e | Veranstaltungsdetail ohne Teilnehmende | Der fachlich leere Bestand ist über `veranstaltung.html?fixture=leer` erreichbar und besitzt anders als ein leeres Such- oder Filterergebnis keinen vorgetäuschten Rücksetzweg. | vorhanden |
 | Veranstaltungen · E04 | Veranstaltung bearbeiten | Kein Bearbeitungszustand vorhanden. | offen |
 | Veranstaltungen · E05 | Fachlich blockierter Anlegeentwurf ohne Erfolgspfad | Grunddaten, nachgelagerter Artvorschlag, Entwurfsspeicherung und blockierende Veröffentlichungsprüfung sind benutzbar; eine echte Veröffentlichung findet nicht statt. | vorhanden |
-| Mailing · M01 | Vorlage und Empfängerkreis | Beides ist vorhanden, im Entwurf jedoch auf die Stufen „Vorlage“ und „Empfängerkreis“ verteilt. Ein Verteiler kann aus dem Verteilerdetail übernommen werden; die feste Zuordnung eines Mailings zu genau einem Verteiler ist noch nicht durchgängig modelliert. | teilweise |
-| Mailing · M01a | Grundlagen laden | Nur das Neuladen der personalisierten Vorschau wird gezeigt; ein Ladezustand für Vorlagen und Empfängerkreis fehlt. | teilweise |
+| Mailing · M01 | Vorlage und Empfängerkreis | Vorlage und genau ein Verteiler werden in den Schritten 1 und 2 festgelegt. Ein aus dem Verteilerdetail übernommener Verteiler bleibt lesbar und festgesetzt; der folgende Ablauf überspringt die Auswahl sichtbar. | vorhanden |
+| Mailing · M01a | Grundlagen laden | Die Mailingübersicht besitzt einen Ladezustand; ein eigener Ladezustand innerhalb der Vorlagen- und Verteilerwahl fehlt. | teilweise |
 | Mailing · M01b | Keine Vorlagen | Nicht gebaut. | offen |
 | Mailing · M01c | Fehler beim Laden der Grundlagen | Nicht gebaut. | offen |
-| Mailing · M02 | Inhalt bearbeiten und ausgeschlossene Empfänger prüfen | Editor, Personalisierungsbausteine und Ausschlussprüfung sind vorhanden, aber als getrennte Stufen organisiert. | vorhanden |
-| Mailing · M03 | Testversand | Testadresse und ausgelöster Testversand sind benutzbar. | vorhanden |
-| Mailing · M04 | Testnachweis | Der Nachweis entsteht im selben Schritt wie der Testversand und wird bis zur Versandbestätigung fortgeschrieben. | vorhanden |
-| Mailing · M05 | Echtversand bestätigen | Unwiderruflichkeit, Zusammenfassung, Bestätigungscheckbox und gesperrte Primäraktion sind benutzbar. | vorhanden |
-| Mailing · M06 | Abhängiger Versandbeleg, kein realer Versand | Nach dem simulierten Versand erscheint ein Beleg; ein realer Versand erfolgt im statischen Entwurf nicht. | vorhanden |
+| Mailing · M02 | Inhalt bearbeiten und ausgeschlossene Empfänger prüfen | Editor, Personalisierungsbausteine, abgeleitete Empfängermengen und namentliche Ausschlussgründe sind gemeinsam in Schritt 3 vorhanden. | vorhanden |
+| Mailing · M03 | Testversand | Schritt 4 zeigt Testadresse und Handlung, führt aber keinen Versand aus. „Weiter ohne Testversand“ macht die Optionalität ausdrücklich und erreicht Schritt 5 unabhängig. | Entwurfsgrenze |
+| Mailing · M04 | Testnachweis | Der fehlende Nachweis wird in Schritt 4 und Schritt 5 wahrheitsgemäß angezeigt; der statische Entwurf erzeugt keinen positiven Nachweis. | Entwurfsgrenze |
+| Mailing · M05 | Echtversand bestätigen | Schritt 5 ist auch ohne Test erreichbar. Unwiderruflichkeit, Zusammenfassung, Bestätigungscheckbox und gesperrte Primäraktion sind benutzbar; die Versandhandlung endet per Meldung. | Entwurfsgrenze |
+| Mailing · M06 | Versandbeleg abgeschlossener Mailings | Die Leseansicht zeigt für abgeschlossene Fixture-Mailings deren vorhandenen Beleg. Der laufende Prozess simuliert weder Versand noch Belegerzeugung. | teilweise |
 | Darüber hinaus · Veranstaltungsübersicht | Fachlich ausgebaute Langlistenansicht | Über die knappe Inventarbezeichnung hinaus: 60 plausible Termine, echte Seitenwechsel, Zeitraum- und Mehrfach-Ämterfilter, ausgeschriebene Online-Registrierung und native Belegungswerte. | darüber hinaus |
 | Darüber hinaus · Listenanatomie | Gemeinsamer Aufbau langer Übersichten | Getrennte Rollen für lokale Suche, Aktionen, Filterachsen, Ergebnismetadaten, Tabelle, Pagination sowie gefüllt/lädt/leer/Fehler sind für Kontakte, Veranstaltungen und Verteiler vorhanden. | darüber hinaus |
 | Darüber hinaus · Sammelaktionen | Bereichsübergreifende Auswahlverträge | Seitenübergreifende Auswahl, Kontakt-Export, Verteilerzuordnung, Anschreiben und Statusänderung ausgewählter Teilnehmender sowie Hinzufügen und Entfernen von Verteilermitgliedern sind vorhanden. | darüber hinaus |
@@ -72,7 +73,7 @@ oder nur als knappe Screenbezeichnung beschreibt.
 | Darüber hinaus · Gemeinsame Hülle | Offline-Navigation und intelligente Suche | Eine zentrale, vollständig offline laufende Hülle erzeugt Navigation, aktive Bereiche, globale Kontakt- und Handlungssuche, Hilfe, Profil und Rückmeldungen. | darüber hinaus |
 | Darüber hinaus · Kontaktliste | Master-Detail-Vorschau | Einzelauswahl und Mehrfachauswahl bleiben getrennt; die Vorschau wechselt bei schmaler Breite in eine Detailzeile. | darüber hinaus |
 | Darüber hinaus · Teilrechte | Geschützt, aber weiterhin lesbar und teilweise bearbeitbar | Beziehungsknoten und Managed-Definition zeigen Schutzgrund und zuständige Stelle, ohne lesbare Inhalte als deaktivierte Scheinfelder auszugeben. | darüber hinaus |
-| Darüber hinaus · Mailing | Versandprüfung und Personalisierung | Eindeutige Empfänger, Dublettenauflösung, Ausschlussgründe, Leerwertregeln, empfängerweise Vorschau, Problemsprung, Testnachweis und Versandbeleg sind durchgängig verbunden. | darüber hinaus |
+| Darüber hinaus · Mailing | Übersicht, Versandprüfung und Personalisierung | Bereichsübersicht, feste Verteilerzuordnung, Empfängermengen, Ausschlussgründe, ämterübergreifender Wiederholungsfall, Leerwertregeln, empfängerweise Vorschau, Prozessfortsetzung und abgeschlossene Leseansicht sind verbunden. | darüber hinaus |
 | Darüber hinaus · Veranstaltungsart | Artvorschlag nach den Grundangaben | Der Entwurf erlaubt Speichern ohne Art, schlägt danach eine Art vor und blockiert erst die Veröffentlichung bis zur Bestätigung. | darüber hinaus |
 
 ## 2. Abweichungen in Struktur und Ablauf
@@ -108,16 +109,19 @@ nicht, welche Fassung später umgesetzt wird.
   Ausprägungen auf einer Detailseite umschaltbar und trennt geschützte
   Definition von bearbeitbaren Mitgliedschaften, um die Rechtewirkung am
   gleichen Objektaufbau sichtbar zu machen.
-- **Mailing-Ablauf:** Der Prototyp führt sechs Zustände von Vorlage und
-  Empfängerkreis über Inhalt, Test, Nachweis und Bestätigung zum Beleg; der
-  Entwurf verwendet fünf sichtbare Schritte, trennt Vorlage, Empfängerkreis und
-  Ausschlüsse, verbindet Testversand mit Nachweis und zeigt den Beleg nach der
-  Versandbestätigung im letzten Schritt, damit Prüfung und Unwiderruflichkeit
-  als durchgängiger Arbeitsablauf lesbar bleiben.
-- **Mailing-Inhalt:** Der Prototyp benennt Inhalt und ausgeschlossene Empfänger
-  gemeinsam; der Entwurf stellt Personalisierungs- und Leerwertregeln zuerst
-  beim Inhalt dar und prüft Ausschlüsse danach als eigenen Schritt, weil beide
-  Fehlerarten unterschiedliche Folgen für den Versand haben.
+- **Mailing-Ablauf:** Der Entwurf verwendet fünf sichtbare Schritte im Wortlaut
+  „Vorlage“, „Verteiler“, „Inhalt und Empfänger“, „Testversand“ und
+  „Echtversand“. Schritt 4 ist optional; Schritt 5 bleibt ohne Test erreichbar.
+  Kein Versand und kein positiver Testnachweis werden simuliert. Vorhandene
+  Versandbelege erscheinen ausschließlich in abgeschlossenen Leseansichten.
+- **Mailing-Einstiege und abgeschlossene Mailings:** Der Bauabschnitt
+  unterscheidet Anlage, Wiederaufnahme und Nachschlagen.
+  „Mailing anlegen“ beginnt bei Schritt 1, ein begonnenes Mailing öffnet seinen
+  gespeicherten Prozessschritt und ein abgeschlossenes Mailing eine reine
+  Leseansicht ohne Prozessleiste oder bearbeitbare Scheinfelder.
+- **Mailing-Inhalt:** Personalisierungs- und Leerwertregeln, Empfängermenge und
+  namentliche Ausschlüsse stehen gemeinsam in Schritt 3. Die Vorschau bleibt
+  daneben empfängerweise prüfbar.
 - **Veranstaltungsart:** Der Prototyp beschreibt einen fachlich blockierten
   Anlegeentwurf; der Entwurf erfasst zunächst bekannte Grunddaten, schlägt erst
   danach eine Veranstaltungsart vor, erlaubt den Entwurf ohne Art und verlangt
@@ -149,14 +153,24 @@ nicht, welche Fassung später umgesetzt wird.
   bearbeitbar; die Veranstaltung eines fremden Amts bleibt lesbar, aber für
   Auswahl und Statuspflege gesperrt. Statusvokabular und erlaubte Übergänge
   bleiben Fachfragen für den Test.
-- **B – Mailings am Verteiler:** Mailings hängen immer an einem Verteiler.
+- **B – Mailings am Verteiler:** Mailings hängen immer an genau einem Verteiler.
   Einzelmailings und individuelle Gruppenmailings führen aus der Kontaktliste
   in Richtung Outlook oder Mailprogramm, wie im Screen-Inventar beschrieben.
-  Die zugehörigen Mailings werden am jeweiligen Verteiler dargestellt; ihre
-  Form bleibt offen. Der aktuelle Entwurf besitzt nur die Übergabe in den
-  Mailing-Prozess; eine Liste oder Historie am Verteilerdetail ist nicht
-  gebaut. Der geplante Mailing-Bauabschnitt beginnt damit im Verteilerdetail
-  statt in einer eigenständigen Übersicht.
+  Eine gemeinsame Übersicht zeigt sie über alle sichtbaren Verteiler hinweg;
+  dies ändert ihre feste Zuordnung nicht. Der Einstieg aus dem Verteilerdetail
+  setzt den Verteiler fest, der Einstieg aus dem Mailingbereich verlangt die
+  Wahl genau eines Verteilers. Eine Liste oder Historie im Verteilerdetail
+  bleibt außerhalb dieses Bauabschnitts.
+- **D – Sichtbarkeit von Mailings — Testannahme:** Ein Mailing ist genau dann
+  sichtbar, wenn sein Verteiler sichtbar ist. Für den ersten Test werden
+  Verteiler fremder Ämter und ihre Mailings sichtbar, lesbar und gesperrt
+  gezeigt. Dies ist ausdrücklich keine fachliche Rechteentscheidung.
+- **E – Teilnehmende anschreiben — bewusster Beobachtungspunkt:** Die Handlung
+  im Veranstaltungsdetail führt nicht in den Verteiler-Mailingprozess, weil die
+  Teilnehmenden kein fest zugeordnetes Verteiler-Mailing bilden. Sie bleibt am
+  aktuellen Screen und meldet die Entwurfsgrenze. Das ist kein vergessener
+  Link, sondern macht im Test beobachtbar, wo Nutzende die aus dem Briefing
+  bekannte Handlung „Mail an alle Angemeldeten“ suchen.
 - **C – Zähler sind Ableitungen — innerhalb der Screens umgesetzt:** Eine Zahl
   neben einer Liste wird aus dieser Liste berechnet und nie unabhängig
   gepflegt. Dies gilt für Statussummen der Teilnehmenden, Mitgliederzahl eines
@@ -176,7 +190,9 @@ Mitgliederpagination und Prototyp-Ausprägungen des Verteilerdetails (Befund 14)
 sowie die horizontalen Überläufe in `veranstaltungen.html` bei 1024 Pixeln und
 `kontakt-detail.html` bei 1280 Pixeln.
 
-Ausstehend ist die in Befund 07 genannte vollständige manuelle Browserrunde:
+Vor dem Konsolidierungsdurchgang ist der Bauabschnitt Mailingübersicht und
+vollständiger Prozess abgeschlossen (Befund 15). Ausstehend ist außerdem die in
+Befund 07 genannte vollständige manuelle Browserrunde:
 Tastaturweg, ARIA, Kontrast und die Viewports über den gesamten Bestand.
 
 ### Im ersten Usertest
@@ -184,14 +200,15 @@ Tastaturweg, ARIA, Kontrast und die Viewports über den gesamten Bestand.
 Getestet werden die tatsächlich gebauten Wege: Arbeitsstart und Suche,
 Kontaktliste und Personendetail, Kontaktanlage mit Dublettenprüfung,
 Verteilerzuordnung aus beiden Richtungen, Arbeits- und Managed-Verteiler,
-Veranstaltungsübersicht, Teilnehmendenarbeit, Veranstaltung anlegen sowie der
-vorhandene Mailingprozess. Die Fachfragen aus Abschnitt 5 werden über diese
+Veranstaltungsübersicht, Teilnehmendenarbeit, Veranstaltung anlegen,
+Mailingübersicht sowie der Mailingprozess ab Schritt 1. Die Fachfragen aus
+Abschnitt 5 werden über diese
 Aufgaben erhoben; sie werden vor dem Test nicht durch erfundene Rechte oder
 Prozessregeln geschlossen.
 
 Nicht als umgesetzte Lösung getestet werden persönliche Öffnungshistorie,
 Institutionendetail, Kontakt- und Veranstaltungbearbeitung, vollständig
-geschützte Objekte, zugehörige Mailings am Verteiler sowie reale Exporte,
+geschützte Objekte, Mailinghistorie im Verteilerdetail sowie reale Exporte,
 Nachrichten oder Versandhandlungen. F01–F17 bleiben Dokumentation und werden
 nicht als Fachscreens ergänzt.
 
@@ -200,8 +217,8 @@ nicht als Fachscreens ergänzt.
 Nach den fachlichen und organisatorischen Entscheidungen folgen
 Institutionendetail, Kontakt bearbeiten einschließlich Kontakterlaubnis und
 Deaktivierung, Veranstaltung bearbeiten einschließlich Absage und Löschung
-sowie Mailing am Verteiler einschließlich fester Verteilerzuordnung und der
-noch fehlenden Lade-, Leer- und Fehlerzustände. Die persönliche
+sowie die noch fehlenden Mailing-Lade-, Leer- und Fehlerzustände über den
+gemeinsamen Übersichtsvertrag hinaus. Die persönliche
 Öffnungshistorie bleibt eine davon getrennte Umsetzungsfrage. Institutionen
 hängen am Verbindungsmodell aus Frage 11; dessen Bezeichnungen werden im Test
 erhoben. Vorher zu bauen hieße, das Modell zu raten.
@@ -223,7 +240,9 @@ für fachliche Fragen auf diesen Abschnitt.
    Entscheidung unverändert, damit beobachtbar ist, ob jemand eine fremde
    Definition ändern möchte.
 - **8b · Verteilerzuordnung / Sichtbarkeit fremder Verteiler:** Ist ein Verteiler
-   eines anderen Amts sichtbar und gesperrt oder gar nicht sichtbar?
+   eines anderen Amts sichtbar und gesperrt oder gar nicht sichtbar? Für den
+   ersten Test gilt sichtbar und gesperrt als Annahme; dieselbe Annahme wirkt
+   auf die zugehörigen Mailings.
 - **10 · Kontaktanlage / Pflichtangaben:** Welche Angaben sind je Kontaktart für
    den Abschluss erforderlich?
 - **11 · Kontaktanlage / Kontaktarten und Verbindungen:** Personen können
@@ -284,16 +303,25 @@ für fachliche Fragen auf diesen Abschnitt.
     vollständig geschützte Veranstaltungen dargestellt?
 - **Fortgeführt · Mailingprozess:** Muss Test- oder Echtversand durch eine zweite
     Person freigegeben werden, oder genügt der dokumentierte Nachweis der
-    versendenden Person?
+    versendenden Person? Eine sichtbare Stelle läge zwischen Testnachweis und
+    Echtversand; sie wird in diesem Bauabschnitt ausdrücklich nicht gebaut.
 
 ### Umsetzungsfrage
 
-- **5b · Mailing am Verteiler / technische Seite:** Vor der Umsetzung braucht
-    der Prototyp eine gemeinsame Fixture für Verteiler, Mitglieder,
-    Empfängerwerte und zugehörige Mailings. Derzeit liegen Mengen mehrfach vor
-    und weichen zwischen Übersicht, Detail und Mailing ab. Die technische
-    Seite hängt außerdem an einer noch nicht getroffenen
+- **5b · Mailing am Verteiler / technische Seite:** Der Mailingbereich besitzt
+    eine gemeinsame Fixture für Übersicht, Prozess, Leseansicht und Suche.
+    Verteilerübersicht und Verteilerdetail verwenden sie noch nicht; deshalb
+    weichen ihre Mengen weiter ab. Die Konsolidierung muss diese Datenquellen
+    zusammenführen und hängt an einer noch nicht getroffenen
     Architekturentscheidung.
+  Der Bauabschnitt legt dafür den mailingbezogenen Testvertrag fest:
+  Kreativwirtschaft Heidelberg erwartet 68 Mitglieder und 64 tatsächliche
+  Empfänger, Verteiler Umweltwirtschaft 25 und 23, Branchentreffen Kultur 41
+  und 39. Er gleicht die davon abweichenden 53 Detailmitglieder und die
+  bisherigen Mehrverteilerwerte 102 eindeutig, 6 ausgeschlossen und 96
+  tatsächlich nicht an. Ravi Menon wird als vorhandene Person in Verteilern
+  der Wirtschaftsförderung und des Kulturamts geführt; eine automatische
+  ämterübergreifende Unterdrückung wird nicht behauptet.
 - **12 · Kontaktanlage / Dublettenlogik:** Für den Design-Prototypen nicht
     relevant.
 - **Fortgeführt · Persönliche Öffnungshistorie:** Speicherort,
@@ -314,8 +342,8 @@ für fachliche Fragen auf diesen Abschnitt.
 
 ### Notizen aus dem Abgleich
 
-- Im aktuellen Ordner liegen elf Fachscreens, das Prototyp-Hilfsmittel
-  `index.html` und `_vorlage.html`. R01 zählt ausdrücklich nicht als
+- Mit dem Mailing-Bauabschnitt liegen zwölf Fachscreens, das
+  Prototyp-Hilfsmittel `index.html` und `_vorlage.html`. R01 zählt ausdrücklich nicht als
   Produktscreen; F01–F17 werden nicht als Dateien ergänzt.
 - Die Statusstrecke zeigt zehn Wartelistenplätze, passend zur Tabelle. Sie ist
   aus der Liste abgeleitet; siehe Abschnitt 3 und Befund 11.
