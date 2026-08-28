@@ -38,12 +38,14 @@ wird im Test über die Aufgabenstellung adressiert.
   Status, Sichtbarkeit und Anlageberechtigung bleiben in
   [`ABDECKUNG.md`, Abschnitt 5](ABDECKUNG.md#5-fachfragen-nach-dem-testing)
   zu klären.
-- **Mailing-Sichtbarkeit und ämterübergreifende Wiederholung:** Für den ersten
-  Test gilt sichtbar und gesperrt als Annahme für fremde Verteiler und deren
-  Mailings. Ravi Menon wird in je einem Verteiler der Wirtschaftsförderung und
-  des Kulturamts geführt. Ob und auf welcher Rechtsgrundlage ein späteres
-  System eine doppelte Ansprache über diese Amtsgrenze hinweg erkennen oder
-  verhindern darf, bleibt nach
+- **Mailing-Sichtbarkeit und ämterübergreifende Wiederholung:** Das zuständige
+  Amt eines Mailings ist vom pflegenden Amt seines Verteilers getrennt. Für den
+  ersten Test gilt sichtbar, lesbar und gesperrt als Annahme für Mailings eines
+  fremden zuständigen Amts; die Sichtbarkeit fremder Verteiler bleibt eine
+  eigene Rechtefrage. Ravi Menon wird in je einem Verteiler der
+  Wirtschaftsförderung und des Kulturamts geführt. Ob und auf welcher
+  Rechtsgrundlage ein späteres System eine doppelte Ansprache über diese
+  Amtsgrenze hinweg erkennen oder verhindern darf, bleibt nach
   [`ABDECKUNG.md`, Abschnitt 5](ABDECKUNG.md#5-fachfragen-nach-dem-testing)
   offen.
 

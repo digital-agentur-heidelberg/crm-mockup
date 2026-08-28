@@ -48,7 +48,7 @@ oder nur als knappe Screenbezeichnung beschreibt.
 | Verteiler · V02 | Detail eines Arbeitsverteilers | Definition und Mitgliedschaften sind bearbeitbar; die Übergabe an ein Mailing ist vorhanden. Eine Anzeige der zugehörigen Mailings im Verteiler fehlt. | teilweise |
 | Verteiler · V03 | Detail eines Managed-Verteilers | Geschützte, lesbare Definition mit Begründung und weiterhin bearbeitbaren Mitgliedschaften ist vorhanden. Eine Anzeige der zugehörigen Mailings im Verteiler fehlt. | teilweise |
 | Verteiler · V05 | Arbeitsverteiler anlegen | Vierfeldformular mit Zusammenfassung und erfolgreichem Entwurfsabschluss ist benutzbar. | vorhanden |
-| Mailing · Übersicht | Mailings über alle sichtbaren Verteiler hinweg | 25 Mailings mit Suche, Prozessstand-Chips und Ämterauswahl sind ohne Mehrfachauswahl benutzbar. Abgeschlossene Mailings führen in eine Leseansicht, offene in ihren gespeicherten Prozessschritt. | vorhanden |
+| Mailing · Übersicht | Mailings über alle sichtbaren Verteiler hinweg | 25 Mailings mit Suche, Prozessstand-Chips und Ämterauswahl sind ohne Mehrfachauswahl benutzbar. Das zuständige Amt ist eine Angabe des Mailings und wird nicht aus dem Verteiler abgeleitet. Abgeschlossene Mailings führen in eine Leseansicht, offene in ihren gespeicherten Prozessschritt. | vorhanden |
 | Veranstaltungen · E01 | Gefüllte Veranstaltungsübersicht | Die Übersicht enthält 60 Termine, Suche, Zeitraum- und Ämterfilter, Registrierungsstatus, Belegung und Pagination. | vorhanden |
 | Veranstaltungen · E01a | Ladezustand | Über die Prototypsteuerung benutzbar. | vorhanden |
 | Veranstaltungen · E01b | Leere Übersicht | Leerer Bestand beziehungsweise keine Treffer mit Rücksetzhandlung ist benutzbar. | vorhanden |
@@ -161,10 +161,13 @@ nicht, welche Fassung später umgesetzt wird.
   setzt den Verteiler fest, der Einstieg aus dem Mailingbereich verlangt die
   Wahl genau eines Verteilers. Eine Liste oder Historie im Verteilerdetail
   bleibt außerhalb dieses Bauabschnitts.
-- **D – Sichtbarkeit von Mailings — Testannahme:** Ein Mailing ist genau dann
-  sichtbar, wenn sein Verteiler sichtbar ist. Für den ersten Test werden
-  Verteiler fremder Ämter und ihre Mailings sichtbar, lesbar und gesperrt
-  gezeigt. Dies ist ausdrücklich keine fachliche Rechteentscheidung.
+- **D – Zuständigkeit und Sichtbarkeit von Mailings:** Jedes Mailing besitzt
+  ein eigenes zuständiges Amt. Anzeige, Filterung und Bearbeitbarkeit des
+  Mailings verwenden diese Angabe und leiten sie nicht aus dem zugeordneten
+  Verteiler ab. Welche Verteiler sichtbar und auswählbar sind, bleibt davon
+  eine getrennte Rechtefrage. Für den ersten Test werden Mailings eines fremden
+  Amts sichtbar, lesbar und gesperrt gezeigt; dies ist ausdrücklich keine
+  abschließende fachliche Rechteentscheidung.
 - **E – Teilnehmende anschreiben — bewusster Beobachtungspunkt:** Die Handlung
   im Veranstaltungsdetail führt nicht in den Verteiler-Mailingprozess, weil die
   Teilnehmenden kein fest zugeordnetes Verteiler-Mailing bilden. Sie bleibt am
@@ -241,8 +244,9 @@ für fachliche Fragen auf diesen Abschnitt.
    Definition ändern möchte.
 - **8b · Verteilerzuordnung / Sichtbarkeit fremder Verteiler:** Ist ein Verteiler
    eines anderen Amts sichtbar und gesperrt oder gar nicht sichtbar? Für den
-   ersten Test gilt sichtbar und gesperrt als Annahme; dieselbe Annahme wirkt
-   auf die zugehörigen Mailings.
+   ersten Test gilt sichtbar und gesperrt als Annahme. Die Sichtbarkeit und
+   Bearbeitbarkeit eines zugehörigen Mailings folgt dagegen dessen eigenem
+   zuständigen Amt.
 - **10 · Kontaktanlage / Pflichtangaben:** Welche Angaben sind je Kontaktart für
    den Abschluss erforderlich?
 - **11 · Kontaktanlage / Kontaktarten und Verbindungen:** Personen können

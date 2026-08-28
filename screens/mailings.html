@@ -39,12 +39,15 @@
             <button class="filter-chip" type="button" aria-pressed="false" data-mailing-progress="completed">Abgeschlossen</button>
           </div>
           <div class="list-filter-row">
-            <label for="mailing-office"><strong>Zuständiges Amt</strong></label>
-            <select class="select" id="mailing-office">
-              <option value="all">Alle Ämter</option>
-              <option value="Wirtschaftsförderung">Wirtschaftsförderung</option>
-              <option value="Kulturamt">Kulturamt</option>
-            </select>
+            <strong>Zuständigkeit</strong>
+            <details class="menu" id="mailing-office-menu">
+              <summary class="filter-chip" id="mailing-office-summary"><i data-lucide="landmark" aria-hidden="true"></i>Ämter: alle</summary>
+              <div class="menu-popover menu-popover--left filter-popover">
+                <strong>Zuständiges Amt</strong>
+                <label class="check"><input type="checkbox" name="mailing-office" value="Wirtschaftsförderung" checked><span>Wirtschaftsförderung</span></label>
+                <label class="check"><input type="checkbox" name="mailing-office" value="Kulturamt" checked><span>Kulturamt</span></label>
+              </div>
+            </details>
             <button class="btn btn--quiet btn--compact list-filter-reset" id="reset-mailing-filters" type="button" hidden>Filter zurücksetzen</button>
           </div>
         </div>
@@ -66,31 +69,28 @@
 
   <script>
     window.addEventListener('load',()=>{
-      const fixture=window.CrmShell.getMailingFixture(),body=document.getElementById('mailing-rows'),office=document.getElementById('mailing-office');
+      const fixture=window.CrmShell.getMailingFixture(),body=document.getElementById('mailing-rows'),offices=['Wirtschaftsförderung','Kulturamt'];
       fixture.records.forEach(record=>{
-        const distribution=fixture.distributions[record.distribution],row=document.createElement('tr'),progress=record.completed?'completed':'open',access=distribution.editable?'Bearbeitbar':'Lesbar, gesperrt';
-        row.dataset.progress=progress;row.dataset.office=distribution.office;
+        const distribution=fixture.distributions[record.distribution],row=document.createElement('tr'),progress=record.completed?'completed':'open',editable=record.office===fixture.currentOffice,access=editable?'Bearbeitbar':'Lesbar, gesperrt';
+        row.dataset.progress=progress;row.dataset.office=record.office;
         row.innerHTML='<td class="primary-cell"><strong><a></a></strong><small></small></td><td></td><td></td><td><span class="status"></span></td><td></td><td><span class="status"></span></td>';
         const link=row.querySelector('a');link.href='mailing.html?id='+encodeURIComponent(record.id);link.textContent=record.title;
         row.querySelector('.primary-cell small').textContent='Geändert '+record.changed;
-        row.children[1].textContent=distribution.name;row.children[2].textContent=distribution.office;
+        row.children[1].textContent=distribution.name;row.children[2].textContent=record.office;
         const progressStatus=row.children[3].querySelector('.status');progressStatus.className='status '+(record.completed?'status--success':'status--warning');progressStatus.textContent=record.completed?'Abgeschlossen':'Schritt '+record.stage+' von 5';
         row.children[4].textContent=distribution.actual;
-        const accessStatus=row.children[5].querySelector('.status');accessStatus.className='status '+(distribution.editable?'status--success':'status--info');accessStatus.innerHTML='<i data-lucide="'+(distribution.editable?'pencil':'lock-keyhole')+'" aria-hidden="true"></i>'+access;
+        const accessStatus=row.children[5].querySelector('.status');accessStatus.className='status '+(editable?'status--success':'status--info');accessStatus.innerHTML='<i data-lucide="'+(editable?'pencil':'lock-keyhole')+'" aria-hidden="true"></i>'+access;
         body.appendChild(row);
       });
       const rows=[...body.querySelectorAll('tr')];let listView;
       const states=window.CrmShell.createStateSwitch({controls:'[data-prototype-state]',attribute:'data-prototype-state',initial:'filled',panels:{filled:document.getElementById('mailing-filled'),loading:document.getElementById('mailing-loading'),empty:document.getElementById('mailing-empty'),error:document.getElementById('mailing-error')},onChange:state=>{if(listView)listView.setBusy(state==='loading')}});
-      function update(view){document.getElementById('mailing-count').textContent=view.total+(view.total===1?' Mailing':' Mailings');document.getElementById('reset-mailing-filters').hidden=!view.query&&view.state.progress==='all'&&office.value==='all';if(view.reason!=='initial')states.set(view.total===0?'empty':'filled')}
-      listView=window.CrmShell.createListView({rows:rows,query:'#mailing-search',pagination:'#mailing-pagination',resultFocus:'#mailing-results-title',pageSize:25,itemName:total=>total===1?'Mailing':'Mailings',groups:[{name:'progress',controls:'[data-mailing-progress]',attribute:'data-mailing-progress',initial:'all'}],matches:(row,state)=>(state.progress==='all'||row.dataset.progress===state.progress)&&(office.value==='all'||row.dataset.office===office.value),onChange:update});
-      office.addEventListener('change',()=>listView.refresh('office'));
-      function reset(){office.value='all';listView.reset()}
-      document.getElementById('reset-mailing-filters').addEventListener('click',reset);
-      document.getElementById('reset-mailings').addEventListener('click',reset);
+      function update(view){const selectedOffices=view.state.office,summary=document.getElementById('mailing-office-summary');document.getElementById('mailing-count').textContent=view.total+(view.total===1?' Mailing':' Mailings');summary.innerHTML='<i data-lucide="landmark" aria-hidden="true"></i>'+(selectedOffices.length===offices.length?'Ämter: alle':'Ämter · '+selectedOffices.length+' gewählt');window.CrmShell.rendered(summary);if(view.reason!=='initial')states.set(view.total===0?'empty':'filled')}
+      listView=window.CrmShell.createListView({rows:rows,query:'#mailing-search',pagination:'#mailing-pagination',resultFocus:'#mailing-results-title',resetControls:'#reset-mailing-filters',pageSize:25,itemName:total=>total===1?'Mailing':'Mailings',groups:[{name:'progress',type:'exclusive',controls:'[data-mailing-progress]',attribute:'data-mailing-progress',initial:'all'},{name:'office',type:'checkbox',controls:'input[name="mailing-office"]',initial:offices}],matches:(row,state)=>(state.progress==='all'||row.dataset.progress===state.progress)&&state.office.includes(row.dataset.office),onChange:update});
+      document.getElementById('reset-mailings').addEventListener('click',()=>listView.reset());
       document.getElementById('retry-mailings').addEventListener('click',()=>{states.set('loading');setTimeout(()=>{states.set('filled');listView.refresh('retry')},650)});
       window.CrmShell.rendered(document.querySelector('.list-card'));
     });
   </script>
-  <!-- Design-Rationale: Die unveränderte Listenanatomie macht Mailings zu einem nachschlagbaren Ort. Signature-Element ist der gleichwertig sichtbare, aber ausgeschriebene gesperrte Zugriff auf Mailings fremder Ämter; bewusst offen bleibt das fachliche Statusvokabular. -->
+  <!-- Design-Rationale: Die unveränderte Listenanatomie macht Mailings zu einem nachschlagbaren Ort. Zuständigkeit und Zugriff folgen dem Mailing selbst, während der Verteiler nur den Empfängerkreis bestimmt. Signature-Element ist der gleichwertig sichtbare, aber ausgeschriebene gesperrte Zugriff auf Mailings fremder Ämter; bewusst offen bleibt das fachliche Statusvokabular. -->
 </body>
 </html>

@@ -161,10 +161,13 @@ werden im Text des jeweiligen Befunds genannt.
 
 `CrmShell.getMailingFixture()` liefert eine Kopie der gemeinsamen, fest
 verdrahteten Testdaten für Mailingübersicht, Bearbeitungsprozess und
-Leseansicht. Der Vertrag ist bewusst nur mailingbezogen: Er gleicht die noch
-abweichenden Mitgliederzahlen in Verteilerübersicht und Verteilerdetail nicht
-an. Die Abweichungen und die später zusammenzuführenden Werte stehen
-federführend in `ABDECKUNG.md`.
+Leseansicht. Jeder Mailing-Datensatz führt sein zuständiges Amt selbst. Das
+pflegende Amt eines Verteilers bleibt als `managingOffice` eine getrennte
+Verteilerangabe und darf weder Mailingfilter noch Mailing-Bearbeitbarkeit oder
+Absenderdarstellung bestimmen. Der Vertrag ist bewusst nur mailingbezogen: Er
+gleicht die noch abweichenden Mitgliederzahlen in Verteilerübersicht und
+Verteilerdetail nicht an. Die Abweichungen und die später zusammenzuführenden
+Werte stehen federführend in `ABDECKUNG.md`.
 
 Ein Mailing besitzt genau einen Verteiler. `mailings.html` ist der Ort des
 Navigationsbereichs. Von dort beginnt „Mailing anlegen“ bei Schritt 1; ein
@@ -176,11 +179,11 @@ wird in der linearen Weiter-Navigation aber als bereits festgelegt
 übersprungen.
 
 Fremde sichtbare Verteiler werden in der Testannahme als lesbare, gesperrte
-`.assignment-target`-Ziele gezeigt. Ihre Mailings sind ebenfalls lesbar und
-gesperrt; eine eigene Mailing-Rechtedimension wird nicht angelegt. Der
-optionale Testversand blockiert den Echtversandschritt nicht. Test- und
-Echtversand enden beide an der prototypischen Handlungsgrenze und erzeugen
-weder Nachweis noch Versandbeleg.
+`.assignment-target`-Ziele gezeigt. Davon getrennt sind Mailings eines fremden
+zuständigen Amts lesbar und gesperrt; die Testpersona gehört zur
+Wirtschaftsförderung. Der optionale Testversand blockiert den
+Echtversandschritt nicht. Test- und Echtversand enden beide an der
+prototypischen Handlungsgrenze und erzeugen weder Nachweis noch Versandbeleg.
 
 ## Gemeinsame Interaktionsverträge
 
