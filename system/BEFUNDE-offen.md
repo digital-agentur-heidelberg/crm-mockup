@@ -107,6 +107,17 @@ wird im Test über die Aufgabenstellung adressiert.
   Auswahlpfad und die fest an Sabine Keller gekoppelte responsive Detailzeile
   blockieren die Klick- und Tastaturprüfung nicht mehr. Auswahl, Vorschau und
   Detailziel werden aus der jeweils aktiven Zeile abgeleitet.
+- **B2 – Kontaktanlage im Testmodus:** Die feste Testfixture wechselt nach dem
+  sichtbaren Prüfzustand selbst zum möglichen Dublettentreffer. In der
+  anschließenden Kenntnisnahme sind die bekannten Angaben wieder bearbeitbar,
+  sodass die verpflichtende Kontaktart bestätigt und die begründete
+  Neuanlage abgeschlossen werden kann. Die Prototypsteuerung kann den
+  automatischen Übergang weiterhin gezielt übersteuern.
+- **B3 – Gespeicherte Begründung:** Nach erfolgreicher begründeter Neuanlage
+  verschwindet die Abschlussaktion. Die gewählte Begründung einschließlich
+  eines sichtbaren Freitexts bleibt als gespeicherte Entscheidung lesbar, ist
+  aber nativ deaktiviert und nicht mehr bearbeitbar. Validierungsfehler und
+  die anderen K05-Zustände bleiben davon unberührt.
 
 Tastaturweg und ARIA-Semantik der vollständigen manuellen Browserrunde sind
 ausstehend. Die im Befund 11 beschriebenen Firefox-Prüfungen bei 1024, 1280

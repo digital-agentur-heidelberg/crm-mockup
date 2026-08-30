@@ -191,19 +191,21 @@
       var nameField = document.getElementById('contact-name');
       var kindField = document.getElementById('contact-kind');
       var states;
+      var checkTimer;
       var guard = window.CrmShell.createUnsavedGuard({ form: workGrid, saveControls: '#save-draft' });
 
       function renderLayout(state) {
-        var interrupted = ['checking', 'duplicate', 'acknowledged'].indexOf(state) !== -1;
+        var formLocked = ['checking', 'duplicate'].indexOf(state) !== -1;
+        var decisionState = ['checking', 'duplicate', 'acknowledged'].indexOf(state) !== -1;
         form.querySelectorAll('input, select, textarea, button').forEach(function (control) {
-          control.disabled = interrupted;
+          control.disabled = formLocked;
         });
-        form.setAttribute('aria-disabled', String(interrupted));
+        form.setAttribute('aria-disabled', String(formLocked));
         if (state === 'duplicate') {
           var normalizedName = nameField.value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('de');
           document.getElementById('sabine-match-reason').textContent = normalizedName.indexOf('sabine kel') !== -1 ? 'Ähnliche Schreibweise · gleiche Kontaktdaten' : 'Ähnliche Kontaktdaten';
         }
-        if (interrupted) {
+        if (decisionState) {
           window.requestAnimationFrame(function () {
             var decision = document.querySelector('#state-' + state + ' h2');
             if (decision) {
@@ -216,6 +218,16 @@
 
       function setState(next) {
         states.set(next);
+      }
+
+      function runDuplicateCheck() {
+        window.clearTimeout(checkTimer);
+        setState('checking');
+        checkTimer = window.setTimeout(function () {
+          if (states.get() === 'checking') {
+            setState('duplicate');
+          }
+        }, 900);
       }
 
       function showValidation() {
@@ -284,8 +296,8 @@
         onChange: renderLayout
       });
 
-      document.getElementById('start-check').addEventListener('click', function () { setState('checking'); });
-      document.getElementById('retry-check').addEventListener('click', function () { setState('checking'); });
+      document.getElementById('start-check').addEventListener('click', runDuplicateCheck);
+      document.getElementById('retry-check').addEventListener('click', runDuplicateCheck);
       document.getElementById('continue-new').addEventListener('click', function () { setState('acknowledged'); });
       document.getElementById('create-without-duplicate').addEventListener('click', function (event) {
         var success = document.getElementById('no-duplicate-success');
@@ -309,7 +321,7 @@
           document.getElementById('create-after-reason').disabled = false;
         });
       });
-      document.getElementById('create-after-reason').addEventListener('click', function () {
+      document.getElementById('create-after-reason').addEventListener('click', function (event) {
         var chosen = document.querySelector('input[name="duplicate-reason"]:checked');
         var otherField = document.getElementById('other-reason');
         var otherMissing = chosen && chosen.value === 'Anderer Grund' && !otherField.value.trim();
@@ -319,7 +331,12 @@
           otherField.focus();
           return;
         }
-        completeCreation(document.getElementById('creation-success'));
+        var success = document.getElementById('creation-success');
+        completeCreation(success);
+        if (!success.hidden) {
+          event.currentTarget.hidden = true;
+          document.getElementById('duplicate-reasons').disabled = true;
+        }
       });
 
       renderLayout('start');

@@ -34,11 +34,11 @@ oder nur als knappe Screenbezeichnung beschreibt.
 | Kontakte · K03 | Institution: Datenschutz | Nicht gebaut. | offen |
 | Kontakte · K04 | Kontakt bearbeiten | Kein Bearbeitungsformular vorhanden. | offen |
 | Kontakte · K05.1 | Kontaktanlage: Name erfassen | Bekannte Angaben werden ohne vorgelagerte Typentscheidung erfasst; ein unvollständiger Entwurf ist speicherbar. | vorhanden |
-| Kontakte · K05.2 | Kontaktanlage: Dublettenprüfung läuft | Als unterbrechender Zustand mit sichtbaren, gesperrten Eingaben benutzbar. | vorhanden |
+| Kontakte · K05.2 | Kontaktanlage: Dublettenprüfung läuft | Als unterbrechender Zustand mit sichtbaren, gesperrten Eingaben benutzbar; die feste Testfixture wechselt anschließend selbst zum möglichen Dublettentreffer. | vorhanden |
 | Kontakte · K05.3 | Kontaktanlage: Prüfungsfehler | Technischer Fehler mit erhaltenem Vorgang, erhaltenen Eingaben und Wiederholungsweg ist benutzbar. | vorhanden |
 | Kontakte · K05.4 | Kontaktanlage: keine Dubletten | Ergebnis ohne Treffer und anschließende, vollständig validierte Neuanlage ist benutzbar. | vorhanden |
 | Kontakte · K05.5 | Kontaktanlage: mögliche Dublette | Zwei tatsächlich in der Kontaktliste vorhandene Personen werden mit unterscheidenden Angaben und allen drei Folgehandlungen gezeigt. | vorhanden |
-| Kontakte · K05.6 | Kontaktanlage: Kenntnisnahme | Eine begründete Entscheidung einschließlich offenem Freitext ist vor dem Abschluss erforderlich. | vorhanden |
+| Kontakte · K05.6 | Kontaktanlage: Kenntnisnahme | Eine begründete Entscheidung einschließlich offenem Freitext ist vor dem Abschluss erforderlich. Bis dahin bleiben die bekannten Angaben bearbeitbar; nach erfolgreicher Anlage verschwindet die Abschlussaktion und die gespeicherte Begründung ist lesbar, aber deaktiviert. | vorhanden |
 | Kontakte · K06 | Kontakterlaubnis bearbeiten | Erlaubte Kanäle werden im Detail nur gelesen; eine Bearbeitung fehlt. | offen |
 | Kontakte · K07 | Deaktivierte Kontakte | Kein eigener Bestand und keine Reaktivierung vorhanden. | offen |
 | Verteiler · V01 | Gefüllte Verteilerübersicht | 25 Arbeits- und Managed-Verteiler mit Suche, Art- und Ämterfilter sind benutzbar. | vorhanden |

@@ -159,3 +159,51 @@ genannten Überlaufwerte sind nicht nachvollziehbar belegt und wurden entfernt.
 Die manuelle Prüfrunde für alle Screens, die beiden Varianten und die drei
 Viewportbreiten ist ausstehend. Vor der Abnahme werden Methode, Browser,
 Viewportgröße und die tatsächlich geprüften Wege im Befund ergänzt.
+
+## Nachtrag vom 30. August 2026 – Testmodus
+
+Im explorativen Testmodus war der Abschlussweg blockiert: „Dubletten prüfen“
+setzte ausschließlich den laufenden Zustand. Der nächste Zustand war nur über
+die dort absichtlich ausgeblendete Prototypsteuerung erreichbar. Nach dem
+manuell gewählten Dublettentreffer blieb zusätzlich die für den Abschluss
+verpflichtende Kontaktart in der Kenntnisnahme gesperrt.
+
+Der Screen verwendet weiterhin ausschließlich `CrmShell.createStateSwitch`
+und die vorhandenen Komponenten. Eine lokale, feste Testfixture wechselt nach
+900 Millisekunden vom laufenden Zustand zum vorhandenen Dublettentreffer,
+sofern die Testleitung inzwischen keinen anderen Zustand gewählt hat. In der
+Kenntnisnahme werden die bekannten Angaben wieder freigegeben; Fokusführung,
+Begründung und ausdrückliche Kontaktartbestätigung bleiben erhalten. Rollen,
+Rechteannahme, Tokens, Klassen und Styleguide wurden nicht geändert.
+
+Geprüft wurde im lokalen Dateiaufruf mit Firefox 154.0.1 im Testmodus: Der
+Standardweg erreichte nach Prüfung, Dublettenentscheidung, Kenntnisnahme und
+Kontaktartbestätigung die Erfolgsmeldung. Im Reviewmodus blieb ein während der
+Prüfdauer gewählter abweichender Zustand erhalten. Bei 1024, 1280 und 1920
+Pixeln entstand kein horizontaler Dokumentüberlauf; die lokal eingebundene
+Noto Sans war jeweils verfügbar. Die drei Screenprüfungen auf `<style>`,
+`style=` und Farbwerte ergaben null Treffer. `system/pruefung.sh` meldete:
+„OK: Alle mechanisch prüfbaren Regeln sind erfüllt.“ `git diff --check` blieb
+ohne Befund.
+
+Diese automatisierte Browserprüfung ersetzt nicht die weiterhin ausstehende
+vollständige manuelle Klick- und Tastaturrunde über alle Screens und
+Navigationswege.
+
+### Ergänzung zum Erfolgszustand
+
+Im begründeten Abschlussweg blieb nach der Erfolgsmeldung die Aktion „Kontakt
+neu anlegen“ sichtbar; Auswahl und Freitext der bereits gespeicherten
+Begründung waren weiterhin änderbar. Die Behandlung wurde ausschließlich im
+Klickpfad `create-after-reason` ergänzt: Erst nach erfolgreicher Validierung
+verschwindet die Abschlussaktion und das native Begründungs-Fieldset wird
+deaktiviert. Der allgemeine Erfolgshelfer, Zustandswechsel und alle anderen
+Abschlusswege wurden nicht geändert. Vorhandene Deaktiviert-Zustände reichen
+aus; Klassen, CSS und Styleguide blieben unverändert.
+
+Im lokalen Dateiaufruf mit Firefox 154.0.1 blieben bei fehlender Kontaktart
+oder leerem Pflichtfreitext Aktion und Eingaben verfügbar. Die drei
+vorgegebenen Gründe sowie „Anderer Grund“ mit Freitext erreichten den
+Erfolgszustand mit verborgener Abschlussaktion und deaktivierter Begründung.
+Der Weg ohne Dublette, der Wiederholungsweg nach Prüfungsfehler, der
+automatische Übergang und alle sechs Reviewzustände blieben benutzbar.
