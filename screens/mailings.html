@@ -69,9 +69,9 @@
 
   <script>
     window.addEventListener('load',()=>{
-      const fixture=window.CrmShell.getMailingFixture(),body=document.getElementById('mailing-rows'),offices=['Wirtschaftsförderung','Kulturamt'];
-      fixture.records.forEach(record=>{
-        const distribution=fixture.distributions[record.distribution],row=document.createElement('tr'),progress=record.completed?'completed':'open',editable=record.office===fixture.currentOffice,access=editable?'Bearbeitbar':'Lesbar, gesperrt';
+      const fixture=window.CrmShell.getPrototypeFixture(),body=document.getElementById('mailing-rows'),offices=fixture.visibleMailingOffices;
+      fixture.records.filter(record=>record.visible).forEach(record=>{
+        const distribution=fixture.distributions[record.distribution],row=document.createElement('tr'),progress=record.completed?'completed':'open',editable=record.editable,access=editable?'Bearbeitbar':'Lesbar, gesperrt';
         row.dataset.progress=progress;row.dataset.office=record.office;
         row.innerHTML='<td class="primary-cell"><strong><a></a></strong><small></small></td><td></td><td></td><td><span class="status"></span></td><td></td><td><span class="status"></span></td>';
         const link=row.querySelector('a');link.href='mailing.html?id='+encodeURIComponent(record.id);link.textContent=record.title;

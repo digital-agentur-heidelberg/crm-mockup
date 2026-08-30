@@ -2,8 +2,9 @@
 
 Die gemeinsame Hülle sowie die zuvor gefundenen screenspezifischen
 Interaktionslücken sind umgesetzt. Für die im jüngsten Durchgang betroffenen
-Veranstaltungs- und Detailansichten sind die Überläufe behoben. Offen bleiben
-die vollständige manuelle Browserrunde und der bekannte Kontrastgrenzfall.
+Veranstaltungs- und Detailansichten sind die Überläufe behoben. Tastaturwege,
+Fokusfang und vollständige ARIA-Zustände bleiben nach der Konsolidierung
+ausdrücklich ausstehend.
 
 ## Fachfragen
 
@@ -29,33 +30,19 @@ wird im Test über die Aufgabenstellung adressiert.
   persönliche Historie deshalb außerhalb der fachlichen Datensätze
   bereitstellen; Speicherort, Aufbewahrungsdauer und Löschung sind noch
   festzulegen.
-- **Mailings am Verteiler und gemeinsame Fixture:** Im Verteilerdetail ist nur
-  die Übergabe in den Mailing-Prozess vorhanden; eine Liste oder Historie der
-  zugehörigen Mailings fehlt. Übersicht, Prozess, Leseansicht und Suche teilen
-  eine Mailing-Fixture. Verteilerübersicht und Verteilerdetail verwenden sie
-  noch nicht; ihre Mitglieder- und Empfängerzahlen weichen deshalb weiterhin
-  ab und müssen im Konsolidierungsdurchgang zusammengeführt werden. Fachliche
-  Status, Sichtbarkeit und Anlageberechtigung bleiben in
+- **Mailings am Verteiler:** Im Verteilerdetail ist nur die Übergabe in den
+  Mailing-Prozess vorhanden; eine Liste oder Historie der zugehörigen Mailings
+  fehlt bewusst. Fachliche Status und Anlageberechtigung bleiben in
   [`ABDECKUNG.md`, Abschnitt 5](ABDECKUNG.md#5-fachfragen-nach-dem-testing)
-  zu klären.
-- **Mailing-Sichtbarkeit und ämterübergreifende Wiederholung:** Das zuständige
-  Amt eines Mailings ist vom pflegenden Amt seines Verteilers getrennt. Für den
-  ersten Test gilt sichtbar, lesbar und gesperrt als Annahme für Mailings eines
-  fremden zuständigen Amts; die Sichtbarkeit fremder Verteiler bleibt eine
-  eigene Rechtefrage. Ravi Menon wird in je einem Verteiler der
-  Wirtschaftsförderung und des Kulturamts geführt. Ob und auf welcher
+  zu klären. Die gemeinsame Fixture und die Sichtbarkeitsregel sind dort als
+  erledigte Umsetzung beziehungsweise beschlossene Anforderung dokumentiert.
+- **Ämterübergreifende Wiederholung:** Ravi Menon bleibt in einem Verteiler der
+  Wirtschaftsförderung und einem sichtbaren Verteiler des Kulturamts sowie im
+  Teilnehmendenbestand geführt. Ob und auf welcher
   Rechtsgrundlage ein späteres System eine doppelte Ansprache über diese
   Amtsgrenze hinweg erkennen oder verhindern darf, bleibt nach
   [`ABDECKUNG.md`, Abschnitt 5](ABDECKUNG.md#5-fachfragen-nach-dem-testing)
   offen.
-
-## Offener Barrierefreiheitsbefund
-
-- **CD Steingrau auf Weiß:** `#75787B` erreicht auf `#FFFFFF` nur 4,44:1 und
-  liegt damit knapp unter 4,5:1. Die Farbe bleibt auf deaktivierte Inhalte und
-  nichttextliche Symbole begrenzt; informativer Text verwendet die dunklere
-  Rolle `--color-text-muted`. Ob deaktivierter Text damit ausreichend ist,
-  bleibt zu klären.
 
 ## Behobene Umsetzungsbefunde
 
@@ -95,6 +82,15 @@ wird im Test über die Aufgabenstellung adressiert.
   nur bei abgeschlossenen Fixture-Mailings gelesen und nicht neu erzeugt.
 - **Globale Suche:** Nur hinterlegte Datensätze navigieren. Nicht ausgebaute
   Suchtreffer bleiben aktiv und melden Art und Name des fehlenden Datensatzes.
+  Die Suche umfasst Kontakte, Institutionen, Veranstaltungen, Verteiler und
+  sichtbare Mailings und gruppiert sie nach Art.
+- **Gemeinsame Fixture und Rechte:** Verteiler-, Empfänger- und
+  Teilnehmendenmengen sowie beide Ämterfelder werden in `shell.js` gemeinsam
+  geführt. Mailing-Sichtbarkeit und Änderbarkeit werden daraus zentral
+  abgeleitet; Screens entscheiden sie nicht erneut.
+- **Kontrast deaktivierter Texte:** Die vorhandene Rolle
+  `--color-text-disabled` verwendet #6D7073 und erreicht AA auf Karten- und
+  Seitenfläche. CD Steingrau bleibt nichttextlichen Symbolen vorbehalten.
 - **Belegung:** Klasse, sichtbare Textangabe und native `meter`-Semantik sind
   für verfügbar, knapp und ausgebucht angeglichen; die Bedeutung bleibt
   ausgeschrieben und ist nicht allein farblich codiert.

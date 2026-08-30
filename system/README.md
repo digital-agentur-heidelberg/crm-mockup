@@ -157,17 +157,41 @@ Befundnummern sind chronologisch nach ihrer tatsächlichen Erstellung; die
 Nummern geplanter Bauabschnitte aus `ABDECKUNG.md` können davon abweichen und
 werden im Text des jeweiligen Befunds genannt.
 
-## Mailing-Testfixture und Einstiege
+## Explorative Testsitzung
 
-`CrmShell.getMailingFixture()` liefert eine Kopie der gemeinsamen, fest
-verdrahteten Testdaten für Mailingübersicht, Bearbeitungsprozess und
-Leseansicht. Jeder Mailing-Datensatz führt sein zuständiges Amt selbst. Das
-pflegende Amt eines Verteilers bleibt als `managingOffice` eine getrennte
-Verteilerangabe und darf weder Mailingfilter noch Mailing-Bearbeitbarkeit oder
-Absenderdarstellung bestimmen. Der Vertrag ist bewusst nur mailingbezogen: Er
-gleicht die noch abweichenden Mitgliederzahlen in Verteilerübersicht und
-Verteilerdetail nicht an. Die Abweichungen und die später zusammenzuführenden
-Werte stehen federführend in `ABDECKUNG.md`.
+Die Testleitung startet bei `screens/arbeitsbereich.html#test`. Die Hülle merkt
+sich den Modus in `sessionStorage` und blendet im selben Firefox-Tab bis zum
+Sitzungsende Zustandsleisten sowie den Prototyp-Index in der Navigation aus.
+`screens/index.html#review` beendet den Modus. Der Index bleibt ein Hilfsmittel
+der Testleitung und ist kein Einstieg für Testpersonen.
+
+Die Hüllensuche gruppiert Kontakte, Institutionen, Veranstaltungen, Verteiler
+und sichtbare Mailings. Ein Treffer ohne hinterlegte Detailseite bleibt
+bedienbar und meldet über `showPrototypeNotice()` die Entwurfsgrenze. Diese
+Meldungen werden für die Testleitung optional in `sessionStorage` gezählt und
+auf dem Index ausgegeben. Der Zähler ist ausdrücklich nur für Firefox, denselben
+Tab, dieselbe Sitzung und die Dateien unter `screens/` geprüft; er ist kein
+persistentes Testprotokoll.
+
+## Gemeinsame Testfixture, Rechteableitung und Einstiege
+
+`CrmShell.getPrototypeFixture()` liefert eine Kopie der gemeinsamen, fest
+verdrahteten Testdaten für Verteilerübersicht, Verteilerdetail, Veranstaltung,
+Mailingübersicht, Bearbeitungsprozess, Leseansicht und Suche. Mitgliedschaften,
+Ausschlüsse und tatsächliche Empfängermengen werden dort einmal geführt. Der
+Verteiler `Kreativwirtschaft Heidelberg` und die Veranstaltung
+`Branchendialog Kreativwirtschaft` verwenden dieselben 53 Personen; die
+Teilnehmendenstatus sind deren Antworten auf die Einladung. Die maßgebliche
+fachliche Beziehung und die Mengen stehen in `ABDECKUNG.md`, Abschnitt 3.
+
+Jeder Mailing-Datensatz führt sein zuständiges Amt selbst; jeder Verteiler sein
+pflegendes Amt als `managingOffice`. Sichtbarkeit, Mailing-Bearbeitbarkeit und
+Möglichkeit des Verteilerwechsels werden ausschließlich beim Erzeugen der
+Fixture-Kopie aus diesen beiden Feldern und den sichtbaren Ämtern abgeleitet.
+Ein Screen trifft keine eigene Rechteentscheidung. Die vollständige
+Kombinationstabelle und der Wortlaut der beschlossenen Regel stehen in
+`ABDECKUNG.md`, Abschnitt 3, Entscheidung D. Die Annahme, dass ein fremder
+Verteiler im Test sichtbar sein kann, bleibt davon getrennt Frage 8b.
 
 Ein Mailing besitzt genau einen Verteiler. `mailings.html` ist der Ort des
 Navigationsbereichs. Von dort beginnt „Mailing anlegen“ bei Schritt 1; ein
@@ -179,8 +203,9 @@ wird in der linearen Weiter-Navigation aber als bereits festgelegt
 übersprungen.
 
 Fremde sichtbare Verteiler werden in der Testannahme als lesbare, gesperrte
-`.assignment-target`-Ziele gezeigt. Davon getrennt sind Mailings eines fremden
-zuständigen Amts lesbar und gesperrt; die Testpersona gehört zur
+`.assignment-target`-Ziele gezeigt. Ein Mailing ist jedoch nur sichtbar, wenn
+sowohl sein zuständiges Amt als auch sein Verteiler sichtbar sind. Fremde
+Mailings bleiben lesbar und gesperrt; die Testpersona gehört zur
 Wirtschaftsförderung. Der optionale Testversand blockiert den
 Echtversandschritt nicht. Test- und Echtversand enden beide an der
 prototypischen Handlungsgrenze und erzeugen weder Nachweis noch Versandbeleg.
@@ -387,12 +412,11 @@ werden.
   Person freizugeben.
 - Veranstaltungsart, Wartelistenregeln, Zuschussjahre, Suchindizierung und die
   genaue Berechtigungsvorschau bleiben die offenen Fachfragen aus Hybrid v3.
-- CD Steingrau #75787B erreicht auf Weiß 4,44:1 und liegt damit knapp unter 
-  der Anforderung. Es ist derzeit deaktivierten Inhalten und nichttextlichen 
-  Symbolen vorbehalten; informativer Text verwendet die dunklere Rolle --color-text-muted.
-  Ob deaktivierter Text damit ausreichend ist, wird unterschiedlich beurteilt.
-  Die Klärung ist bewusst zurückgestellt und als eigener Eintrag in BEFUNDE-offen.md vermerkt; 
-  die Änderung ist ein Tokenwert und bleibt unabhängig von der Zahl der Screens billig.
+- CD Steingrau #75787B bleibt nichttextlichen Symbolen vorbehalten.
+  Deaktivierter Text verwendet `--color-text-disabled` mit #6D7073: 4,98:1 auf
+  Weiß und 4,56:1 auf der Seitenfläche. Deaktivierte Bedienelemente unterscheiden
+  sich zusätzlich über Fläche, Rand, entfallenen Schatten, Mauszeiger und den
+  nativen Zustand von sekundären Angaben.
 
 ## Visuelle Migrationsprüfung
 

@@ -1,6 +1,46 @@
 (function () {
   "use strict";
 
+  var prototypeModeKey = "crm-prototype-mode";
+  var prototypeNoticeKey = "crm-prototype-notices";
+  var prototypeHash = window.location.hash;
+  try {
+    if (prototypeHash === "#test") {
+      window.sessionStorage.setItem(prototypeModeKey, "test");
+    } else if (prototypeHash === "#review") {
+      window.sessionStorage.removeItem(prototypeModeKey);
+    }
+  } catch (storageError) {
+    /* Der Prototyp bleibt ohne Sitzungsmodus vollständig bedienbar. */
+  }
+
+  function prototypeTestMode() {
+    try {
+      return window.sessionStorage.getItem(prototypeModeKey) === "test";
+    } catch (storageError) {
+      return false;
+    }
+  }
+
+  function prototypeNotices() {
+    try {
+      return JSON.parse(window.sessionStorage.getItem(prototypeNoticeKey) || "{}");
+    } catch (storageError) {
+      return {};
+    }
+  }
+
+  function countPrototypeNotice(type, subject, name) {
+    var notices = prototypeNotices();
+    var label = type === "record" ? subject + ": " + name : subject;
+    notices[label] = (notices[label] || 0) + 1;
+    try {
+      window.sessionStorage.setItem(prototypeNoticeKey, JSON.stringify(notices));
+    } catch (storageError) {
+      /* Die Meldung selbst ist wichtiger als die optionale Zählung. */
+    }
+  }
+
   var navigation = [
     { screen: "arbeitsbereich", label: "Arbeitsbereich", href: "arbeitsbereich.html", icon: "waypoints" },
     { screen: "kontakte", label: "Kontakte", href: "kontakte.html", icon: "contact-round" },
@@ -29,15 +69,15 @@
       available: true
     },
     {
-      group: "Kontakte",
-      kind: "Organisation",
+      group: "Institutionen",
+      kind: "Institution",
       title: "Heidelberger Dienste gGmbH",
       meta: "Organisation · Weststadt",
       href: "kontakte.html",
       icon: "building-2",
-      status: "Organisation",
+      status: "Institution · Firma",
       statusClass: "status--info",
-      description: "Sozialwirtschaftlicher Betrieb in der Weststadt",
+      description: "Firma · sozialwirtschaftlicher Betrieb in der Weststadt",
       facts: [
         { icon: "landmark", text: "Wirtschaftsförderung · Daniela Vogt" },
         { icon: "map-pin", text: "Hospitalstraße, Heidelberg" }
@@ -59,6 +99,22 @@
         { icon: "calendar-check", text: "Teilnahme am Branchendialog bestätigt" }
       ],
       keywords: "aylin yilmaz biorn biotechnologie network"
+    },
+    {
+      group: "Institutionen",
+      kind: "Institution",
+      title: "BioRN Network e. V.",
+      meta: "Institution · Verein · Neuenheimer Feld",
+      href: "kontakte.html",
+      icon: "building-2",
+      status: "Institution · Verein",
+      statusClass: "status--info",
+      description: "Verein und Life-Science-Netzwerk in Heidelberg",
+      facts: [
+        { icon: "landmark", text: "Wirtschaftsförderung" },
+        { icon: "users", text: "Mehrere zugehörige Personen" }
+      ],
+      keywords: "verein institution biotechnologie netzwerk aylin yilmaz"
     },
     {
       group: "Veranstaltungen",
@@ -113,34 +169,35 @@
       group: "Verteiler",
       kind: "Verteiler",
       title: "Verteiler Umweltwirtschaft",
-      meta: "25 aktive Kontakte · E-Mail erlaubt",
-      href: "verteiler-detail.html",
+      meta: "25 Mitglieder · 23 tatsächliche Empfänger",
+      href: "verteiler.html",
       icon: "mails",
       status: "Verteiler aktiv",
       statusClass: "status--info",
       description: "Unternehmen und Netzwerke der Heidelberger Umweltwirtschaft",
       facts: [
         { icon: "landmark", text: "Wirtschaftsförderung" },
-        { icon: "mail-check", text: "25 erreichbare Kontakte" }
+        { icon: "mail-check", text: "23 tatsächliche Empfänger" }
       ],
       keywords: "umwelt wirtschaft mailing empfaenger",
-      available: true
+      available: false
     },
     {
       group: "Verteiler",
       kind: "Verteiler",
       title: "Kreativwirtschaft Heidelberg",
-      meta: "68 aktive Mitglieder",
-      href: "verteiler.html",
+      meta: "53 Mitglieder · 49 tatsächliche Empfänger",
+      href: "verteiler-detail.html",
       icon: "mails",
       status: "Verteiler aktiv",
       statusClass: "status--info",
       description: "Empfängerkreis für den Branchendialog Kreativwirtschaft",
       facts: [
-        { icon: "landmark", text: "Kulturamt · Wirtschaftsförderung" },
-        { icon: "mail-check", text: "68 aktive Mitglieder" }
+        { icon: "landmark", text: "Wirtschaftsförderung" },
+        { icon: "mail-check", text: "53 Mitglieder" }
       ],
-      keywords: "verteiler mailing empfaenger branchendialog"
+      keywords: "verteiler mailing empfaenger branchendialog",
+      available: true
     },
     {
       group: "Verteiler",
@@ -170,15 +227,74 @@
       description: "Einladung zum Branchendialog Kreativwirtschaft",
       facts: [
         { icon: "landmark", text: "Wirtschaftsförderung" },
-        { icon: "users", text: "64 tatsächliche Empfänger" }
+        { icon: "users", text: "49 tatsächliche Empfänger" }
       ],
       keywords: "mailing einladung branchendialog entwurf testversand",
       available: true
     }
   ];
 
+  var participantFixture = [
+    { id: "participant-01", name: "Sabine Keller", organisation: "GreenTech Solutions GmbH", status: "Bestätigt", entry: "04.08." },
+    { id: "participant-02", name: "Tobias Rehm", organisation: "Heidelberg Instruments", status: "Bestätigt", entry: "05.08." },
+    { id: "participant-03", name: "Petra Mildenberger", organisation: "Kreativwirtschaft Heidelberg", status: "Warteliste", entry: "19.08." },
+    { id: "participant-04", name: "Marius Ebert", organisation: "halle02", status: "Warteliste", entry: "20.08." },
+    { id: "participant-05", name: "Yasemin Aydin", organisation: "UnterwegsTheater", status: "Warteliste", entry: "20.08." },
+    { id: "participant-06", name: "Marion Aksoy", organisation: "Aksoy Medienhaus", status: "Warteliste", entry: "22.08., 16:11" },
+    { id: "participant-07", name: "Nora Ebert", organisation: "Heidelberg iT Management GmbH", status: "Bestätigt", entry: "22.08., 13:58" },
+    { id: "participant-08", name: "Dr. Aylin Yılmaz", organisation: "BioRN Network e. V.", status: "Bestätigt", entry: "22.08., 10:32" },
+    { id: "participant-09", name: "Cem Arslan", organisation: "Arslan Elektrotechnik GmbH", status: "Offen", entry: "21.08., 18:02" },
+    { id: "participant-10", name: "Leonie Hartmann", organisation: "UnterwegsTheater Heidelberg", status: "Bestätigt", entry: "21.08., 15:44" },
+    { id: "participant-11", name: "Meike Walter", organisation: "Heidelberger Frühling gGmbH", status: "Warteliste", entry: "21.08., 12:19" },
+    { id: "participant-12", name: "Florian Weber", organisation: "C. Josef Lamy GmbH", status: "Bestätigt", entry: "21.08., 09:03" },
+    { id: "participant-13", name: "Elena Petrova", organisation: "SNP SE", status: "Bestätigt", entry: "20.08., 17:30" },
+    { id: "participant-14", name: "Jonas Schilling", organisation: "Medienforum Heidelberg e. V.", status: "Warteliste", entry: "20.08., 14:12" },
+    { id: "participant-15", name: "Sophie Lang", organisation: "Heidelberger Kunstverein", status: "Bestätigt", entry: "20.08., 10:09" },
+    { id: "participant-16", name: "Ravi Menon", organisation: "EMBL Heidelberg", status: "Bestätigt", entry: "19.08., 16:46" },
+    { id: "participant-17", name: "Katrin Fuchs", organisation: "Musik- und Singschule Heidelberg", status: "Offen", entry: "19.08., 11:38" },
+    { id: "participant-18", name: "Matthias Brenner", organisation: "Stadtwerke Heidelberg Netze", status: "Bestätigt", entry: "19.08., 08:55" },
+    { id: "participant-19", name: "Svenja Kohl", organisation: "Karlstorbahnhof Heidelberg", status: "Warteliste", entry: "18.08., 16:21" },
+    { id: "participant-20", name: "Rainer Vollmer", organisation: "InnovationLab GmbH", status: "Bestätigt", entry: "18.08., 12:04" },
+    { id: "participant-21", name: "Nadine Graf", organisation: "halle02", status: "Bestätigt", entry: "18.08., 09:47" },
+    { id: "participant-22", name: "Lukas Bernhard", organisation: "Kulturfenster Heidelberg e. V.", status: "Warteliste", entry: "17.08., 18:09" },
+    { id: "participant-23", name: "Prof. Dr. Miriam Schott", organisation: "Universität Heidelberg", status: "Bestätigt", entry: "17.08., 13:33" },
+    { id: "participant-24", name: "David Kunz", organisation: "Ameria GmbH", status: "Bestätigt", entry: "17.08., 10:18" },
+    { id: "participant-25", name: "Carolin Beck", organisation: "DAI Heidelberg", status: "Warteliste", entry: "14.08., 15:51" },
+    { id: "participant-26", name: "Amir Haddad", organisation: "ProMinent GmbH", status: "Bestätigt", entry: "14.08., 12:26" },
+    { id: "participant-27", name: "Jana Seifert", organisation: "Theater und Orchester Heidelberg", status: "Bestätigt", entry: "14.08., 09:38" },
+    { id: "participant-28", name: "Benedikt Rauch", organisation: "Heidelberger Dienste gGmbH", status: "Warteliste", entry: "13.08., 17:16" },
+    { id: "participant-29", name: "Maja Nguyen", organisation: "Dezernat 16", status: "Bestätigt", entry: "13.08., 11:07" },
+    { id: "participant-30", name: "Oliver Stamm", organisation: "Heidelberg Materials AG", status: "Bestätigt", entry: "12.08., 16:40" },
+    { id: "participant-31", name: "Anna Aksoy", organisation: "GreenTech Solutions GmbH", status: "Bestätigt", entry: "12.08., 14:18" },
+    { id: "participant-32", name: "Benjamin Beck", organisation: "BioRN Network e. V.", status: "Bestätigt", entry: "12.08., 11:41" },
+    { id: "participant-33", name: "Carolin Brenner", organisation: "Heidelberg iT Management GmbH", status: "Bestätigt", entry: "11.08., 16:02" },
+    { id: "participant-34", name: "Daniel Ebert", organisation: "UnterwegsTheater Heidelberg", status: "Bestätigt", entry: "11.08., 10:23" },
+    { id: "participant-35", name: "Elena Fuchs", organisation: "C. Josef Lamy GmbH", status: "Bestätigt", entry: "10.08., 15:37" },
+    { id: "participant-36", name: "Florian Graf", organisation: "SNP Schneider-Neureither & Partner SE", status: "Bestätigt", entry: "10.08., 09:55" },
+    { id: "participant-37", name: "Hanna Hartmann", organisation: "Medienforum Heidelberg e. V.", status: "Bestätigt", entry: "09.08., 17:11" },
+    { id: "participant-38", name: "Jonas Kohl", organisation: "Heidelberger Kunstverein", status: "Bestätigt", entry: "09.08., 13:29" },
+    { id: "participant-39", name: "Katrin Nguyen", organisation: "EMBL Heidelberg", status: "Bestätigt", entry: "08.08., 16:46" },
+    { id: "participant-40", name: "Lukas Petrova", organisation: "Musik- und Singschule Heidelberg", status: "Bestätigt", entry: "08.08., 12:13" },
+    { id: "participant-41", name: "Maja Schilling", organisation: "Stadtwerke Heidelberg Netze GmbH", status: "Bestätigt", entry: "07.08., 17:04" },
+    { id: "participant-42", name: "Nadine Weber", organisation: "Karlstorbahnhof Heidelberg", status: "Bestätigt", entry: "07.08., 14:36" },
+    { id: "participant-43", name: "Oliver Aksoy", organisation: "InnovationLab GmbH", status: "Bestätigt", entry: "06.08., 16:19" },
+    { id: "participant-44", name: "Ravi Beck", organisation: "halle02", status: "Bestätigt", entry: "06.08., 11:52" },
+    { id: "participant-45", name: "Sophie Brenner", organisation: "Kulturfenster Heidelberg e. V.", status: "Bestätigt", entry: "05.08., 15:44" },
+    { id: "participant-46", name: "Anna Ebert", organisation: "Universität Heidelberg", status: "Bestätigt", entry: "05.08., 10:11" },
+    { id: "participant-47", name: "Benjamin Fuchs", organisation: "Ameria GmbH", status: "Bestätigt", entry: "04.08., 16:38" },
+    { id: "participant-48", name: "Carolin Graf", organisation: "Deutsch-Amerikanisches Institut", status: "Bestätigt", entry: "04.08., 12:08" },
+    { id: "participant-49", name: "Daniel Hartmann", organisation: "ProMinent GmbH", status: "Bestätigt", entry: "03.08., 17:22" },
+    { id: "participant-50", name: "Elena Kohl", organisation: "Theater und Orchester Heidelberg", status: "Bestätigt", entry: "03.08., 13:04" },
+    { id: "participant-51", name: "Florian Nguyen", organisation: "Heidelberger Dienste gGmbH", status: "Offen", entry: "03.08., 09:38" },
+    { id: "participant-52", name: "Hanna Petrova", organisation: "Heidelberg Materials AG", status: "Storniert", entry: "02.08., 15:15" },
+    { id: "participant-53", name: "Jonas Weber", organisation: "Metropolink Festival", status: "Storniert", entry: "02.08., 10:47" }
+  ];
+
   var mailingFixture = {
     currentOffice: "Wirtschaftsförderung",
+    visibleMailingOffices: ["Wirtschaftsförderung", "Kulturamt"],
+    visibleDistributionOffices: ["Wirtschaftsförderung", "Kulturamt"],
+    participants: participantFixture,
     template: {
       id: "branchendialog",
       name: "Einladung zum Branchendialog",
@@ -190,15 +306,12 @@
         name: "Kreativwirtschaft Heidelberg",
         managingOffice: "Wirtschaftsförderung",
         kind: "Arbeitsverteiler",
-        members: 68,
-        excluded: 4,
-        actual: 64,
-        editable: true,
+        memberIds: participantFixture.map(function (participant) { return participant.id; }),
         exclusions: [
           { name: "Katrin Fuchs", reason: "Nur Post erlaubt", treatment: "ausgeschlossen" },
           { name: "Maja Nguyen", reason: "E-Mail nicht erlaubt", treatment: "ausgeschlossen" },
           { name: "Nora Ebert", reason: "Doppelte E-Mail-Adresse im Verteiler", treatment: "als Dublette ausgeschlossen" },
-          { name: "Hanna Özdemir", reason: "Datenschutzhinweis fehlt", treatment: "ausgeschlossen" }
+          { name: "Hanna Petrova", reason: "Datenschutzhinweis fehlt", treatment: "ausgeschlossen" }
         ]
       },
       environment: {
@@ -206,13 +319,10 @@
         name: "Verteiler Umweltwirtschaft",
         managingOffice: "Wirtschaftsförderung",
         kind: "Arbeitsverteiler",
-        members: 25,
-        excluded: 2,
-        actual: 23,
-        editable: true,
+        memberIds: participantFixture.slice(0, 25).map(function (participant) { return participant.id; }),
         exclusions: [
           { name: "Katrin Fuchs", reason: "Nur Post erlaubt", treatment: "ausgeschlossen" },
-          { name: "Maja Nguyen", reason: "E-Mail nicht erlaubt", treatment: "ausgeschlossen" }
+          { name: "Meike Walter", reason: "E-Mail nicht erlaubt", treatment: "ausgeschlossen" }
         ]
       },
       companies: {
@@ -220,13 +330,10 @@
         name: "Heidelberger Unternehmen · aktiv",
         managingOffice: "Wirtschaftsförderung",
         kind: "Managed-Verteiler",
-        members: 25,
-        excluded: 2,
-        actual: 23,
-        editable: true,
+        memberIds: participantFixture.slice(25).map(function (participant) { return participant.id; }),
         exclusions: [
-          { name: "Katrin Fuchs", reason: "Nur Post erlaubt", treatment: "ausgeschlossen" },
-          { name: "Maja Nguyen", reason: "E-Mail nicht erlaubt", treatment: "ausgeschlossen" }
+          { name: "Florian Nguyen", reason: "Nur Post erlaubt", treatment: "ausgeschlossen" },
+          { name: "Hanna Petrova", reason: "E-Mail nicht erlaubt", treatment: "ausgeschlossen" }
         ]
       },
       culture: {
@@ -234,20 +341,17 @@
         name: "Branchentreffen Kultur",
         managingOffice: "Kulturamt",
         kind: "Arbeitsverteiler",
-        members: 41,
-        excluded: 2,
-        actual: 39,
-        editable: false,
+        memberIds: ["participant-16"].concat(participantFixture.filter(function (participant) { return participant.id !== "participant-16"; }).slice(0, 40).map(function (participant) { return participant.id; })),
         exclusions: [
           { name: "Katrin Fuchs", reason: "Nur Post erlaubt", treatment: "ausgeschlossen" },
-          { name: "Hanna Özdemir", reason: "Datenschutzhinweis fehlt", treatment: "ausgeschlossen" }
+          { name: "Maja Schilling", reason: "Datenschutzhinweis fehlt", treatment: "ausgeschlossen" }
         ]
       }
     },
     crossOfficeRecipient: {
       name: "Ravi Menon",
       organisation: "EMBL Heidelberg",
-      distributions: ["environment", "culture"],
+      distributions: ["creative", "culture"],
       explanation: "Auch in „Branchentreffen Kultur“ des Kulturamts. Eine spätere Ansprache über die Amtsgrenze wird hier nicht automatisch unterdrückt."
     },
     previewRecipients: [
@@ -277,17 +381,37 @@
       { id: "runder-tisch-festivals", title: "Einladung zum Runden Tisch Heidelberger Festivals", subject: "Runder Tisch Heidelberger Festivals", distribution: "culture", office: "Kulturamt", stage: 5, completed: true, changed: "13.11.2025", sentAt: "13. November 2025, 10:22 Uhr", responsible: "Dr. Eva Riedel", receipt: "KA-2025-11-0834" },
       { id: "netzwerkfruehstueck", title: "Einladung zum Netzwerkfrühstück Klimaschutz", subject: "Netzwerkfrühstück Klimaschutz", distribution: "environment", office: "Wirtschaftsförderung", stage: 5, completed: true, changed: "17.06.2026", sentAt: "17. Juni 2026, 08:14 Uhr", responsible: "Julia König", receipt: "WF-2026-06-0682" },
       { id: "innenstadtwirtschaft", title: "Einladung zum Runden Tisch Innenstadtwirtschaft", subject: "Runder Tisch Innenstadtwirtschaft", distribution: "creative", office: "Wirtschaftsförderung", stage: 4, completed: false, changed: "22.08.2026", responsible: "Julia König" },
-      { id: "kulturkarte-werkstatt", title: "Einladung zur Werkstatt Kult:Karte 2027", subject: "Werkstatt Kult:Karte 2027", distribution: "culture", office: "Kulturamt", stage: 3, completed: false, changed: "20.08.2026", responsible: "Dr. Eva Riedel" },
+      { id: "kulturkarte-werkstatt", title: "Einladung zur Werkstatt Kult:Karte 2027", subject: "Werkstatt Kult:Karte 2027", distribution: "culture", office: "Wirtschaftsförderung", stage: 3, completed: false, changed: "20.08.2026", responsible: "Julia König" },
       { id: "circular-economy", title: "Einladung zum Auftakt Circular Economy", subject: "Auftakt Circular Economy", distribution: "environment", office: "Wirtschaftsförderung", stage: 2, completed: false, changed: "18.08.2026", responsible: "Julia König" },
-      { id: "kreativwirtschaft-werkstatt", title: "Einladung zur Werkstatt Kreativwirtschaft", subject: "Werkstatt Kreativwirtschaft", distribution: "creative", office: "Wirtschaftsförderung", stage: 3, completed: false, changed: "14.08.2026", responsible: "Julia König" },
+      { id: "kreativwirtschaft-werkstatt", title: "Einladung zur Werkstatt Kreativwirtschaft", subject: "Werkstatt Kreativwirtschaft", distribution: "creative", office: "Kulturamt", stage: 3, completed: false, changed: "14.08.2026", responsible: "Dr. Eva Riedel" },
       { id: "kulturfoerderung-2027", title: "Information zur Kulturförderung 2027", subject: "Kulturförderung 2027", distribution: "culture", office: "Kulturamt", stage: 2, completed: false, changed: "12.08.2026", responsible: "Dr. Eva Riedel" },
       { id: "energieforum", title: "Einladung zum Energieforum Gewerbegebiete", subject: "Energieforum Gewerbegebiete", distribution: "environment", office: "Wirtschaftsförderung", stage: 3, completed: false, changed: "10.08.2026", responsible: "Julia König" },
       { id: "branchendialog-archiv", title: "Einladung zum Branchendialog Kreativwirtschaft 2025", subject: "Branchendialog Kreativwirtschaft 2025", distribution: "creative", office: "Wirtschaftsförderung", stage: 5, completed: true, changed: "18.09.2025", sentAt: "18. September 2025, 08:02 Uhr", responsible: "Julia König", receipt: "WF-2025-09-0724" }
     ]
   };
 
-  function getMailingFixture() {
-    return JSON.parse(JSON.stringify(mailingFixture));
+  function getPrototypeFixture() {
+    var fixture = JSON.parse(JSON.stringify(mailingFixture));
+    var participants = {};
+    fixture.participants.forEach(function (participant) {
+      participants[participant.id] = participant;
+    });
+    Object.keys(fixture.distributions).forEach(function (key) {
+      var distribution = fixture.distributions[key];
+      distribution.memberRecords = distribution.memberIds.map(function (id) { return participants[id]; }).filter(Boolean);
+      distribution.members = distribution.memberRecords.length;
+      distribution.excluded = distribution.exclusions.length;
+      distribution.actual = distribution.members - distribution.excluded;
+      distribution.visible = fixture.visibleDistributionOffices.indexOf(distribution.managingOffice) !== -1;
+      distribution.editable = distribution.managingOffice === fixture.currentOffice;
+    });
+    fixture.records.forEach(function (record) {
+      var distribution = fixture.distributions[record.distribution];
+      record.visible = fixture.visibleMailingOffices.indexOf(record.office) !== -1 && Boolean(distribution && distribution.visible);
+      record.editable = record.office === fixture.currentOffice && !record.completed;
+      record.distributionEditable = record.editable && distribution.editable;
+    });
+    return fixture;
   }
 
   var toastVariants = {
@@ -375,6 +499,7 @@
 
   function showPrototypeNotice(type, subject, name) {
     var message;
+    countPrototypeNotice(type, subject, name);
     if (type === "record") {
       message = subject + " „" + name + "“ ist im Entwurf nicht hinterlegt.";
     } else {
@@ -1666,7 +1791,7 @@
     createUnsavedGuard: createUnsavedGuard,
     createDistributionAssignment: createDistributionAssignment,
     getAssignmentContacts: contactCatalog,
-    getMailingFixture: getMailingFixture,
+    getPrototypeFixture: getPrototypeFixture,
     createStateSwitch: createStateSwitch
   };
 
@@ -1677,6 +1802,7 @@
   }
 
   var activeScreen = document.body.getAttribute("data-screen") || "";
+  var testMode = prototypeTestMode();
   var skipLink = document.createElement("a");
   skipLink.className = "skip-link";
   skipLink.href = "#main";
@@ -1694,6 +1820,9 @@
 
   if (activeScreen === "prototyp-index") {
     sideNav.querySelector("[data-shell-prototype-index]").setAttribute("aria-current", "page");
+  }
+  if (testMode && activeScreen !== "prototyp-index") {
+    sideNav.querySelector("[data-shell-prototype-index]").remove();
   }
 
   var navList = sideNav.querySelector(".nav-list");
@@ -1717,8 +1846,8 @@
   topbar.innerHTML =
     '<div class="smart-search">' +
       '<div class="search-row"><i data-lucide="search" aria-hidden="true"></i>' +
-        '<label class="u-sr-only" for="global-search">Kontakte, Veranstaltungen oder Verteiler suchen</label>' +
-        '<input class="search-input" id="global-search" type="search" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-expanded="false" aria-controls="search-popover" autocomplete="off" placeholder="Kontakt, Veranstaltung oder Verteiler">' +
+        '<label class="u-sr-only" for="global-search">Kontakte, Institutionen, Veranstaltungen, Verteiler oder Mailings suchen</label>' +
+        '<input class="search-input" id="global-search" type="search" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-expanded="false" aria-controls="search-popover" autocomplete="off" placeholder="Kontakte, Institutionen, Veranstaltungen, Verteiler, Mailings">' +
         '<span class="shortcut" aria-hidden="true">Strg K</span>' +
       '</div>' +
       '<div class="search-popover" id="search-popover" hidden>' +
@@ -1735,7 +1864,7 @@
   appMain.appendChild(main);
 
   var prototypeStateNames = (document.body.getAttribute("data-prototype-states") || "").trim().split(/\s+/).filter(Boolean);
-  if (prototypeStateNames.length) {
+  if (prototypeStateNames.length && !testMode) {
     var prototypeLabels = {
       filled: "Gefüllt",
       overview: "Übersicht",
@@ -1833,8 +1962,11 @@
   function renderResults(query) {
     var normalizedQuery = normalize(query.trim());
     suggestions.innerHTML = "";
+    var groupOrder = ["Kontakte", "Institutionen", "Veranstaltungen", "Verteiler", "Mailings"];
     matches = searchRecords.filter(function (record) {
       return normalize(record.title + " " + record.meta + " " + record.group + " " + record.keywords).indexOf(normalizedQuery) !== -1;
+    }).sort(function (left, right) {
+      return groupOrder.indexOf(left.group) - groupOrder.indexOf(right.group);
     });
     popover.classList.toggle("search-popover--message", matches.length === 0);
 
@@ -1970,5 +2102,20 @@
   sideNav.querySelector("[data-shell-help]").addEventListener("click", function () {
     showToast("Die Hilfe öffnet sich passend zu Ihrem aktuellen Bereich.", "info");
   });
+  var noticeCount = document.getElementById("prototype-notice-count");
+  var noticeList = document.getElementById("prototype-notice-list");
+  var resetNoticeCount = document.getElementById("reset-prototype-notices");
+  if (noticeCount && noticeList) {
+    var notices = prototypeNotices();
+    var noticeLabels = Object.keys(notices).sort();
+    noticeCount.textContent = noticeLabels.reduce(function (total, label) { return total + notices[label]; }, 0) + " gemeldete Sackgassen";
+    noticeList.innerHTML = noticeLabels.length ? noticeLabels.map(function (label) { return "<div><dt>" + label + "</dt><dd>" + notices[label] + "</dd></div>"; }).join("") : "<div><dt>Noch keine Meldungen</dt><dd>0</dd></div>";
+  }
+  if (resetNoticeCount) {
+    resetNoticeCount.addEventListener("click", function () {
+      try { window.sessionStorage.removeItem(prototypeNoticeKey); } catch (storageError) { /* optional */ }
+      window.location.reload();
+    });
+  }
   renderIcons(document);
 }());

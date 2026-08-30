@@ -18,7 +18,7 @@
   --color-text: #202326; /* Ableitung aus CD Steingrau */
   --color-text-subtle: #424649; /* dunkle Ableitung aus CD Steingrau */
   --color-text-muted: #5e6265; /* dunkle Ableitung aus CD Steingrau, AA auf Weiß */
-  --color-text-disabled: #75787b; /* CD Steingrau */
+  --color-text-disabled: #6d7073; /* deaktivierter Text, AA auch auf Seitenfläche */
   --color-text-on-strong: #ffffff;
   --color-link: var(--color-brand-strong);
 
