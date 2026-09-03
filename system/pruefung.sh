@@ -48,7 +48,20 @@ for screen in "${screen_files[@]}"; do
     printf 'FEHLER: %s: system/shell.js nicht eingebunden\n' "$screen"
     status=1
   fi
+  compact_head=$(sed -n '/<head>/,/<\/head>/p' "$screen" | tr -d '[:space:]')
+  expected_head='<scriptsrc="../system/fidelity.js"></script><linkrel="stylesheet"href="../system/tokens.css"><linkrel="stylesheet"href="../system/base.css"><linkrel="stylesheet"href="../system/components.css"><linkrel="stylesheet"href="../system/wireframe.css"><scriptsrc="../system/vendor/lucide.js"defer></script><scriptsrc="../system/shell.js"defer></script>'
+  if [[ $compact_head != *"$expected_head"* ]]; then
+    printf 'FEHLER: %s: Fidelity-, CSS- und Shell-Dateien nicht in der verbindlichen Reihenfolge eingebunden\n' "$screen"
+    status=1
+  fi
 done
+
+styleguide_head=$(sed -n '/<head>/,/<\/head>/p' "$system_dir/styleguide.html" | tr -d '[:space:]')
+expected_styleguide_head='<scriptsrc="fidelity.js"></script><linkrel="stylesheet"href="tokens.css"><linkrel="stylesheet"href="base.css"><linkrel="stylesheet"href="components.css"><linkrel="stylesheet"href="wireframe.css"><scriptsrc="vendor/lucide.js"defer></script><scriptsrc="shell.js"defer></script>'
+if [[ $styleguide_head != *"$expected_styleguide_head"* ]]; then
+  printf 'FEHLER: %s: Fidelity-, CSS- und Shell-Dateien nicht in der verbindlichen Reihenfolge eingebunden\n' "$system_dir/styleguide.html"
+  status=1
+fi
 
 mapfile -t html_files < <(find "$screens_dir" "$system_dir" -type f -name '*.html' -print | sort)
 for html in "${html_files[@]}"; do
@@ -97,8 +110,8 @@ while IFS= read -r hit; do
   fi
 done < <(grep -nEo 'href:[[:space:]]*"[^"]*"|href="[^"]*"' "$system_dir/shell.js" || true)
 
-mapfile -t css_files < <(find "$system_dir" -type f -name '*.css' ! -path "$system_dir/tokens.css" ! -path "$system_dir/vendor/*" -print | sort)
-report_matches 'FEHLER: roher Farbwert außerhalb system/tokens.css:' '#[0-9A-Fa-f]{3,8}([^0-9A-Fa-f]|$)|(^|[^[:alnum:]_-])(rgba?|hsla?)\(' "${css_files[@]}"
+mapfile -t css_files < <(find "$system_dir" -type f -name '*.css' ! -path "$system_dir/tokens.css" ! -path "$system_dir/wireframe.css" ! -path "$system_dir/vendor/*" -print | sort)
+report_matches 'FEHLER: roher Farbwert außerhalb der Token-Dateien:' '#[0-9A-Fa-f]{3,8}([^0-9A-Fa-f]|$)|(^|[^[:alnum:]_-])(rgba?|hsla?)\(' "${css_files[@]}"
 
 definitions=("$system_dir/components.css" "$system_dir/base.css")
 for screen in "${screen_files[@]}"; do

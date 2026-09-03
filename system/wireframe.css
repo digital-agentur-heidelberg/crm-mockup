@@ -1,0 +1,53 @@
+/*
+ * Heidelberg CRM – visuell zurueckgenommene Testfassung
+ * Ausschliesslich alternative Werte fuer bestehende Tokens aus tokens.css.
+ */
+
+:root[data-fidelity="low"] {
+  /* Marke und Akzent: neutrales Grau-Blau */
+  --color-brand: #3b5362;
+  --color-brand-strong: #253844;
+  --color-brand-soft: #f1f3f5;
+  --color-brand-muted: #b8c4cc;
+  --color-accent: #405463;
+  --color-accent-strong: #283c49;
+  --color-accent-soft: #eef2f4;
+  --color-accent-graphic: #8b9297;
+
+  /* Semantik: unterscheidbare Graustufen, Bedeutung bleibt ausgeschrieben. */
+  --color-success: #555555;
+  --color-success-strong: #474747;
+  --color-success-soft: #f2f2f2;
+  --color-success-border: #b8b8b8;
+  --color-warning: #b5b5b5;
+  --color-warning-strong: #4e4e4e;
+  --color-warning-soft: #ededed;
+  --color-warning-border: #aaaaaa;
+  --color-attention: #575757;
+  --color-attention-soft: #f0f0f0;
+  --color-danger: #3c3c3c;
+  --color-danger-soft: #e7e7e7;
+  --color-danger-border: #9f9f9f;
+  --color-info: #303030;
+  --color-info-soft: #f7f7f7;
+  --color-info-border: #c2c2c2;
+
+  /* Niedrige visuelle Ausarbeitung */
+  --radius-inline-token: 2px;
+  --radius-shortcut: 2px;
+  --radius-token: 2px;
+  --radius-small: 2px;
+  --radius-notice: 2px;
+  --radius-control: 2px;
+  --radius-popover: 2px;
+  --radius-signature: 2px;
+  --radius-card: 2px;
+  --radius-avatar-identity: 2px;
+  --radius-avatar-mark: 2px;
+  --radius-round: 2px;
+  --radius-pill: 2px;
+  --shadow-card: none;
+  --shadow-raised: none;
+  --shadow-interactive: none;
+  --shadow-letter: none;
+}

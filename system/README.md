@@ -25,12 +25,24 @@ Die verbindliche visuelle Referenz ist [styleguide.html](styleguide.html).
 4. Im `<head>` immer in dieser Reihenfolge laden:
 
    ```html
+   <script src="../system/fidelity.js"></script>
    <link rel="stylesheet" href="../system/tokens.css">
    <link rel="stylesheet" href="../system/base.css">
    <link rel="stylesheet" href="../system/components.css">
+   <link rel="stylesheet" href="../system/wireframe.css">
    <script src="../system/vendor/lucide.js" defer></script>
    <script src="../system/shell.js" defer></script>
    ```
+
+   `fidelity.js` läuft bewusst synchron vor den Stylesheets und setzt die
+   zentrale Darstellungsfassung am Wurzelelement. `wireframe.css` wird
+   render-blockierend geladen, wirkt aber ausschließlich bei
+   `data-fidelity="low"`. Dadurch kennt der Browser bereits beim ersten
+   sichtbaren Rendern die endgültigen Tokenwerte; ein nachträglicher Wechsel
+   von Full-Fi zu Low-Fi ist ausgeschlossen. Die Fassung wird nur über
+   `FIDELITY` in `fidelity.js` gewechselt, nie in einem Screen. Kann das
+   Konfigurationsskript nicht ausgeführt werden, greift ohne das Attribut die
+   abgenommene Full-Fi-Fassung als Rückfall.
 
 5. Am `<body>` mit `data-screen` genau einen Navigationsbereich angeben:
    `arbeitsbereich`, `kontakte`, `veranstaltungen`, `verteiler` oder `mailings`.

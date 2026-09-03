@@ -1,6 +1,6 @@
 # Abdeckungsabgleich – Entwurf gegen Screen-Inventar
 
-Stand: 30. August 2026. Verglichen wurden die Inhalte und darstellbaren
+Stand: 3. September 2026. Verglichen wurden die Inhalte und darstellbaren
 Zustände, nicht die Routen oder die Informationsarchitektur. Als „Entwurf“
 gelten nur die unter `screens/` tatsächlich vorhandenen, benutzbaren Inhalte;
 Systembausteine und in Berichten beschriebene Absichten allein gelten nicht als
@@ -18,6 +18,7 @@ oder nur als knappe Screenbezeichnung beschreibt.
 | Global · S01 | Arbeitsstart: direkte Suche, zuletzt verwendete Kontakte, Veranstaltungen und Arbeitsstand | `arbeitsbereich.html` bietet Direktsuche, vier aktuelle Aufgaben, Tagespunkte und Änderungen in der eigenen Zuständigkeit. Persönlich zuletzt geöffnete Kontakte und Veranstaltungen sind derzeit nicht als eigene Einstiege umgesetzt. | teilweise |
 | Global · Suche | Objektübergreifende Hüllensuche | Die Hüllensuche gruppiert Kontakte, Institutionen, Veranstaltungen, Verteiler und sichtbare Mailings nach Art. Hinterlegte Ziele führen; vorhandene Objekte ohne Detailziel melden die Entwurfsgrenze. | vorhanden |
 | Global · Testmodus | Fachanwendung ohne Prototypgerüst erkunden | `#test` am Arbeitsbereich aktiviert für denselben Firefox-Tab und dieselbe Sitzung einen Modus ohne Zustandsleisten und Prototyp-Index in der Navigation. `#review` am Index beendet ihn. | Hilfsmittel · vorhanden |
+| Global · Low-Fi-Testfassung | Visuell zurückgenommene Fassung bei unveränderten Screens und Wegen | Das synchrone `fidelity.js` schaltet über die einzelne Konstante `FIDELITY` zentral zwischen `low` und `full`. Alle Dokumente laden `wireframe.css` render-blockierend; dessen alternative Werte vorhandener Farb-, Radius- und Schattentokens wirken nur bei `data-fidelity="low"`. Komponenten, Layout, Daten, Rechte und Interaktionen bleiben gemeinsam. | Hilfsmittel · vorhanden |
 | Global · F01 | Druckbare Übersicht aller offenen Fachfragen | Als Screen ersatzlos entfallen; die offenen Fachfragen bleiben in `BEFUNDE-offen.md` und Abschnitt 5 dieses Abgleichs. | entfällt |
 | Global · F02–F17 | Detail und Varianten der 16 Fachfragen | Als Screens ersatzlos entfallen; die Fachfragen werden nicht Teil des Übergabebestands. | entfällt |
 | Kontakte · K01 | Zuletzt verwendete Kontakte als Einstieg | Der persönliche Einstieg wurde aus `kontakte.html` wieder herausgenommen; der Screen beginnt direkt mit der vollständigen Kontaktliste. | entfällt |
